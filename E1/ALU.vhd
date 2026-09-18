@@ -40,7 +40,7 @@ ENTITY ALU IS
         Zero : OUT STD_LOGIC <= '0'
     );
 END ENTITY ALU;
-
+-- Architecture of ALU
 ARCHITECTURE struct OF ALU IS
     SIGNAL LVTemp : STD_LOGIC_VECTOR(63 DOWNTO 0) <= (OTHERS => '0');
     SIGNAL STempA : signed(63 DOWNTO 0) <= (OTHERS => '0');
@@ -141,8 +141,8 @@ BEGIN
             USTempS <= unsigned('0' & A) + unsigned('0' & B);
             Result <= STD_LOGIC_VECTOR(USTempS(63 DOWNTO 0));
             Cout <= USTempS(64);
-            Overflow <= (NOT A(63) AND NOT B(63) AND USTemp(63))
-                OR (A(63) AND B(63) AND NOT USTemp(63));
+            Overflow <= (NOT A(63) AND NOT B(63) AND Result(63))
+                OR (A(63) AND B(63) AND NOT Result(63));
 
             IF Result = LVTemp THEN
                 Zero <= '1';
@@ -155,8 +155,48 @@ BEGIN
             USTempS <= unsigned('0' & A) + unsigned('0' & (NOT B)) + to_unsigned(1, 65);
             Result <= STD_LOGIC_VECTOR(USTempS(63 DOWNTO 0));
             Cout <= USTempS(64);
-            Overflow <= (NOT A(63) AND B(63) AND USTemp(63))
-                OR (A(63) AND NOT B(63) AND NOT USTemp(63));
+            Overflow <= (NOT A(63) AND B(63) AND Result(63))
+                OR (A(63) AND NOT B(63) AND NOT Result(63));
+
+            IF Result = LVTemp THEN
+                Zero <= '1';
+            ELSE
+                Zero <= '0';
+            END IF;
+
+            -- INC operation
+        WHEN "100010" =>
+            USTempS <= unsigned('0' & A) + to_unsigned(1, 65);
+            Result <= STD_LOGIC_VECTOR(USTempS(63 DOWNTO 0));
+            Cout <= USTempS(64);
+            Overflow <= (NOT A(63) AND Result(63));
+
+            IF Result = LVTemp THEN
+                Zero <= '1';
+            ELSE
+                Zero <= '0';
+            END IF;
+
+            -- DEC operation
+        WHEN "10011" =>
+            USTempA <= (OTHERS => 1)
+                USTempS <= unsigned('0' & A) + unsigned('0' & USTempA);
+            Result <= STD_LOGIC_VECTOR(USTempS(63 DOWNTO 0));
+            Cout <= USTempS(64);
+            Overflow <= (NOT A(63) AND Result(63));
+
+            IF Result = LVTemp THEN
+                Zero <= '1';
+            ELSE
+                Zero <= '0';
+            END IF;
+
+            -- NEG operation
+        WHEN "10100" =>
+            USTempS <= unsigned('0' & (NOT A)) + to_unsigned(1, 65);
+            Result <= STD_LOGIC_VECTOR(USTempS(63 DOWNTO 0));
+            Cout <= USTempS(64);
+            Overflow <= (NOT A(63) AND Result(63));
 
             IF Result = LVTemp THEN
                 Zero <= '1';
