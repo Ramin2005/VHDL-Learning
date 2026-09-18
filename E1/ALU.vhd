@@ -1,3 +1,29 @@
+-- 64-bit ALU
+
+-- Operations:
+-- Logic Operations: 
+-- not  -> opcode: "00000"
+-- and  -> opcode: "00001"
+-- or   -> opcode: "00010"
+-- xor  -> opcode: "00011"
+-- nand -> opcode: "00100"
+-- nor  -> opcode: "00101"
+-- xnor -> opcode: "00110"
+
+-- Compare Operations:
+-- A == B -> opcode: "00111"
+-- A != B -> opcode: "01000"
+-- A < B  -> opcode: "01001"
+-- A > B  -> opcode: "01010"
+-- A <= B -> opcode: "01011"
+-- A >= B -> opcode: "01100"
+
+-- Arithmetic Operations:
+-- ADD -> opcode: "10000"
+-- SUB -> opcode: "10001"
+
+-- Invalid opcode -> don't cares (Buffers)
+
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -52,7 +78,7 @@ BEGIN
         WHEN "00110" =>
             Result <= A XNOR B;
 
-            -- == compare operation
+            -- A == B compare operation
         WHEN "00111" =>
             IF A = B THEN
                 Result <= (0 => '1', OTHERS => '0');
@@ -60,7 +86,7 @@ BEGIN
                 Result <= (0 => '0', OTHERS => '0');
             END IF;
 
-            -- != compare operation
+            -- A != B compare operation
         WHEN "01000" =>
             IF A = B THEN
                 Result <= (0 => '0', OTHERS => '0');
