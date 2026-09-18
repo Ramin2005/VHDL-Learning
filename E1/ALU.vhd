@@ -40,6 +40,8 @@ ENTITY ALU IS
         Zero : OUT STD_LOGIC <= '0'
     );
 END ENTITY ALU;
+
+
 -- Architecture of ALU
 ARCHITECTURE struct OF ALU IS
     SIGNAL LVTemp : STD_LOGIC_VECTOR(63 DOWNTO 0) <= (OTHERS => '0');
@@ -204,6 +206,75 @@ BEGIN
                 Zero <= '0';
             END IF;
 
+            -- ADC operation
+        WHEN "10101" =>
+            USTempS <= unsigned('0' & A) + unsigned('0' & B);
+            Result <= STD_LOGIC_VECTOR(USTempS(63 DOWNTO 0));
+            Cout <= USTempS(64);
+            Overflow <= (NOT A(63) AND NOT B(63) AND Result(63))
+                OR (A(63) AND B(63) AND NOT Result(63));
+
+            IF Result = LVTemp THEN
+                Zero <= '1';
+            ELSE
+                Zero <= '0';
+            END IF;
+
+            -- SBC operation
+        WHEN "10110" =>
+            USTempS <= unsigned('0' & A) + unsigned('0' & (NOT B)) + to_unsigned(1, 65);
+            Result <= STD_LOGIC_VECTOR(USTempS(63 DOWNTO 0));
+            Cout <= USTempS(64);
+            Overflow <= (NOT A(63) AND B(63) AND Result(63))
+                OR (A(63) AND NOT B(63) AND NOT Result(63));
+
+            IF Result = LVTemp THEN
+                Zero <= '1';
+            ELSE
+                Zero <= '0';
+            END IF;
+
+            -- SHL operation
+        WHEN "10111" =>
+            Result <= A(62 DOWNTO 0) & '0';
+            Cout <= A(63);
+
+            IF Result = LVTemp THEN
+                Zero <= '1';
+            ELSE
+                Zero <= '0';
+            END IF;
+
+            -- SHR operation
+        WHEN "11000" =>
+            Result <= '0' & A(63 DOWNTO 1);
+            Cout <= A(0);
+
+            IF Result = LVTemp THEN
+                Zero <= '1';
+            ELSE
+                Zero <= '0';
+            END IF;
+
+            -- ASR operation
+        WHEN "11001" =>
+            Result <= A(63) & A(63 DOWNTO 1);
+            Cout <= A(0);
+
+            IF Result = LVTemp THEN
+                Zero <= '1';
+            ELSE
+                Zero <= '0';
+            END IF;
+
+            -- ROL operation 
+        WHEN "11010" =>
+            Result <= A(62 DOWNTO 0) & A(63);
+
+            -- ROR operation
+        WHEN "11011" =>
+            Result <= A(0) & A(63 DOWNTO 1);
+            
             -- don't cares (Buffer)
         WHEN OTHERS =>
             Result <= A;
