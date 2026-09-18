@@ -4,11 +4,11 @@ USE IEEE.numeric_std.ALL;
 
 ENTITY ALU IS
     PORT (
-        A : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        B : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
+        A : IN STD_LOGIC_VECTOR(63 DOWNTO 0);
+        B : IN STD_LOGIC_VECTOR(63 DOWNTO 0);
         S : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         Cin : IN STD_LOGIC;
-        Result : OUT STD_LOGIC_VECTOR(31 DOWNTO 0) <= (OTHERS => '0');
+        Result : OUT STD_LOGIC_VECTOR(63 DOWNTO 0) <= (OTHERS => '0');
         Cout : OUT STD_LOGIC <= '0';
         Overflow : OUT STD_LOGIC <= '0';
         Zero : OUT STD_LOGIC <= '0'
@@ -16,35 +16,43 @@ ENTITY ALU IS
 END ENTITY ALU;
 
 ARCHITECTURE struct OF ALU IS
-    SIGNAL Temp : STD_LOGIC_VECTOR(31 DOWNTO 0) <= (OTHERS => '0');
-    SIGNAL SignedTempA : signed(31 DOWNTO 0) <= (OTHERS => '0');
-    SIGNAL SignedTempB : signed(31 DOWNTO 0) <= (OTHERS => '0');
-    SIGNAL UnsignedTempA : unsigned(31 DOWNTO 0) <= (OTHERS => '0');
-    SIGNAL UnsignedTempB : unsigned(31 DOWNTO 0) <= (OTHERS => '0');
-    SIGNAL TempS : unsigned(32 DOWNTO 0) <= (OTHERS => '0');
+    SIGNAL LVTemp : STD_LOGIC_VECTOR(63 DOWNTO 0) <= (OTHERS => '0');
+    SIGNAL STempA : signed(63 DOWNTO 0) <= (OTHERS => '0');
+    SIGNAL STempB : signed(63 DOWNTO 0) <= (OTHERS => '0');
+    SIGNAL USTempA : unsigned(63 DOWNTO 0) <= (OTHERS => '0');
+    SIGNAL USTempB : unsigned(63 DOWNTO 0) <= (OTHERS => '0');
+    SIGNAL USTempS : unsigned(64 DOWNTO 0) <= (OTHERS => '0');
 BEGIN
     CASE S IS
+            -- not operation
         WHEN "00000" =>
             Result <= NOT A;
 
+            -- and operation
         WHEN "00001" =>
             Result <= A AND B;
 
+            -- or operation
         WHEN "00010" =>
             Result <= A OR B;
 
+            -- xor operation
         WHEN "00011" =>
             Result <= A XOR B;
 
+            -- nand operation
         WHEN "00100" =>
             Result <= A NAND B;
 
+            -- nor operation
         WHEN "00101" =>
             Result <= A NOR B;
 
+            -- xnor operation
         WHEN "00110" =>
             Result <= A XNOR B;
 
+            -- == compare operation
         WHEN "00111" =>
             IF A = B THEN
                 Result <= (0 => '1', OTHERS => '0');
@@ -52,6 +60,7 @@ BEGIN
                 Result <= (0 => '0', OTHERS => '0');
             END IF;
 
+            -- != compare operation
         WHEN "01000" =>
             IF A = B THEN
                 Result <= (0 => '0', OTHERS => '0');
@@ -59,44 +68,77 @@ BEGIN
                 Result <= (0 => '1', OTHERS => '0');
             END IF;
 
+            -- A < B compare operation
         WHEN "01001" =>
-            SignedTempA <= signed(A);
-            SignedTempB <= signed(B);
-            IF SignedTempA < SignedTempB THEN
+            STempA <= signed(A);
+            STempB <= signed(B);
+            IF STempA < STempB THEN
                 Result <= (0 => '1', OTHERS => '0');
             ELSE
                 Result <= (0 => '0', OTHERS => '0');
             END IF;
 
+            -- A > B compare operation
         WHEN "01010" =>
-            SignedTempA <= signed(A);
-            SignedTempB <= signed(B);
-            IF SignedTempA > SignedTempB THEN
+            STempA <= signed(A);
+            STempB <= signed(B);
+            IF STempA > STempB THEN
                 Result <= (0 => '1', OTHERS => '0');
             ELSE
                 Result <= (0 => '0', OTHERS => '0');
             END IF;
 
+            -- A <= B compare operation
         WHEN "01011" =>
-            SignedTempA <= signed(A);
-            SignedTempB <= signed(B);
+            STempA <= signed(A);
+            STempB <= signed(B);
 
-            IF SignedTempA <= SignedTempB THEN
+            IF STempA <= STempB THEN
                 Result <= (0 => '1', OTHERS => '0');
             ELSE
                 Result <= (0 => '0', OTHERS => '0');
             END IF;
 
+            -- A >= B compare operation
         WHEN "01100" =>
-            SignedTempA <= signed(A);
-            SignedTempB <= signed(B);
+            STempA <= signed(A);
+            STempB <= signed(B);
 
-            IF SignedTempA >= SignedTempB THEN
+            IF STempA >= STempB THEN
                 Result <= (0 => '1', OTHERS => '0');
             ELSE
                 Result <= (0 => '0', OTHERS => '0');
             END IF;
 
+            -- ADD operation
+        WHEN "10000" =>
+            USTempS <= unsigned('0' & A) + unsigned('0' & B);
+            Result <= STD_LOGIC_VECTOR(USTempS(63 DOWNTO 0));
+            Cout <= USTempS(64);
+            Overflow <= (NOT A(63) AND NOT B(63) AND USTemp(63))
+                OR (A(63) AND B(63) AND NOT USTemp(63));
+
+            IF Result = LVTemp THEN
+                Zero <= '1';
+            ELSE
+                Zero <= '0';
+            END IF;
+
+            -- SUB operation
+        WHEN "10001" =>
+            USTempS <= unsigned('0' & A) + unsigned('0' & (NOT B)) + to_unsigned(1, 65);
+            Result <= STD_LOGIC_VECTOR(USTempS(63 DOWNTO 0));
+            Cout <= USTempS(64);
+            Overflow <= (NOT A(63) AND B(63) AND USTemp(63))
+                OR (A(63) AND NOT B(63) AND NOT USTemp(63));
+
+            IF Result = LVTemp THEN
+                Zero <= '1';
+            ELSE
+                Zero <= '0';
+            END IF;
+
+            -- don't cares (Buffer)
         WHEN OTHERS =>
             Result <= A;
     END CASE;
