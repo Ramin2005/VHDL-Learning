@@ -53,11 +53,11 @@ ARCHITECTURE struct OF ALU IS
 
     -- Signal for compare operations
     SIGNAL ResultEQ : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultNEQ : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultNE : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultL : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultG : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultLEQ : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultGEQ : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultLE : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultGE : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Signal for arithmetic Operations
     SIGNAL TempADD : unsigned(64 DOWNTO 0);
@@ -117,8 +117,8 @@ BEGIN
     ResultEQ <= (0 => '1', OTHERS => '0') WHEN A = B ELSE
         (OTHERS => '0');
 
-    -- NEQ compare operation
-    ResultNEQ <= (OTHERS => '0') WHEN A = B ELSE
+    -- NE compare operation
+    ResultNE <= (OTHERS => '0') WHEN A = B ELSE
         (0 => '1', OTHERS => '0');
 
     -- A < B compare operation
@@ -130,11 +130,11 @@ BEGIN
         (OTHERS => '0');
 
     -- A <= B compare operation
-    ResultLEQ <= (0 => '1', OTHERS => '0') WHEN signed(A) <= signed(B) ELSE
+    ResultLE <= (0 => '1', OTHERS => '0') WHEN signed(A) <= signed(B) ELSE
         (OTHERS => '0');
 
     -- A >= B compare operation
-    ResultGEQ <= (0 => '1', OTHERS => '0') WHEN signed(A) >= signed(B) ELSE
+    ResultGE <= (0 => '1', OTHERS => '0') WHEN signed(A) >= signed(B) ELSE
         (OTHERS => '0');
     ------------------------------------------------------------------------------------------
 
