@@ -46,8 +46,8 @@ ENTITY ALU IS
         S : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
         Cin : IN STD_LOGIC;
         Result : OUT STD_LOGIC_VECTOR(63 DOWNTO 0);
-        Cout : OUT STD_LOGIC <= '0';
-        Overflow : OUT STD_LOGIC <= '0';
+        Cout : OUT STD_LOGIC;
+        Overflow : OUT STD_LOGIC
     );
 END ENTITY ALU;
 
