@@ -155,8 +155,8 @@ BEGIN
         OR (A(63) AND NOT B(63) AND NOT ResultSUB(63));
 
     -- INC operation
-    TempINC <= (unsigned('0' & A) + to_unsigned(1, 65);
-        ResultINC <= STD_LOGIC_VECTOR(TempINC)(63 DOWNTO 0));
+    TempINC <= unsigned('0' & A) + to_unsigned(1, 65);
+    ResultINC <= STD_LOGIC_VECTOR(TempINC)(63 DOWNTO 0);
     CoutINC <= TempINC(64);
     OverflowINC <= (NOT A(63) AND ResultINC(63));
 
@@ -165,7 +165,7 @@ BEGIN
     TempDEC <= unsigned('0' & A) + unsigned('0' & USTemp);
     ResultDEC <= STD_LOGIC_VECTOR(TempDEC)(63 DOWNTO 0);
     CoutDEC <= TempDEC(64);
-    OverflowDEC <= (NOT A(63) AND ResultDEC(63));
+    OverflowDEC <= (NOT A(63) AND NOT ResultDEC(63));
 
     -- NEG operation
     TempNEG <= unsigned('0' & (NOT A)) + to_unsigned(1, 65);
