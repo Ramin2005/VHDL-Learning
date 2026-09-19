@@ -141,31 +141,36 @@ BEGIN
     ------------------------------------------------------------------------------------------
     -- Arithmetic operations
     -- ADD operation
-    ResultADD <= STD_LOGIC_VECTOR((unsigned('0' & A) + unsigned('0' & B))(63 DOWNTO 0));
-    CoutADD <= unsigned('0' & A) + unsigned('0' & B)(64);
+    TempADD <= unsigned('0' & A) + unsigned('0' & B);
+    ResultADD <= STD_LOGIC_VECTOR(TempADD)(63 DOWNTO 0);
+    CoutADD <= TempADD(64);
     OverflowADD <= (NOT A(63) AND NOT B(63) AND ResultADD(63))
         OR (A(63) AND B(63) AND NOT ResultADD(63));
 
     -- SUB operation
-    ResultSUB <= STD_LOGIC_VECTOR((unsigned('0' & A) + unsigned('0' & (NOT B)) + to_unsigned(1, 65))(63 DOWNTO 0));
-    CoutSUB <= (unsigned('0' & A) + unsigned('0' & (NOT B)) + to_unsigned(1, 65))(64);
+    TempSUB <= unsigned('0' & A) + unsigned('0' & (NOT B)) + to_unsigned(1, 65);
+    ResultSUB <= STD_LOGIC_VECTOR(TempSUB)(63 DOWNTO 0);
+    CoutSUB <= TempSUB(64);
     OverflowSUB <= (NOT A(63) AND B(63) AND ResultSUB(63))
         OR (A(63) AND NOT B(63) AND NOT ResultSUB(63));
 
     -- INC operation
-    ResultINC <= STD_LOGIC_VECTOR((unsigned('0' & A) + to_unsigned(1, 65))(63 DOWNTO 0));
-    CoutINC <= (unsigned('0' & A) + to_unsigned(1, 65))(64);
+    TempINC <= (unsigned('0' & A) + to_unsigned(1, 65);
+        ResultINC <= STD_LOGIC_VECTOR(TempINC)(63 DOWNTO 0));
+    CoutINC <= TempINC(64);
     OverflowINC <= (NOT A(63) AND ResultINC(63));
 
     -- DEC operation
     USTemp <= (OTHERS => '1');
-    ResultDEC <= STD_LOGIC_VECTOR((unsigned('0' & A) + unsigned('0' & USTemp))(63 DOWNTO 0));
-    CoutDEC <= (unsigned('0' & A) + unsigned('0' & USTemp))(64);
+    TempDEC <= unsigned('0' & A) + unsigned('0' & USTemp);
+    ResultDEC <= STD_LOGIC_VECTOR(TempDEC)(63 DOWNTO 0);
+    CoutDEC <= TempDEC(64);
     OverflowDEC <= (NOT A(63) AND ResultDEC(63));
 
     -- NEG operation
-    ResultNEG <= STD_LOGIC_VECTOR((unsigned('0' & (NOT A)) + to_unsigned(1, 65))(63 DOWNTO 0));
-    CoutNEG <= (unsigned('0' & (NOT A)) + to_unsigned(1, 65))(64);
+    TempNEG <= unsigned('0' & (NOT A)) + to_unsigned(1, 65);
+    ResultNEG <= STD_LOGIC_VECTOR(TempNEG)(63 DOWNTO 0);
+    CoutNEG <= TempNEG(64);
     OverflowNEG <= '1' WHEN A = x"8000000000000000" ELSE
         '0';
     ------------------------------------------------------------------------------------------
