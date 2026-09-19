@@ -2,27 +2,38 @@
 
 -- Operations:
 -- Logic Operations: 
--- not  -> opcode: "00000"
--- and  -> opcode: "00001"
--- or   -> opcode: "00010"
--- xor  -> opcode: "00011"
--- nand -> opcode: "00100"
--- nor  -> opcode: "00101"
--- xnor -> opcode: "00110"
+-- not      -> opcode: "00000"
+-- and      -> opcode: "00001"
+-- or       -> opcode: "00010"
+-- xor      -> opcode: "00011"
+-- nand     -> opcode: "00100"
+-- nor      -> opcode: "00101"
+-- xnor     -> opcode: "00110"
 
 -- Compare Operations:
--- A == B -> opcode: "00111"
--- A != B -> opcode: "01000"
--- A < B  -> opcode: "01001"
--- A > B  -> opcode: "01010"
--- A <= B -> opcode: "01011"
--- A >= B -> opcode: "01100"
+-- A == B   -> opcode: "00111"
+-- A != B   -> opcode: "01000"
+-- A < B    -> opcode: "01001"
+-- A > B    -> opcode: "01010"
+-- A <= B   -> opcode: "01011"
+-- A >= B   -> opcode: "01100"
 
 -- Arithmetic Operations:
--- ADD -> opcode: "10000"
--- SUB -> opcode: "10001"
+-- ADD      -> opcode: "10000"
+-- SUB      -> opcode: "10001"
+-- INC      -> opcode: "10010"
+-- DEC      -> opcode: "10011"
+-- NEG      -> opcode: "10100"
 
--- Invalid opcode -> don't cares (Buffers)
+-- Shift and Routing Operation:
+-- SHL      -> opcode: "10101"
+-- SHR      -> opcode: "10110"
+-- ASR      -> opcode: "10111"
+-- ROL      -> opcode: "11000"
+-- ROR      -> opcode: "11001"
+
+-- Buffer   -> opcode: "11111"
+-- Out of list opcodes -> Buffer
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -91,7 +102,12 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL CoutSHL : STD_LOGIC;
     SIGNAL CoutSHR : STD_LOGIC;
 
+    -- Temporary Signal
     SIGNAL USTemp : unsigned(63 DOWNTO 0);
+
+    -- Enable and Select Signals
+    SIGNAL Enable : STD_LOGIC_VECTOR(31 DOWNTO 0);
+
 BEGIN
     ------------------------------------------------------------------------------------------
     -- Logic Operations
@@ -194,6 +210,70 @@ BEGIN
 
     -- ROR operation
     ResultROR <= A(0) & A(63 DOWNTO 1);
+    ------------------------------------------------------------------------------------------
+
+    ------------------------------------------------------------------------------------------
+    -- Enable and Select
+    Enable <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 32), to_integer(unsigned(S))))
+        WHEN (unsigned(S) <= 12) OR ((unsigned(S) >= 16) AND (unsigned(S) <= 25)) ELSE
+        x"80000000";
+    ------------------------------------------------------------------------------------------
+
+    ------------------------------------------------------------------------------------------
+    -- Multiplexing
+    -- Multiplexing Results to Result
+    Result <=
+        -- Logic operations
+        (ResultNOT AND (63 DOWNTO 0 => Enable(0)))
+        OR (ResultAND AND (63 DOWNTO 0 => Enable(1)))
+        OR (ResultOR AND (63 DOWNTO 0 => Enable(2)))
+        OR (ResultXOR AND (63 DOWNTO 0 => Enable(3)))
+        OR (ResultNAND AND (63 DOWNTO 0 => Enable(4)))
+        OR (ResultNOR AND (63 DOWNTO 0 => Enable(5)))
+        OR (ResultXNOR AND (63 DOWNTO 0 => Enable(6)))
+        -- Compare operations
+        OR (ResultEQ AND (63 DOWNTO 0 => Enable(7)))
+        OR (ResultNE AND (63 DOWNTO 0 => Enable(8)))
+        OR (ResultL AND (63 DOWNTO 0 => Enable(9)))
+        OR (ResultG AND (63 DOWNTO 0 => Enable(10)))
+        OR (ResultLE AND (63 DOWNTO 0 => Enable(11)))
+        OR (ResultGE AND (63 DOWNTO 0 => Enable(12)))
+        -- Arithmetic operations
+        OR (ResultADD AND (63 DOWNTO 0 => Enable(16)))
+        OR (ResultSUB AND (63 DOWNTO 0 => Enable(17)))
+        OR (ResultINC AND (63 DOWNTO 0 => Enable(18)))
+        OR (ResultDEC AND (63 DOWNTO 0 => Enable(19)))
+        OR (ResultNEG AND (63 DOWNTO 0 => Enable(20)))
+        -- Shift and Routing operations
+        OR (ResultSHL AND (63 DOWNTO 0 => Enable(21)))
+        OR (ResultSHR AND (63 DOWNTO 0 => Enable(22)))
+        OR (ResultASR AND (63 DOWNTO 0 => Enable(23)))
+        OR (ResultROL AND (63 DOWNTO 0 => Enable(24)))
+        OR (ResultROR AND (63 DOWNTO 0 => Enable(25)))
+        -- Buffer and invalid opcodes
+        OR (A AND (63 DOWNTO 0 => Enable(31)));
+
+    -- Multiplexing Cout
+    Cout <=
+        -- Arithmetic operations
+        (CoutADD AND Enable(16))
+        OR (CoutSUB AND Enable(17))
+        OR (CoutINC AND Enable(18))
+        OR (CoutDEC AND Enable(19))
+        OR (CoutNEG AND Enable(20))
+        -- Shift and Routing operations
+        OR (CoutSHL AND Enable(21))
+        OR (CoutSHR AND Enable(22))
+        OR (CoutASR AND Enable(23));
+
+    -- Multiplexing Overflow
+
+    Overflow <=
+        (OverflowADD AND Enable(16))
+        OR (OverflowSUB AND Enable(17))
+        OR (OverflowINC AND Enable(18))
+        OR (OverflowDEC AND Enable(19))
+        OR (OverflowNEG AND Enable(20));
     ------------------------------------------------------------------------------------------
 
 END struct;
