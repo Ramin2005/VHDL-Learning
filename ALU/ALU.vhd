@@ -25,7 +25,7 @@
 -- DEC      -> opcode: "10011"
 -- NEG      -> opcode: "10100"
 
--- Shift and Routing Operation:
+-- Shift and Rotating Operation:
 -- SHL      -> opcode: "10101"
 -- SHR      -> opcode: "10110"
 -- ASR      -> opcode: "10111"
@@ -91,7 +91,7 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL OverflowDEC : STD_LOGIC;
     SIGNAL OverflowNEG : STD_LOGIC;
 
-    -- Signal for shift and routing Operations
+    -- Signal for shift and Rotating Operations
     SIGNAL ResultSHL : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultSHR : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultASR : STD_LOGIC_VECTOR(63 DOWNTO 0);
@@ -191,7 +191,7 @@ BEGIN
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
-    -- Shift and Routing operations
+    -- Shift and Rotating operations
     -- SHL operation
     ResultSHL <= A(62 DOWNTO 0) & '0';
     CoutSHL <= A(63);
@@ -243,7 +243,7 @@ BEGIN
         OR (ResultINC AND (63 DOWNTO 0 => Enable(18)))
         OR (ResultDEC AND (63 DOWNTO 0 => Enable(19)))
         OR (ResultNEG AND (63 DOWNTO 0 => Enable(20)))
-        -- Shift and Routing operations
+        -- Shift and Rotating operations
         OR (ResultSHL AND (63 DOWNTO 0 => Enable(21)))
         OR (ResultSHR AND (63 DOWNTO 0 => Enable(22)))
         OR (ResultASR AND (63 DOWNTO 0 => Enable(23)))
@@ -260,7 +260,7 @@ BEGIN
         OR (CoutINC AND Enable(18))
         OR (CoutDEC AND Enable(19))
         OR (CoutNEG AND Enable(20))
-        -- Shift and Routing operations
+        -- Shift and Rotating operations
         OR (CoutSHL AND Enable(21))
         OR (CoutSHR AND Enable(22))
         OR (CoutASR AND Enable(23));
