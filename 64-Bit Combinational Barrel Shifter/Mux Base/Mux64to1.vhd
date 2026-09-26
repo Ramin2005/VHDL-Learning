@@ -6,14 +6,14 @@ ENTITY Mux64to1 IS
     PORT (
         Inputs : IN STD_LOGIC_VECTOR(63 DOWNTO 0);
         S : IN STD_LOGIC_VECTOR(5 DOWNTO 0);
-        O : OUT STD_LOGIC;
+        O : OUT STD_LOGIC
     );
 END ENTITY Mux64to1;
 
 ARCHITECTURE Struct OF Mux64to1 IS
     SIGNAL Enable : STD_LOGIC_VECTOR(63 DOWNTO 0);
 BEGIN
-    Enable <= STD_LOGIC_VECTOR(SHIFT_LEFT(to_unsigned(1, 64), to_unsigned(S)));
+    Enable <= STD_LOGIC_VECTOR(SHIFT_LEFT(to_unsigned(1, 64), to_integer(unsigned(S))));
 
     O <=
         (Inputs(0) AND Enable(0))
