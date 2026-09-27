@@ -13,7 +13,7 @@ ENTITY JKFlipFlop IS
 END ENTITY JKFlipFlop;
 
 ARCHITECTURE Struct OF JKFlipFlop IS
-    SIGNAL qr : STD_LOGIC <= '0';
+    SIGNAL qr : STD_LOGIC := '0';
 BEGIN
 
     PROCESS (clk)
