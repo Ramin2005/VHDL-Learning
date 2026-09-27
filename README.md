@@ -310,20 +310,7 @@ At the current stage, simulation setup and verification are tool-dependent.
 | 64-bit Barrel Shifter — Enable Base | Implemented |
 | 64-to-1 MUX for Barrel Shifter | Implemented |
 | Barrel Shifter — MUX Base | Not yet implemented |
-| Dedicated Testbenches | Not currently included |
 
-## Future Development
-
-Potential extensions include:
-
-- Completing the MUX-based barrel-shifter architecture
-- Adding testbenches for every major component
-- Adding automated simulation and regression tests
-- Adding waveform examples
-- Expanding the sequential-logic section with registers and counters
-- Building larger datapath components from the existing modules
-- Adding synthesis reports and resource/timing analysis
-- Integrating the individual blocks into larger digital systems
 
 ## Purpose
 
