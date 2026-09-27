@@ -1,14 +1,50 @@
 # VHDL Learning
 
-A collection of **VHDL digital-design implementations** developed to practice combinational hardware design and translate digital-logic concepts into synthesizable VHDL descriptions.
+A collection of **VHDL digital-design implementations** developed to practice combinational and sequential hardware design and to translate digital-logic concepts into synthesizable VHDL descriptions.
 
-The repository currently contains three main hardware blocks:
+The repository currently contains:
 
-- **1-bit Full Adder**
-- **64-bit ALU**
-- **64-bit Combinational Barrel Shifter and Rotating Unit**
+- Basic combinational building blocks
+- Multiplexers from 2-to-1 through 64-to-1
+- A 1-bit Full Adder
+- D and JK Flip-Flops
+- A 64-bit ALU
+- A 64-bit combinational barrel shifter and rotating unit
+- An experimental MUX-based barrel-shifter implementation
 
-The projects are standalone digital-design exercises rather than a complete processor or FPGA application.
+The projects are standalone digital-design exercises and are not currently integrated into a complete processor or FPGA system.
+
+## Repository Structure
+
+```text
+VHDL-Learning/
+├── Full Adder/
+│   └── FA.vhd
+│
+├── MUX/
+│   ├── MUX2to1.vhd
+│   ├── MUX4to1.vhd
+│   ├── MUX8to1.vhd
+│   ├── MUX16to1.vhd
+│   ├── MUX32to1.vhd
+│   └── MUX64to1.vhd
+│
+├── Flip-Flops/
+│   ├── DFlipFlop.vhd
+│   └── JKFlipFlop.vhd
+│
+├── ALU/
+│   └── ALU.vhd
+│
+├── 64-Bit Combinational Barrel Shifter/
+│   ├── Enable Base/
+│   │   └── EnableBaseCBS.vhd
+│   └── Mux Base/
+│       ├── Mux64to1.vhd
+│       └── MuxBaseCBS.vhd
+│
+└── README.md
+```
 
 ## Projects
 
@@ -16,15 +52,78 @@ The projects are standalone digital-design exercises rather than a complete proc
 
 **Source:** `Full Adder/FA.vhd`
 
-A 1-bit full adder with two operands (`A`, `B`), carry-in (`Cin`), sum (`S`), and carry-out (`Cout`). The implementation uses the standard Boolean equations for sum and carry.
+A 1-bit full adder with:
 
-### 2. 64-bit ALU
+- Two operands: `A`, `B`
+- Carry input: `Cin`
+- Sum output: `S`
+- Carry output: `Cout`
+
+The implementation directly uses the standard Boolean equations:
+
+- `S = A XOR B XOR Cin`
+- `Cout = AB + ACin + BCin`
+
+### 2. Multiplexers
+
+**Directory:** `MUX/`
+
+The repository contains standalone MUX implementations with increasing input widths:
+
+| Module | Inputs | Select |
+|---|---:|---:|
+| `MUX2to1` | 2 | 1 bit |
+| `MUX4to1` | 4 | 2 bits |
+| `MUX8to1` | 8 | 3 bits |
+| `MUX16to1` | 16 | 4 bits |
+| `MUX32to1` | 32 | 5 bits |
+| `MUX64to1` | 64 | 6 bits |
+
+The larger MUX implementations use an indexed `std_logic_vector` with `to_integer(unsigned(S))), while the 2-to-1 and 4-to-1 versions explicitly describe the selection logic with Boolean expressions.
+
+These modules provide basic selection structures that are also useful when constructing larger combinational datapaths.
+
+### 3. Flip-Flops
+
+**Directory:** `Flip-Flops/`
+
+#### D Flip-Flop
+
+**Source:** `Flip-Flops/DFlipFlop.vhd`
+
+A rising-edge-triggered D flip-flop with:
+
+- Clock: `CLK`
+- Data input: `D`
+- Output: `Q`
+- Complement output: `NQ`
+
+The state is updated on `rising_edge(CLK)`.
+
+#### JK Flip-Flop
+
+**Source:** `Flip-Flops/JKFlipFlop.vhd`
+
+A rising-edge-triggered JK flip-flop implementing the four standard JK states:
+
+| J | K | Next State |
+|---|---|---|
+| 0 | 0 | Hold |
+| 0 | 1 | Reset |
+| 1 | 0 | Set |
+| 1 | 1 | Toggle |
+
+The implementation exposes both `Q` and `NQ`.
+
+### 4. 64-bit ALU
 
 **Source:** `ALU/ALU.vhd`
 
 A combinational 64-bit Arithmetic Logic Unit controlled by a 5-bit opcode.
 
-#### Logic operations
+The current implementation contains **25 explicitly defined operations**, plus a buffer/pass-through operation.
+
+#### Logic Operations
 
 | Operation | Opcode |
 |---|---|
@@ -36,7 +135,7 @@ A combinational 64-bit Arithmetic Logic Unit controlled by a 5-bit opcode.
 | NOR | `00101` |
 | XNOR | `00110` |
 
-#### Comparison operations
+#### Comparison Operations
 
 | Operation | Opcode |
 |---|---|
@@ -47,9 +146,11 @@ A combinational 64-bit Arithmetic Logic Unit controlled by a 5-bit opcode.
 | A ≤ B | `01011` |
 | A ≥ B | `01100` |
 
-The relational comparisons are implemented using signed comparison.
+The relational comparisons use **signed interpretation** of the two 64-bit operands.
 
-#### Arithmetic operations
+For comparison operations, the result is represented as a 64-bit vector with bit 0 indicating the Boolean result.
+
+#### Arithmetic Operations
 
 | Operation | Opcode |
 |---|---|
@@ -59,9 +160,12 @@ The relational comparisons are implemented using signed comparison.
 | DEC | `10011` |
 | NEG | `10100` |
 
-The arithmetic datapath uses 65-bit intermediate signals where required and exposes `Cout` and `Overflow` outputs.
+The ALU uses 65-bit intermediate unsigned signals for the arithmetic datapath and provides:
 
-#### Shift and rotate operations
+- `Cout`
+- `Overflow`
+
+#### Shift and Rotate Operations
 
 | Operation | Opcode |
 |---|---|
@@ -71,13 +175,26 @@ The arithmetic datapath uses 65-bit intermediate signals where required and expo
 | ROL | `11000` |
 | ROR | `11001` |
 
-Opcode `11111` provides a buffer/pass-through operation. Unused opcodes are also routed to this behavior.
+Opcode `11111` performs a buffer/pass-through operation. Opcodes that are not explicitly assigned to an operation also select the buffer path.
 
-### 3. 64-bit Combinational Barrel Shifter and Rotating Unit
+### 5. 64-bit Combinational Barrel Shifter and Rotating Unit
+
+**Directory:** `64-Bit Combinational Barrel Shifter/`
+
+The repository contains an enable-based implementation and the beginning of an alternative MUX-oriented implementation.
+
+#### Enable-Based Implementation
 
 **Source:** `64-Bit Combinational Barrel Shifter/Enable Base/EnableBaseCBS.vhd`
 
-A dedicated 64-bit combinational shift/rotate unit controlled by a 6-bit shift amount (`S1`) and a 3-bit operation selector (`S2`).
+The module accepts:
+
+- 64-bit input: `A`
+- 6-bit shift amount: `S1`
+- 3-bit operation selector: `S2`
+- 64-bit output: `Result`
+
+Supported operations:
 
 | Operation | Opcode |
 |---|---|
@@ -88,65 +205,72 @@ A dedicated 64-bit combinational shift/rotate unit controlled by a 6-bit shift a
 | ROL | `100` |
 | ROR | `101` |
 
-The implementation uses `numeric_std` shift/rotate operations and an enable-based selection structure. Invalid operation codes use a buffer/pass-through path.
+The implementation uses `numeric_std` shift/rotate operations and an enable-based result-selection structure.
 
-> **Implementation note:** In the current source, the `ASL` selection uses the same left-shift result as `SHL`.
+Invalid operation codes, and the zero-shift case in the current enable logic, select the buffer path.
 
-## Repository Structure
+**Implementation note:** the current `ASL` selection uses `ResultSHL`; therefore, it behaves identically to the logical left shift in this implementation.
 
-```text
-VHDL-Learning/
-├── Full Adder/
-│   └── FA.vhd
-│
-├── ALU/
-│   └── ALU.vhd
-│
-├── 64-Bit Combinational Barrel Shifter/
-│   ├── Enable Base/
-│   │   └── EnableBaseCBS.vhd
-│   └── Mux Base/
-│       ├── 64to1Mux.vhd
-│       └── MuxBaseCBS.vhd
-│
-└── README.md
-```
+#### MUX-Based Implementation
 
-The `Enable Base` version is currently the substantive barrel-shifter implementation. The `Mux Base` directory represents an alternative MUX-oriented implementation that is still under development.
+**Directory:** `64-Bit Combinational Barrel Shifter/Mux Base/`
 
-## Design Focus
+The directory currently contains:
 
-The current repository is primarily focused on **combinational digital design**. It provides practice with:
+- `Mux64to1.vhd` — implemented 64-to-1 single-bit multiplexer using explicit enable decoding and Boolean selection.
+- `MuxBaseCBS.vhd` — currently an empty placeholder for the future MUX-based barrel-shifter implementation.
 
-- VHDL entity and architecture structure
+The MUX-based barrel shifter itself is therefore **not yet implemented**.
+
+## Design Concepts Practiced
+
+The current repository covers several fundamental digital-design concepts:
+
+- VHDL entity/architecture structure
+- Concurrent signal assignment
+- Clocked processes and rising-edge triggering
 - `std_logic` and `std_logic_vector`
+- `signed` and `unsigned` representations
 - `numeric_std`
-- `unsigned` and `signed` arithmetic
-- Boolean and bitwise operations
-- Arithmetic and overflow handling
-- Comparators
+- Boolean and bitwise logic
+- Arithmetic operations
+- Signed comparisons
+- Carry and overflow detection
+- Multiplexer structures
+- Enable-based selection
 - Shift and rotate operations
-- Opcode-based datapath selection
-- Combinational multiplexing
-- Modular digital hardware design
+- Combinational datapaths
+- Basic sequential storage elements
+- Modular hardware description
 
 ## Design Progression
 
 ```text
-1-bit Full Adder
-       │
-       ▼
-64-bit ALU
-       │
-       ▼
-64-bit Shift / Rotate Unit
+Basic Logic
+    │
+    ├── Full Adder
+    └── Multiplexers
+           │
+           ▼
+     Sequential Logic
+       ├── D Flip-Flop
+       └── JK Flip-Flop
+           │
+           ▼
+       64-bit ALU
+           │
+           ▼
+  64-bit Shift / Rotate Unit
+           │
+           ▼
+   Alternative MUX-based Design
 ```
 
-These designs provide basic building blocks that can later be integrated into larger datapaths and digital systems.
+This progression reflects a move from elementary digital components toward larger combinational datapath blocks.
 
-## Tools and Simulation
+## Libraries
 
-The source files use standard IEEE VHDL libraries:
+The designs primarily use IEEE standard VHDL libraries:
 
 ```vhdl
 LIBRARY IEEE;
@@ -154,35 +278,58 @@ USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 ```
 
-The designs can be analyzed with VHDL-compatible tools such as **GHDL**, **ModelSim/Questa**, or FPGA vendor tools such as **Vivado** and **Quartus**.
+`numeric_std` is used for operations involving signed/unsigned arithmetic, indexed selection, shifts, and rotations.
 
-The repository currently does not include a dedicated simulator project, waveform configuration, or automated testbench suite, so simulation setup is tool-dependent.
+## Simulation and Verification
+
+The repository currently contains the RTL implementations but **does not yet include dedicated testbenches or automated verification infrastructure**.
+
+The designs can be analyzed and simulated using VHDL-compatible tools such as:
+
+- GHDL
+- ModelSim / Questa
+- Vivado
+- Quartus
+
+At the current stage, simulation setup and verification are tool-dependent.
 
 ## Current Status
 
 | Component | Status |
 |---|---|
 | 1-bit Full Adder | Implemented |
+| 2-to-1 MUX | Implemented |
+| 4-to-1 MUX | Implemented |
+| 8-to-1 MUX | Implemented |
+| 16-to-1 MUX | Implemented |
+| 32-to-1 MUX | Implemented |
+| 64-to-1 MUX | Implemented |
+| D Flip-Flop | Implemented |
+| JK Flip-Flop | Implemented |
 | 64-bit ALU | Implemented |
 | 64-bit Barrel Shifter — Enable Base | Implemented |
-| Barrel Shifter — MUX Base | Under development |
-| Automated Testbenches | Not currently included |
+| 64-to-1 MUX for Barrel Shifter | Implemented |
+| Barrel Shifter — MUX Base | Not yet implemented |
+| Dedicated Testbenches | Not currently included |
 
 ## Future Development
 
 Potential extensions include:
 
-- Completing the MUX-based barrel-shifter implementation
-- Adding dedicated VHDL testbenches
-- Adding simulation waveforms and verification cases
-- Adding sequential logic such as registers and counters
-- Building a register file
-- Integrating the ALU with other datapath components
-- FPGA synthesis and resource/timing reports
+- Completing the MUX-based barrel-shifter architecture
+- Adding testbenches for every major component
+- Adding automated simulation and regression tests
+- Adding waveform examples
+- Expanding the sequential-logic section with registers and counters
+- Building larger datapath components from the existing modules
+- Adding synthesis reports and resource/timing analysis
+- Integrating the individual blocks into larger digital systems
 
 ## Purpose
 
-This repository is an **educational VHDL laboratory** for developing practical digital-design skills. The emphasis is on implementing hardware blocks in VHDL and understanding how arithmetic, logic, comparison, shift, rotate, and selection operations map onto combinational digital hardware.
+This repository serves as an **educational VHDL laboratory** for developing practical digital-design skills.
+
+The current focus is on progressing from fundamental combinational and sequential components toward larger hardware blocks such as ALUs and barrel shifters, while practicing how digital-logic structures are represented in synthesizable VHDL.
 
 ## License
 
