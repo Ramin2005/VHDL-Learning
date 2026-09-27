@@ -1,0 +1,20 @@
+LIBRARY IEEE;
+USE IEEE.std_logic_1164.ALL;
+USE IEEE.numeric_std.ALL;
+
+ENTITY Decoder6to64 IS
+    PORT (
+        A : IN STD_LOGIC_VECTOR(5 downto 0);
+        E : IN STD_LOGIC;
+        D : OUT STD_LOGIC_VECTOR(63 DOWNTO 0)
+    );
+END ENTITY Decoder6to64;
+
+ARCHITECTURE Struct OF Decoder6to64 IS
+
+BEGIN
+
+    D <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 64), to_integer(unsigned(A))))
+        AND (1 DOWNTO 0 => E);
+
+END Struct;
