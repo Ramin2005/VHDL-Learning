@@ -307,19 +307,6 @@ USE IEEE.numeric_std.ALL;
 
 `numeric_std` is used for operations involving signed/unsigned arithmetic, indexed selection, shifts, and rotations.
 
-## Simulation and Verification
-
-The repository currently contains the RTL implementations but **does not yet include dedicated testbenches or automated verification infrastructure**.
-
-The designs can be analyzed and simulated using VHDL-compatible tools such as:
-
-- GHDL
-- ModelSim / Questa
-- Vivado
-- Quartus
-
-At the current stage, simulation setup and verification are tool-dependent.
-
 ## Current Status
 
 | Component | Status |
