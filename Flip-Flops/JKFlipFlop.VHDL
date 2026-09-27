@@ -36,7 +36,7 @@ BEGIN
         END IF;
 
         q <= qr;
-        q <= NOT qr;
+        nq <= NOT qr;
 
     END PROCESS;
 
