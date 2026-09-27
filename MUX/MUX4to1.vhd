@@ -11,12 +11,9 @@ ENTITY MUX4to1 IS
 END ENTITY MUX4to1;
 
 ARCHITECTURE Struct OF MUX4to1 IS
+
 BEGIN
 
-    O <=
-        (Inputs(0) AND NOT S(1) AND NOT S(0))
-        OR (Inputs(1) AND NOT S(1) AND S(0))
-        OR (Inputs(2) AND S(1) AND NOT S(0))
-        OR (Inputs(0) AND S(1) AND S(0));
+    O <= Inputs(to_integer(unsigned(S)));
 
 END Struct;
