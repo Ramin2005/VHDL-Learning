@@ -5,6 +5,7 @@ A collection of **VHDL digital-design implementations** developed to practice co
 The repository currently contains:
 
 - Basic combinational building blocks
+- Enabled binary decoders from 1-to-2 through 6-to-64
 - Multiplexers from 2-to-1 through 64-to-1
 - A 1-bit Full Adder
 - D and JK Flip-Flops
@@ -18,6 +19,14 @@ The projects are standalone digital-design exercises and are not currently integ
 
 ```text
 VHDL-Learning/
+├── Decoder/
+│   ├── Decoder1to2.vhd
+│   ├── Decoder2to4.vhd
+│   ├── Decoder3to8.vhd
+│   ├── Decoder4to16.vhd
+│   ├── Decoder5to32.vhd
+│   └── Decoder6to64.vhd
+│
 ├── Full Adder/
 │   └── FA.vhd
 │
@@ -64,7 +73,24 @@ The implementation directly uses the standard Boolean equations:
 - `S = A XOR B XOR Cin`
 - `Cout = AB + ACin + BCin`
 
-### 2. Multiplexers
+### 2. Decoders
+
+**Directory:** `Decoder/`
+
+The repository contains enabled one-hot decoder implementations from 1-to-2 through 6-to-64:
+
+| Module | Inputs | Outputs |
+|---|---:|---:|
+| `Decoder1to2` | 1 | 2 |
+| `Decoder2to4` | 2 | 4 |
+| `Decoder3to8` | 3 | 8 |
+| `Decoder4to16` | 4 | 16 |
+| `Decoder5to32` | 5 | 32 |
+| `Decoder6to64` | 6 | 64 |
+
+Each decoder has an enable input `E`. The selected output is generated from the binary input using `shift_left`, while the enable signal controls whether the decoded output is active.
+
+### 3. Multiplexers
 
 **Directory:** `MUX/`
 
@@ -83,7 +109,7 @@ The larger MUX implementations use an indexed `std_logic_vector` with `to_intege
 
 These modules provide basic selection structures that are also useful when constructing larger combinational datapaths.
 
-### 3. Flip-Flops
+### 4. Flip-Flops
 
 **Directory:** `Flip-Flops/`
 
@@ -115,7 +141,7 @@ A rising-edge-triggered JK flip-flop implementing the four standard JK states:
 
 The implementation exposes both `Q` and `NQ`.
 
-### 4. 64-bit ALU
+### 5. 64-bit ALU
 
 **Source:** `ALU/ALU.vhd`
 
@@ -177,7 +203,7 @@ The ALU uses 65-bit intermediate unsigned signals for the arithmetic datapath an
 
 Opcode `11111` performs a buffer/pass-through operation. Opcodes that are not explicitly assigned to an operation also select the buffer path.
 
-### 5. 64-bit Combinational Barrel Shifter and Rotating Unit
+### 6. 64-bit Combinational Barrel Shifter and Rotating Unit
 
 **Directory:** `64-Bit Combinational Barrel Shifter/`
 
@@ -249,6 +275,7 @@ The current repository covers several fundamental digital-design concepts:
 Basic Logic
     │
     ├── Full Adder
+    ├── Decoders
     └── Multiplexers
            │
            ▼
@@ -297,6 +324,12 @@ At the current stage, simulation setup and verification are tool-dependent.
 
 | Component | Status |
 |---|---|
+| 1-to-2 Decoder | Implemented |
+| 2-to-4 Decoder | Implemented |
+| 3-to-8 Decoder | Implemented |
+| 4-to-16 Decoder | Implemented |
+| 5-to-32 Decoder | Implemented |
+| 6-to-64 Decoder | Implemented |
 | 1-bit Full Adder | Implemented |
 | 2-to-1 MUX | Implemented |
 | 4-to-1 MUX | Implemented |
