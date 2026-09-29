@@ -7,6 +7,7 @@ The repository currently contains:
 - Basic combinational building blocks
 - Enabled binary decoders from 1-to-2 through 6-to-64
 - Multiplexers from 2-to-1 through 64-to-1
+- Priority encoders from 2-to-1 through 64-to-6
 - A 1-bit Full Adder
 - D and JK Flip-Flops
 - A 64-bit ALU
@@ -26,6 +27,14 @@ VHDL-Learning/
 │   ├── Decoder4to16.vhd
 │   ├── Decoder5to32.vhd
 │   └── Decoder6to64.vhd
+│
+├── Priority Encoder/
+│   ├── PriorityEncoder2to1.vhd
+│   ├── PriorityEncoder4to2.vhd
+│   ├── PriorityEncoder8to3.vhd
+│   ├── PriorityEncoder16to4.vhd
+│   ├── PriorityEncoder32to5.vhd
+│   └── PriorityEncoder64to6.vhd
 │
 ├── Full Adder/
 │   └── FA.vhd
@@ -90,7 +99,26 @@ The repository contains enabled one-hot decoder implementations from 1-to-2 thro
 
 Each decoder has an enable input `E`. The selected output is generated from the binary input using `shift_left`, while the enable signal controls whether the decoded output is active.
 
-### 3. Multiplexers
+### 3. Priority Encoders
+
+**Directory:** `Priority Encoder/`
+
+The repository contains priority encoder implementations for progressively wider input vectors:
+
+| Module | Inputs | Encoded Output |
+|---|---:|---:|
+| `PriorityEncoder2to1` | 2 | 1 bit |
+| `PriorityEncoder4to2` | 4 | 2 bits |
+| `PriorityEncoder8to3` | 8 | 3 bits |
+| `PriorityEncoder16to4` | 16 | 4 bits |
+| `PriorityEncoder32to5` | 32 | 5 bits |
+| `PriorityEncoder64to6` | 64 | 6 bits |
+
+Each implementation scans the input vector from the highest index toward the lowest index and encodes the first asserted input, giving higher-index inputs priority. A `Valid` output indicates whether at least one input bit is asserted.
+
+The current `PriorityEncoder64to6.vhd` contains an entity/architecture naming mismatch: its file is named for a 64-to-6 encoder, but the entity and architecture are still named `PriorityEncoder8to3`. This is documented as a current implementation issue rather than being presented as a clean 64-to-6 module.
+
+### 4. Multiplexers
 
 **Directory:** `MUX/`
 
@@ -109,7 +137,7 @@ The larger MUX implementations use an indexed `std_logic_vector` with `to_intege
 
 These modules provide basic selection structures that are also useful when constructing larger combinational datapaths.
 
-### 4. Flip-Flops
+### 5. Flip-Flops
 
 **Directory:** `Flip-Flops/`
 
@@ -141,7 +169,7 @@ A rising-edge-triggered JK flip-flop implementing the four standard JK states:
 
 The implementation exposes both `Q` and `NQ`.
 
-### 5. 64-bit ALU
+### 6. 64-bit ALU
 
 **Source:** `ALU/ALU.vhd`
 
@@ -203,7 +231,7 @@ The ALU uses 65-bit intermediate unsigned signals for the arithmetic datapath an
 
 Opcode `11111` performs a buffer/pass-through operation. Opcodes that are not explicitly assigned to an operation also select the buffer path.
 
-### 6. 64-bit Combinational Barrel Shifter and Rotating Unit
+### 7. 64-bit Combinational Barrel Shifter and Rotating Unit
 
 **Directory:** `64-Bit Combinational Barrel Shifter/`
 
@@ -263,6 +291,7 @@ The current repository covers several fundamental digital-design concepts:
 - Signed comparisons
 - Carry and overflow detection
 - Multiplexer structures
+- Priority encoding
 - Enable-based selection
 - Shift and rotate operations
 - Combinational datapaths
@@ -276,6 +305,7 @@ Basic Logic
     │
     ├── Full Adder
     ├── Decoders
+    ├── Priority Encoders
     └── Multiplexers
            │
            ▼
@@ -318,6 +348,12 @@ USE IEEE.numeric_std.ALL;
 | 5-to-32 Decoder | Implemented |
 | 6-to-64 Decoder | Implemented |
 | 1-bit Full Adder | Implemented |
+| Priority Encoder 2-to-1 | Implemented |
+| Priority Encoder 4-to-2 | Implemented |
+| Priority Encoder 8-to-3 | Implemented |
+| Priority Encoder 16-to-4 | Implemented |
+| Priority Encoder 32-to-5 | Implemented |
+| Priority Encoder 64-to-6 | Implemented with naming issue |
 | 2-to-1 MUX | Implemented |
 | 4-to-1 MUX | Implemented |
 | 8-to-1 MUX | Implemented |
