@@ -1,0 +1,34 @@
+LIBRARY IEEE;
+USE IEEE.std_logic_1164.ALL;
+USE IEEE.numeric_std.ALL;
+
+ENTITY PriorityEncoder8to3 IS
+    PORT (
+        D : IN STD_LOGIC_VECTOR(63 DOWNTO 0);
+        A : OUT STD_LOGIC_VECTOR(5 DOWNTO 0);
+        Valid : OUT STD_LOGIC
+    );
+END ENTITY PriorityEncoder8to3;
+
+ARCHITECTURE Struct OF PriorityEncoder8to3 IS
+
+BEGIN
+
+    PROCESS (D)
+    BEGIN
+
+        A <= (5 DOWNTO 0 => 'Z');
+
+        FOR i IN 63 DOWNTO 0 LOOP
+            IF D(i) = '1' THEN
+                A <= STD_LOGIC_VECTOR(to_unsigned(i, 6));
+                EXIT;
+            END IF;
+        END LOOP;
+
+    END PROCESS;
+
+    Valid <= '0' WHEN D = (63 DOWNTO 0 => '0') ELSE
+        '1';
+
+END Struct;
