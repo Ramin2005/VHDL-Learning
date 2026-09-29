@@ -116,7 +116,7 @@ The repository contains priority encoder implementations for progressively wider
 
 Each implementation scans the input vector from the highest index toward the lowest index and encodes the first asserted input, giving higher-index inputs priority. A `Valid` output indicates whether at least one input bit is asserted.
 
-The current `PriorityEncoder64to6.vhd` contains an entity/architecture naming mismatch: its file is named for a 64-to-6 encoder, but the entity and architecture are still named `PriorityEncoder8to3`. This is documented as a current implementation issue rather than being presented as a clean 64-to-6 module.
+The current `PriorityEncoder64to6.vhd` is implemented with the expected `PriorityEncoder64to6` entity and architecture names.
 
 ### 4. Multiplexers
 
@@ -133,7 +133,7 @@ The repository contains standalone MUX implementations with increasing input wid
 | `MUX32to1` | 32 | 5 bits |
 | `MUX64to1` | 64 | 6 bits |
 
-The larger MUX implementations use an indexed `std_logic_vector` with `to_integer(unsigned(S))), while the 2-to-1 and 4-to-1 versions explicitly describe the selection logic with Boolean expressions.
+The larger MUX implementations use an indexed `std_logic_vector` with `to_integer(unsigned(S))`, while the 2-to-1 and 4-to-1 versions explicitly describe the selection logic with Boolean expressions.
 
 These modules provide basic selection structures that are also useful when constructing larger combinational datapaths.
 
@@ -175,7 +175,7 @@ The implementation exposes both `Q` and `NQ`.
 
 A combinational 64-bit Arithmetic Logic Unit controlled by a 5-bit opcode.
 
-The current implementation contains **25 explicitly defined operations**, plus a buffer/pass-through operation.
+The current implementation contains **25 explicitly defined operations**, plus a buffer/pass-through operation. The opcode field is 5 bits wide, so 32 selector values are available; unassigned selector values use the buffer path.
 
 #### Logic Operations
 
@@ -274,7 +274,7 @@ The directory currently contains:
 - `Mux64to1.vhd` — implemented 64-to-1 single-bit multiplexer using explicit enable decoding and Boolean selection.
 - `MuxBaseCBS.vhd` — currently an empty placeholder for the future MUX-based barrel-shifter implementation.
 
-The MUX-based barrel shifter itself is therefore **not yet implemented**.
+The MUX-based barrel shifter itself is therefore **not yet implemented**. The standalone `Mux64to1` module is implemented.
 
 ## Design Concepts Practiced
 
@@ -353,7 +353,7 @@ USE IEEE.numeric_std.ALL;
 | Priority Encoder 8-to-3 | Implemented |
 | Priority Encoder 16-to-4 | Implemented |
 | Priority Encoder 32-to-5 | Implemented |
-| Priority Encoder 64-to-6 | Implemented with naming issue |
+| Priority Encoder 64-to-6 | Implemented |
 | 2-to-1 MUX | Implemented |
 | 4-to-1 MUX | Implemented |
 | 8-to-1 MUX | Implemented |
