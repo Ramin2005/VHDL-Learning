@@ -2,15 +2,15 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 
-ENTITY PriorityEncoder8to3 IS
+ENTITY PriorityEncoder64to6 IS
     PORT (
         D : IN STD_LOGIC_VECTOR(63 DOWNTO 0);
         A : OUT STD_LOGIC_VECTOR(5 DOWNTO 0);
         Valid : OUT STD_LOGIC
     );
-END ENTITY PriorityEncoder8to3;
+END ENTITY PriorityEncoder64to6;
 
-ARCHITECTURE Struct OF PriorityEncoder8to3 IS
+ARCHITECTURE Struct OF PriorityEncoder64to6 IS
 
 BEGIN
 
