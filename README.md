@@ -298,33 +298,6 @@ The current repository covers several fundamental digital-design concepts:
 - Basic sequential storage elements
 - Modular hardware description
 
-## Design Progression
-
-```text
-Basic Logic
-    │
-    ├── Full Adder
-    ├── Decoders
-    ├── Priority Encoders
-    └── Multiplexers
-           │
-           ▼
-     Sequential Logic
-       ├── D Flip-Flop
-       └── JK Flip-Flop
-           │
-           ▼
-       64-bit ALU
-           │
-           ▼
-  64-bit Shift / Rotate Unit
-           │
-           ▼
-   Alternative MUX-based Design
-```
-
-This progression reflects a move from elementary digital components toward larger combinational datapath blocks.
-
 ## Libraries
 
 The designs primarily use IEEE standard VHDL libraries:
