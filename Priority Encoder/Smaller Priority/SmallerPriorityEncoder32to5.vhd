@@ -2,15 +2,15 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 
-ENTITY PriorityEncoder32to5 IS
+ENTITY SmallerPriorityEncoder32to5 IS
     PORT (
         D : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
         A : OUT STD_LOGIC_VECTOR(4 DOWNTO 0);
         Valid : OUT STD_LOGIC
     );
-END ENTITY PriorityEncoder32to5;
+END ENTITY SmallerPriorityEncoder32to5;
 
-ARCHITECTURE Struct OF PriorityEncoder32to5 IS
+ARCHITECTURE Struct OF SmallerPriorityEncoder32to5 IS
 
 BEGIN
 
@@ -19,7 +19,7 @@ BEGIN
 
         A <= (4 DOWNTO 0 => 'Z');
 
-        FOR i IN 31 DOWNTO 0 LOOP
+        FOR i IN 0 TO 31 LOOP
             IF D(i) = '1' THEN
                 A <= STD_LOGIC_VECTOR(to_unsigned(i, 5));
                 EXIT;
