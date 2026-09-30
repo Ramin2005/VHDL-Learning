@@ -1,3 +1,5 @@
+-- Parallel Load Register
+-- Stores input data when Load is active
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -15,16 +17,20 @@ END ENTITY PLRegister64Bit;
 ARCHITECTURE Struct OF PLRegister64Bit IS
 
     -- Signals
+    -- QR stores the current register state
     SIGNAL QR : STD_LOGIC_VECTOR(63 DOWNTO 0);
     
 BEGIN
 
+    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 
+        -- Update the state on the rising edge of the clock
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (63 DOWNTO 0 => '0');
 
+        -- Load input data when Load is active
         ELSIF rising_edge(CLK) AND Load = '1' THEN
             QR <= Data;
 
