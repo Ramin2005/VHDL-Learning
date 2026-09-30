@@ -2,10 +2,9 @@
 -- Operations:
 -- SHL -> Opcode: "000"
 -- SHR -> Opcode: "001"
--- ASL -> Opcode: "010"
--- ASR -> Opcode: "011"
--- ROL -> Opcode: "100"
--- ROR -> Opcode: "101"
+-- ASR -> Opcode: "010"
+-- ROL -> Opcode: "011"
+-- ROR -> Opcode: "100"
 -- Invalid Opcodes -> Buffer
 
 LIBRARY IEEE;
@@ -34,7 +33,7 @@ ARCHITECTURE Struct OF EnableBaseCBS IS
     SIGNAL ResultROR : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Enable and Select Signals
-    SIGNAL Enable : STD_LOGIC_VECTOR(6 DOWNTO 0);
+    SIGNAL Enable : STD_LOGIC_VECTOR(5 DOWNTO 0);
 
 BEGIN
     ------------------------------------------------------------------------------------------
@@ -53,8 +52,8 @@ BEGIN
     ------------------------------------------------------------------------------------------
     -- Enable and Select
     Enable <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 7), to_integer(unsigned(S2))))
-        WHEN (unsigned(S2) <= 5 AND unsigned(S1) > 0) ELSE
-        "1000000";
+        WHEN (unsigned(S2) <= 4 AND unsigned(S1) > 0) ELSE
+        "100000";
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
@@ -64,12 +63,11 @@ BEGIN
         -- Shift and Rotating operations
         (ResultSHL AND (63 DOWNTO 0 => Enable(0)))
         OR (ResultSHR AND (63 DOWNTO 0 => Enable(1)))
-        OR (ResultSHL AND (63 DOWNTO 0 => Enable(2)))
-        OR (ResultASR AND (63 DOWNTO 0 => Enable(3)))
-        OR (ResultROL AND (63 DOWNTO 0 => Enable(4)))
-        OR (ResultROR AND (63 DOWNTO 0 => Enable(5)))
+        OR (ResultASR AND (63 DOWNTO 0 => Enable(2)))
+        OR (ResultROL AND (63 DOWNTO 0 => Enable(3)))
+        OR (ResultROR AND (63 DOWNTO 0 => Enable(4)))
         -- Buffer and invalid opcodes
-        OR (A AND (63 DOWNTO 0 => Enable(6)));
+        OR (A AND (63 DOWNTO 0 => Enable(5)));
     ------------------------------------------------------------------------------------------
 
 END Struct;
