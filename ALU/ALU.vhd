@@ -180,7 +180,7 @@ BEGIN
     TempDEC <= unsigned('0' & A) + unsigned('0' & USTemp);
     ResultDEC <= STD_LOGIC_VECTOR(TempDEC)(63 DOWNTO 0);
     CoutDEC <= TempDEC(64);
-    OverflowDEC <= (NOT A(63) AND NOT ResultDEC(63));
+    OverflowDEC <= (A(63) AND NOT ResultDEC(63));
 
     -- NEG operation
     TempNEG <= unsigned('0' & (NOT A)) + to_unsigned(1, 65);

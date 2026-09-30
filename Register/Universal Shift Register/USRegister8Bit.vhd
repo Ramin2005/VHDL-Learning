@@ -35,10 +35,10 @@ BEGIN
 
         END IF;
 
-        Q <= QR;
-        QSL <= QR(7);
-        QSR <= QR(0);
-
     END PROCESS;
+
+    Q <= QR;
+    QSL <= QR(7);
+    QSR <= QR(0);
 
 END Struct;

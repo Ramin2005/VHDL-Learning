@@ -34,11 +34,11 @@ BEGIN
             QR <= SI & QR(31 DOWNTO 1);
 
         END IF;
-
-        Q <= QR;
-        QSL <= QR(31);
-        QSR <= QR(0);
-
+        
     END PROCESS;
+
+    Q <= QR;
+    QSL <= QR(31);
+    QSR <= QR(0);
 
 END Struct;

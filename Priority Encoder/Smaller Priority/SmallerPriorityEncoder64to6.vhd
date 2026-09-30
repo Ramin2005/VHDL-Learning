@@ -17,8 +17,6 @@ BEGIN
     PROCESS (D)
     BEGIN
 
-        A <= (5 DOWNTO 0 => 'Z');
-
         FOR i IN 0 TO 63 LOOP
             IF D(i) = '1' THEN
                 A <= STD_LOGIC_VECTOR(to_unsigned(i, 6));

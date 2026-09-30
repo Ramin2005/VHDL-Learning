@@ -27,8 +27,8 @@ BEGIN
 
         END IF;
 
-        Q <= QR;
-
     END PROCESS;
+
+    Q <= QR;
 
 END Struct;

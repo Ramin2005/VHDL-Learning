@@ -35,9 +35,9 @@ BEGIN
 
         END IF;
 
-        Q <= QR;
-        NQ <= NOT QR;
-
     END PROCESS;
+
+    Q <= QR;
+    NQ <= NOT QR;
 
 END Struct;

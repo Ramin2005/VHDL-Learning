@@ -15,6 +15,6 @@ ARCHITECTURE Struct OF Decoder6to64 IS
 BEGIN
 
     D <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 64), to_integer(unsigned(A))))
-        AND (64 DOWNTO 0 => E);
+        AND (63 DOWNTO 0 => E);
 
 END Struct;
