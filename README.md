@@ -39,6 +39,10 @@ VHDL-Learning/
 │   └── PriorityEncoder64to6.vhd
 │
 ├── Register/
+│   ├── Counters/
+│   │   ├── BCDUpCounter.vhd
+│   │   └── BCDDownCounter.vhd
+│   │
 │   ├── Parallel Load Register/
 │   │   ├── PLRegister4Bit.vhd
 │   │   ├── PLRegister8Bit.vhd
@@ -335,6 +339,26 @@ The 2-bit control input `S` selects the register operation. In the current imple
 | `10` | Shift toward LSB / insert `SI` at bit 0 |
 | `11` | Shift toward MSB / insert `SI` at the MSB |
 
+### 9. BCD Counters
+
+**Directory:** `Register/Counters/`
+
+The repository includes two clocked BCD counters:
+
+| Module | Function |
+|---|---|
+| `BCDUpCounter` | Counts upward from 0 to 9 and wraps back to 0 |
+| `BCDDownCounter` | Counts downward from 9 to 0 and wraps back to 9 |
+
+Both counters provide:
+
+- Rising-edge clocking
+- Synchronous active-high reset
+- 4-bit BCD output `Q`
+- Decimal wrap-around behavior
+
+The counters use `numeric_std` for the increment/decrement operations and keep the stored value within the valid BCD digit range.
+
 ## Design Concepts Practiced
 
 The current repository covers several fundamental digital-design concepts:
@@ -357,6 +381,7 @@ The current repository covers several fundamental digital-design concepts:
 - Basic sequential storage elements
 - Parallel-load registers
 - Universal shift registers
+- BCD up/down counters
 - Modular hardware description
 
 ## Libraries
@@ -399,6 +424,8 @@ USE IEEE.numeric_std.ALL;
 | 64-bit ALU | Implemented |
 | 4/8/16/32/64-bit Parallel Load Registers | Implemented |
 | 4/8/16/32/64-bit Universal Shift Registers | Implemented |
+| BCD Up Counter | Implemented |
+| BCD Down Counter | Implemented |
 | 64-bit Barrel Shifter — Enable Base | Implemented |
 | 64-to-1 MUX for Barrel Shifter | Implemented |
 | Barrel Shifter — MUX Base | Not yet implemented |
@@ -408,7 +435,7 @@ USE IEEE.numeric_std.ALL;
 
 This repository serves as an **educational VHDL laboratory** for developing practical digital-design skills.
 
-The current focus is on progressing from fundamental combinational and sequential components toward larger hardware blocks such as ALUs and barrel shifters, while practicing how digital-logic structures are represented in synthesizable VHDL.
+The current focus is on progressing from fundamental combinational and sequential components toward larger hardware blocks such as ALUs, barrel shifters, registers, and counters, while practicing how digital-logic structures are represented in synthesizable VHDL.
 
 ## License
 
