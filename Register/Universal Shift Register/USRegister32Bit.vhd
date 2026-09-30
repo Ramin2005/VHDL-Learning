@@ -17,19 +17,19 @@ ENTITY USRegister32Bit IS
     );
 END ENTITY USRegister32Bit;
 
+-- Architecture of Universal Shift Register
 ARCHITECTURE Struct OF USRegister32Bit IS
 
-    -- Signals
-    -- QR stores the current register state
+    -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 BEGIN
-
     -- Clocked register process
+
     PROCESS (CLK)
     BEGIN
     
-        -- Update the state on the rising edge of the clock
+        -- Reset the stored state
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (31 DOWNTO 0 => '0');
 
@@ -49,7 +49,10 @@ BEGIN
         
     END PROCESS;
 
+    -- Output the stored state
     Q <= QR;
+    -- Output the least and most significant state bits
+
     QSL <= QR(31);
     QSR <= QR(0);
 

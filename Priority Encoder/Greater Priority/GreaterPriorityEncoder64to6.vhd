@@ -1,5 +1,5 @@
 -- Priority Encoder
--- Selects the highest priority active input
+-- Selects the highest-index active input
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -15,16 +15,17 @@ END ENTITY GreaterPriorityEncoder64to6;
 -- Architecture of Priority Encoder
 ARCHITECTURE Struct OF GreaterPriorityEncoder64to6 IS
 BEGIN
-
     -- Priority encoding process
+
     PROCESS (D)
     BEGIN
 
-        -- Default output when no input is active
         A <= (5 downto 0 => '0');
 
+        -- Default output is zero when no input is active
+        -- Search inputs from the highest index to the lowest index
+
         FOR i IN 63 DOWNTO 0 LOOP
-            -- Stop at the first active input
             IF D(i) = '1' THEN
                 A <= STD_LOGIC_VECTOR(to_unsigned(i, 6));
                 EXIT;

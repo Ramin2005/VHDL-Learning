@@ -8,6 +8,7 @@
 -- ROR -> Opcode: "100"
 -- Invalid Opcodes -> Buffer
 
+
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -21,48 +22,47 @@ ENTITY EnableBaseCBS IS
     );
 END ENTITY EnableBaseCBS;
 
+-- Architecture of Barrel Shifter and Rotating Unit
 ARCHITECTURE Struct OF EnableBaseCBS IS
-    -- Signal for shift and rotating operations
-    -- SHL operation signal
+    -- Shift and Rotating result signals
     SIGNAL ResultSHL : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    -- SHR operation signal
     SIGNAL ResultSHR : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    -- ASR operation signal
     SIGNAL ResultASR : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    -- ROL operation signal
     SIGNAL ResultROL : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    -- ROR operation signal
     SIGNAL ResultROR : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-    -- Generate one-hot enable from the operation selector
     -- Enable and Select Signals
     SIGNAL Enable : STD_LOGIC_VECTOR(5 DOWNTO 0);
 
 BEGIN
     ------------------------------------------------------------------------------------------
-    -- SHL result
+    -- Shift and Rotating operations
+    -- Perform variable-distance shifts and rotations on input A
+    -- SHL operation
     ResultSHL <= STD_LOGIC_VECTOR(SHIFT_LEFT(unsigned(A), to_integer(unsigned(S1))));
-    -- SHR result
+    -- SHR operation
     ResultSHR <= STD_LOGIC_VECTOR(SHIFT_RIGHT(unsigned(A), to_integer(unsigned(S1))));
-    -- ASR result
+    -- ASR operation
     ResultASR <= STD_LOGIC_VECTOR(SHIFT_RIGHT(signed(A), to_integer(unsigned(S1))));
-    -- ROL result
+    -- ROL operation
     ResultROL <= STD_LOGIC_VECTOR(ROTATE_LEFT(unsigned(A), to_integer(unsigned(S1))));
-    -- ROR result
+    -- ROR operation
     ResultROR <= STD_LOGIC_VECTOR(ROTATE_RIGHT(unsigned(A), to_integer(unsigned(S1))));
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
     -- Enable and Select
+    -- Generate a one-hot enable from the operation selector
+
     Enable <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 7), to_integer(unsigned(S2))))
         WHEN (unsigned(S2) <= 4 AND unsigned(S1) > 0) ELSE
         "100000";
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
-    -- Multiplexing Results to Result
     -- Multiplexing
-    -- Multiplexing Results to Result
+    -- Select the active shift or rotate result using the enable signal
+
     Result <=
         -- Shift and Rotating operations
         (ResultSHL AND (63 DOWNTO 0 => Enable(0)))

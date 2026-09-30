@@ -12,26 +12,27 @@ ENTITY BCDUpCounter IS
     );
 END ENTITY BCDUpCounter;
 
+-- Architecture of BCD Up Counter
 ARCHITECTURE Struct OF BCDUpCounter IS
 
-    -- Signals
-    -- QR stores the current register or counter state
+    -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(3 DOWNTO 0);
     
 BEGIN
+    -- Clocked counter process
 
-    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 
-        -- Update the state on the rising edge of the clock
+                -- Reset the counter state
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (3 DOWNTO 0 => '0');
 
-        -- Return to zero after reaching decimal 9
+                -- Return to zero after reaching decimal 9
         ELSIF rising_edge(CLK) AND QR = "1001" THEN
             QR <= (3 DOWNTO 0 => '0');
 
+                -- Increment the stored state
         ELSIF rising_edge(CLK) THEN
             QR <= STD_LOGIC_VECTOR(to_unsigned(1, 4) + unsigned(QR));
 

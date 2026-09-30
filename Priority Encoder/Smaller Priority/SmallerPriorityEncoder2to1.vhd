@@ -1,5 +1,5 @@
 -- Priority Encoder
--- Selects the lowest priority active input
+-- Selects the lowest-index active input
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -15,17 +15,17 @@ END ENTITY SmallerPriorityEncoder2to1;
 -- Architecture of Priority Encoder
 ARCHITECTURE Struct OF SmallerPriorityEncoder2to1 IS
 BEGIN
-
     -- Priority encoding process
+
     PROCESS (D)
     BEGIN
 
-        -- Default output when no input is active
         A <= (0 downto 0 => '0');
+
+        -- Default output is zero when no input is active
+        -- Search inputs from the lowest index to the highest index
         
-        -- Search inputs according to priority
         FOR i IN 0 TO 1 LOOP
-            -- Stop at the first active input
             IF D(i) = '1' THEN
                 A <= STD_LOGIC_VECTOR(to_unsigned(i, 1));
                 EXIT;

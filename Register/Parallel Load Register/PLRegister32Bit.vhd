@@ -14,19 +14,19 @@ ENTITY PLRegister32Bit IS
     );
 END ENTITY PLRegister32Bit;
 
+-- Architecture of Parallel Load Register
 ARCHITECTURE Struct OF PLRegister32Bit IS
 
-    -- Signals
-    -- QR stores the current register state
+    -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(31 DOWNTO 0);
     
 BEGIN
-
     -- Clocked register process
+
     PROCESS (CLK)
     BEGIN
 
-        -- Update the state on the rising edge of the clock
+        -- Reset the stored state
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (31 DOWNTO 0 => '0');
 

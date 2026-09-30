@@ -2,7 +2,7 @@
 -- Arithmetic Logic Unit for logic, compare, arithmetic, shift and rotate operations
 
 -- Operations:
--- Logic Operations: 
+-- Logic Operations:
 -- not      -> opcode: "00000"
 -- and      -> opcode: "00001"
 -- or       -> opcode: "00010"
@@ -26,7 +26,7 @@
 -- DEC      -> opcode: "10011"
 -- NEG      -> opcode: "10100"
 
--- Shift and Rotating Operation:
+-- Shift and Rotating Operations:
 -- SHL      -> opcode: "10101"
 -- SHR      -> opcode: "10110"
 -- ASR      -> opcode: "10111"
@@ -35,6 +35,12 @@
 
 -- Buffer   -> opcode: "11111"
 -- Out of list opcodes -> Buffer
+
+
+
+
+
+
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -53,8 +59,8 @@ END ENTITY ALU;
 
 -- Architecture of ALU
 ARCHITECTURE struct OF ALU IS
-    -- Signal for logic Operations
-    -- Stores the result of each logic operation
+    -- Logic result signals
+    -- Store the result of each logic operation
     SIGNAL ResultNOT : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultAND : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
@@ -63,8 +69,8 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL ResultNOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultXNOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-    -- Signal for compare operations
-    -- Stores the result of each comparison operation
+    -- Compare result signals
+    -- Store the result of each comparison operation
     SIGNAL ResultEQ : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultNE : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultL : STD_LOGIC_VECTOR(63 DOWNTO 0);
@@ -72,7 +78,7 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL ResultLE : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultGE : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-    -- Signal for arithmetic Operations
+    -- Arithmetic result signals
     -- Temporary signals store extended arithmetic results
     -- Result signals store the lower 64 bits of each operation
     SIGNAL TempADD : unsigned(64 DOWNTO 0);
@@ -96,8 +102,8 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL OverflowDEC : STD_LOGIC;
     SIGNAL OverflowNEG : STD_LOGIC;
 
-    -- Signal for shift and Rotating Operations
-    -- Stores the result and carry of each shift operation
+    -- Shift and Rotating result signals
+    -- Store the result and carry of each shift operation
     SIGNAL ResultSHL : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultSHR : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultASR : STD_LOGIC_VECTOR(63 DOWNTO 0);
@@ -107,7 +113,7 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL CoutSHL : STD_LOGIC;
     SIGNAL CoutSHR : STD_LOGIC;
 
-    -- Temporary Signal
+    -- Temporary signal
     -- Used for intermediate unsigned arithmetic operations
     SIGNAL USTemp : unsigned(63 DOWNTO 0);
 
@@ -121,17 +127,11 @@ BEGIN
     -- Perform bitwise logic operations on A and B
     -- NOT operation
     ResultNOT <= NOT A;
-    -- AND operation
     ResultAND <= A AND B;
-    -- OR operation
     ResultOR <= A OR B;
-    -- XOR operation
     ResultXOR <= A XOR B;
-    -- NAND operation
     ResultNAND <= A NAND B;
-    -- NOR operation
     ResultNOR <= A NOR B;
-    -- XNOR operation
     ResultXNOR <= A XNOR B;
     ------------------------------------------------------------------------------------------
 
@@ -139,26 +139,22 @@ BEGIN
     -- Compare operations
     -- Comparison results are encoded as 64-bit values with bit 0 set when true
     -- EQ compare operation
+
     ResultEQ <= (0 => '1', OTHERS => '0') WHEN A = B ELSE
         (OTHERS => '0');
 
-    -- NE compare operation
     ResultNE <= (OTHERS => '0') WHEN A = B ELSE
         (0 => '1', OTHERS => '0');
 
-    -- A < B compare operation
     ResultL <= (0 => '1', OTHERS => '0') WHEN signed(A) < signed(B) ELSE
         (OTHERS => '0');
 
-    -- A > B compare operation
     ResultG <= (0 => '1', OTHERS => '0') WHEN signed(A) > signed(B) ELSE
         (OTHERS => '0');
 
-    -- A <= B compare operation
     ResultLE <= (0 => '1', OTHERS => '0') WHEN signed(A) <= signed(B) ELSE
         (OTHERS => '0');
 
-    -- A >= B compare operation
     ResultGE <= (0 => '1', OTHERS => '0') WHEN signed(A) >= signed(B) ELSE
         (OTHERS => '0');
     ------------------------------------------------------------------------------------------
@@ -168,6 +164,7 @@ BEGIN
     -- Arithmetic operations use extended operands to preserve the carry output
     -- ADD operation
     -- Add A and B and preserve the carry-out bit
+
     TempADD <= unsigned('0' & A) + unsigned('0' & B);
     ResultADD <= STD_LOGIC_VECTOR(TempADD)(63 DOWNTO 0);
     CoutADD <= TempADD(64);
@@ -211,25 +208,24 @@ BEGIN
     -- Perform fixed one-bit shifts and rotations
     -- SHL operation
     -- Shift A left by one bit
+
     ResultSHL <= A(62 DOWNTO 0) & '0';
     CoutSHL <= A(63);
 
+    ResultSHR <= '0' & A(63 DOWNTO 1);
     -- SHR operation
     -- Logical shift A right by one bit
-    ResultSHR <= '0' & A(63 DOWNTO 1);
     CoutSHR <= A(0);
 
+    ResultASR <= A(63) & A(63 DOWNTO 1);
     -- ASR operation
     -- Arithmetic shift A right by one bit while preserving the sign bit
-    ResultASR <= A(63) & A(63 DOWNTO 1);
     CoutASR <= A(0);
 
-    -- ROL operation
-    -- Rotate A left by one bit 
     ResultROL <= A(62 DOWNTO 0) & A(63);
-
     -- ROR operation
     -- Rotate A right by one bit
+
     ResultROR <= A(0) & A(63 DOWNTO 1);
     ------------------------------------------------------------------------------------------
 
@@ -237,6 +233,7 @@ BEGIN
     -- Enable and Select
     -- Generate a one-hot enable for valid operation codes
     -- Invalid operation codes select the buffer operation
+
     Enable <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 32), to_integer(unsigned(S))))
         WHEN (unsigned(S) <= 12) OR ((unsigned(S) >= 16) AND (unsigned(S) <= 25)) ELSE
         x"80000000";
@@ -244,8 +241,8 @@ BEGIN
 
     ------------------------------------------------------------------------------------------
     -- Multiplexing
-    -- Multiplexing Results to Result
     -- Select the active operation result using the one-hot enable signal
+
     Result <=
         -- Logic operations
         (ResultNOT AND (63 DOWNTO 0 => Enable(0)))
@@ -300,6 +297,5 @@ BEGIN
         OR (OverflowINC AND Enable(18))
         OR (OverflowDEC AND Enable(19))
         OR (OverflowNEG AND Enable(20));
-    ------------------------------------------------------------------------------------------
 
 END struct;

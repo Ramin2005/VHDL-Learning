@@ -1,3 +1,5 @@
+-- JK Flip-Flop
+-- Updates the stored state according to J and K on the rising edge of the clock
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -12,20 +14,20 @@ ENTITY JKFlipFlop IS
     );
 END ENTITY JKFlipFlop;
 
+-- Architecture of JK Flip-Flop
 ARCHITECTURE Struct OF JKFlipFlop IS
 
-    -- Signals
-    -- QR stores the current flip-flop state
+    -- Stored state signal
     SIGNAL QR : STD_LOGIC := '0';
 
 BEGIN
-
     -- Clocked JK flip-flop
+
     PROCESS (CLK)
     BEGIN
 
-        -- Update the state on the rising edge of the clock
         IF rising_edge(CLK) THEN
+            -- Update the state on the rising edge of the clock
 
             -- Hold current state
             IF J = '0' AND K = '0' THEN
