@@ -1,4 +1,5 @@
 -- 64-bit Combinational Barrel Shifter and Rotating Unit
+-- Performs shift and rotate operations using an enable-based multiplexer structure
 -- Operations:
 -- SHL -> Opcode: "000"
 -- SHR -> Opcode: "001"
@@ -21,17 +22,19 @@ ENTITY EnableBaseCBS IS
 END ENTITY EnableBaseCBS;
 
 ARCHITECTURE Struct OF EnableBaseCBS IS
-    -- SHL result signal
+    -- Signal for shift and rotating operations
+    -- SHL operation signal
     SIGNAL ResultSHL : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    -- SHR result signal
+    -- SHR operation signal
     SIGNAL ResultSHR : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    -- ASR result signal
+    -- ASR operation signal
     SIGNAL ResultASR : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    -- ROL result signal
+    -- ROL operation signal
     SIGNAL ResultROL : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    -- ROR result signal
+    -- ROR operation signal
     SIGNAL ResultROR : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
+    -- Generate one-hot enable from the operation selector
     -- Enable and Select Signals
     SIGNAL Enable : STD_LOGIC_VECTOR(5 DOWNTO 0);
 
@@ -57,6 +60,7 @@ BEGIN
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
+    -- Multiplexing Results to Result
     -- Multiplexing
     -- Multiplexing Results to Result
     Result <=
