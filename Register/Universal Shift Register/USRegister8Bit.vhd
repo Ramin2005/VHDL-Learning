@@ -16,11 +16,15 @@ ENTITY USRegister8Bit IS
 END ENTITY USRegister8Bit;
 
 ARCHITECTURE Struct OF USRegister8Bit IS
+
+    -- Signals
     SIGNAL QR : STD_LOGIC_VECTOR(7 DOWNTO 0);
+    
 BEGIN
 
     PROCESS (CLK)
     BEGIN
+
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (7 DOWNTO 0 => '0');
 

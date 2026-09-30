@@ -13,11 +13,15 @@ ENTITY PLRegister8Bit IS
 END ENTITY PLRegister8Bit;
 
 ARCHITECTURE Struct OF PLRegister8Bit IS
+
+    -- Signals
     SIGNAL QR : STD_LOGIC_VECTOR(7 DOWNTO 0);
+
 BEGIN
 
     PROCESS (CLK)
     BEGIN
+    
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (7 DOWNTO 0 => '0');
 

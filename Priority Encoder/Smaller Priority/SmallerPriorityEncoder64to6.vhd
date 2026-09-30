@@ -11,7 +11,6 @@ ENTITY SmallerPriorityEncoder64to6 IS
 END ENTITY SmallerPriorityEncoder64to6;
 
 ARCHITECTURE Struct OF SmallerPriorityEncoder64to6 IS
-
 BEGIN
 
     PROCESS (D)

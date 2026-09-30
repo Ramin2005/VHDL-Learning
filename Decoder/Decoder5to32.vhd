@@ -11,7 +11,6 @@ ENTITY Decoder5to32 IS
 END ENTITY Decoder5to32;
 
 ARCHITECTURE Struct OF Decoder5to32 IS
-
 BEGIN
 
     D <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 32), to_integer(unsigned(A))))

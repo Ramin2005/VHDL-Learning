@@ -11,7 +11,6 @@ ENTITY Decoder3to8 IS
 END ENTITY Decoder3to8;
 
 ARCHITECTURE Struct OF Decoder3to8 IS
-
 BEGIN
 
     D <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 8), to_integer(unsigned(A))))

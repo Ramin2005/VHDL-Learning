@@ -13,11 +13,15 @@ ENTITY JKFlipFlop IS
 END ENTITY JKFlipFlop;
 
 ARCHITECTURE Struct OF JKFlipFlop IS
+
+    -- Signals
     SIGNAL QR : STD_LOGIC := '0';
+
 BEGIN
 
     PROCESS (CLK)
     BEGIN
+
         IF rising_edge(CLK) THEN
 
             IF J = '0' AND K = '0' THEN

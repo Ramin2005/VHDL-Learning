@@ -16,11 +16,15 @@ ENTITY USRegister32Bit IS
 END ENTITY USRegister32Bit;
 
 ARCHITECTURE Struct OF USRegister32Bit IS
+
+    -- Signals
     SIGNAL QR : STD_LOGIC_VECTOR(31 DOWNTO 0);
+
 BEGIN
 
     PROCESS (CLK)
     BEGIN
+    
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (31 DOWNTO 0 => '0');
 

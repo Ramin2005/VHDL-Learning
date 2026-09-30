@@ -11,7 +11,6 @@ ENTITY Decoder4to16 IS
 END ENTITY Decoder4to16;
 
 ARCHITECTURE Struct OF Decoder4to16 IS
-
 BEGIN
 
     D <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 16), to_integer(unsigned(A))))

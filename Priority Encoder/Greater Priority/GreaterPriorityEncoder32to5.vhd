@@ -11,7 +11,6 @@ ENTITY GreaterPriorityEncoder32to5 IS
 END ENTITY GreaterPriorityEncoder32to5;
 
 ARCHITECTURE Struct OF GreaterPriorityEncoder32to5 IS
-
 BEGIN
 
     PROCESS (D)

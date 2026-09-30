@@ -11,7 +11,6 @@ ENTITY SmallerPriorityEncoder4to2 IS
 END ENTITY SmallerPriorityEncoder4to2;
 
 ARCHITECTURE Struct OF SmallerPriorityEncoder4to2 IS
-
 BEGIN
 
     PROCESS (D)

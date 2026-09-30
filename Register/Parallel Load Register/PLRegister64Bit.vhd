@@ -13,11 +13,15 @@ ENTITY PLRegister64Bit IS
 END ENTITY PLRegister64Bit;
 
 ARCHITECTURE Struct OF PLRegister64Bit IS
+
+    -- Signals
     SIGNAL QR : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    
 BEGIN
 
     PROCESS (CLK)
     BEGIN
+
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (63 DOWNTO 0 => '0');
 

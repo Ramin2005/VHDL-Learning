@@ -11,7 +11,6 @@ ENTITY MUX4to1 IS
 END ENTITY MUX4to1;
 
 ARCHITECTURE Struct OF MUX4to1 IS
-
 BEGIN
 
     O <= Inputs(to_integer(unsigned(S)));

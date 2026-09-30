@@ -12,11 +12,15 @@ ENTITY DFlipFlop IS
 END ENTITY DFlipFlop;
 
 ARCHITECTURE Struct OF DFlipFlop IS
+
+    -- Signals
     SIGNAL QR : STD_LOGIC;
+
 BEGIN
 
     PROCESS (CLK)
     BEGIN
+    
         IF rising_edge(CLK) THEN
 
             QR <= D;

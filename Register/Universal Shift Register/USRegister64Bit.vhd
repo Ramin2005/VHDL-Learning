@@ -16,7 +16,10 @@ ENTITY USRegister64Bit IS
 END ENTITY USRegister64Bit;
 
 ARCHITECTURE Struct OF USRegister64Bit IS
+
+    -- Signals
     SIGNAL QR : STD_LOGIC_VECTOR(63 DOWNTO 0);
+
 BEGIN
 
     PROCESS (CLK)

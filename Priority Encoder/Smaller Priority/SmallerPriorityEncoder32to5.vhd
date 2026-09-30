@@ -11,7 +11,6 @@ ENTITY SmallerPriorityEncoder32to5 IS
 END ENTITY SmallerPriorityEncoder32to5;
 
 ARCHITECTURE Struct OF SmallerPriorityEncoder32to5 IS
-
 BEGIN
 
     PROCESS (D)

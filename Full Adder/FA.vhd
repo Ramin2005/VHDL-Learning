@@ -13,6 +13,8 @@ END ENTITY FA;
 
 ARCHITECTURE struct OF FA IS
 BEGIN
+
     S <= A XOR B XOR Cin;
     Cout <= (A AND B) OR (A AND Cin) OR (B AND Cin);
+    
 END struct;

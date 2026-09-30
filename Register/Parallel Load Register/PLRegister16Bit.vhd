@@ -13,11 +13,15 @@ ENTITY PLRegister16Bit IS
 END ENTITY PLRegister16Bit;
 
 ARCHITECTURE Struct OF PLRegister16Bit IS
+
+    -- Signals
     SIGNAL QR : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    
 BEGIN
 
     PROCESS (CLK)
     BEGIN
+
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (15 DOWNTO 0 => '0');
 

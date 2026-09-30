@@ -16,11 +16,15 @@ ENTITY USRegister4Bit IS
 END ENTITY USRegister4Bit;
 
 ARCHITECTURE Struct OF USRegister4Bit IS
+
+    -- Signals
     SIGNAL QR : STD_LOGIC_VECTOR(3 DOWNTO 0);
+    
 BEGIN
 
     PROCESS (CLK)
     BEGIN
+
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (3 DOWNTO 0 => '0');
 

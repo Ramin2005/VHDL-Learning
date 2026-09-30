@@ -11,7 +11,6 @@ ENTITY GreaterPriorityEncoder2to1 IS
 END ENTITY GreaterPriorityEncoder2to1;
 
 ARCHITECTURE Struct OF GreaterPriorityEncoder2to1 IS
-
 BEGIN
 
     PROCESS (D)

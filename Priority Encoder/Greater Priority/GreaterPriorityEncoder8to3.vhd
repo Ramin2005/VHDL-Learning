@@ -11,7 +11,6 @@ ENTITY GreaterPriorityEncoder8to3 IS
 END ENTITY GreaterPriorityEncoder8to3;
 
 ARCHITECTURE Struct OF GreaterPriorityEncoder8to3 IS
-
 BEGIN
 
     PROCESS (D)
