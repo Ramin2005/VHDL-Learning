@@ -14,13 +14,16 @@ END ENTITY DFlipFlop;
 ARCHITECTURE Struct OF DFlipFlop IS
 
     -- Signals
+    -- QR stores the current flip-flop state
     SIGNAL QR : STD_LOGIC;
 
 BEGIN
 
+    -- Clocked D flip-flop
     PROCESS (CLK)
     BEGIN
     
+        -- Capture D on the rising edge of the clock
         IF rising_edge(CLK) THEN
 
             QR <= D;
@@ -29,6 +32,7 @@ BEGIN
 
     END PROCESS;
 
+    -- Output the stored state and its complement
     Q <= QR;
     NQ <= NOT QR;
 
