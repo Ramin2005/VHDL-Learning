@@ -9,7 +9,7 @@ ENTITY USRegister32Bit IS
         SI : IN STD_LOGIC;
         S : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
         Data : IN STD_LOGIC_VECTOR(31 DOWNTO 0);
-        SO : IN STD_LOGIC;
+        SO : OUT STD_LOGIC;
         Q : OUT STD_LOGIC_VECTOR(31 DOWNTO 0)
     );
 END ENTITY USRegister32Bit;
