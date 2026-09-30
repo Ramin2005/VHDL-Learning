@@ -1,3 +1,5 @@
+-- 64-to-1 Multiplexer
+-- Selects one input bit from the input vector
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -10,9 +12,10 @@ ENTITY MUX64to1 IS
     );
 END ENTITY MUX64to1;
 
+-- Architecture of Multiplexer
 ARCHITECTURE Struct OF MUX64to1 IS
 BEGIN
-
+    -- Multiplexing operation
     O <= Inputs(to_integer(unsigned(S)));
 
 END Struct;
