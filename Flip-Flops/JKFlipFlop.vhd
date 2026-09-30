@@ -33,15 +33,15 @@ BEGIN
             IF J = '0' AND K = '0' THEN
                 QR <= QR;
 
-            -- Reset state
+                -- Reset state
             ELSIF J = '0' AND K = '1' THEN
                 QR <= '0';
 
-            -- Set state
+                -- Set state
             ELSIF J = '1' AND K = '0' THEN
                 QR <= '1';
-                
-            -- Toggle state
+
+                -- Toggle state
             ELSIF J = '1' AND K = '1' THEN
                 QR <= NOT QR;
 

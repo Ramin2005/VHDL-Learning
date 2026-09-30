@@ -28,25 +28,25 @@ BEGIN
 
     PROCESS (CLK)
     BEGIN
-    
+
         -- Reset the stored state
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (31 DOWNTO 0 => '0');
 
-        -- Parallel load operation
+            -- Parallel load operation
         ELSIF rising_edge(CLK) AND S = "01" THEN
             QR <= Data;
 
-        -- Shift toward the least significant bit
+            -- Shift toward the least significant bit
         ELSIF rising_edge(CLK) AND S = "10" THEN
             QR <= QR(30 DOWNTO 0) & SI;
 
-        -- Shift toward the most significant bit
+            -- Shift toward the most significant bit
         ELSIF rising_edge(CLK) AND S = "11" THEN
             QR <= SI & QR(31 DOWNTO 1);
 
         END IF;
-        
+
     END PROCESS;
 
     -- Output the stored state

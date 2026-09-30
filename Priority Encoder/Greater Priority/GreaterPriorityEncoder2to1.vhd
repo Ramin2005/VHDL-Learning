@@ -20,7 +20,7 @@ BEGIN
     PROCESS (D)
     BEGIN
 
-        A <= (0 downto 0 => '0');
+        A <= (0 DOWNTO 0 => '0');
 
         -- Default output is zero when no input is active
         -- Search inputs from the highest index to the lowest index

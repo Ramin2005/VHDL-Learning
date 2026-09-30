@@ -6,7 +6,7 @@ USE IEEE.numeric_std.ALL;
 
 ENTITY Decoder3to8 IS
     PORT (
-        A : IN STD_LOGIC_VECTOR(2 downto 0);
+        A : IN STD_LOGIC_VECTOR(2 DOWNTO 0);
         E : IN STD_LOGIC;
         D : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
     );

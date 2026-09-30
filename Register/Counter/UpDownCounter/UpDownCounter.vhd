@@ -18,7 +18,7 @@ ARCHITECTURE Struct OF UpDownCounter IS
 
     -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(3 DOWNTO 0);
-    
+
 BEGIN
     -- Clocked counter process
 
@@ -29,15 +29,15 @@ BEGIN
         IF S = '0' THEN
             -- Up counting
 
-        -- Reset the counter state
-        IF rising_edge(CLK) AND Reset = '1' THEN
+            -- Reset the counter state
+            IF rising_edge(CLK) AND Reset = '1' THEN
                 QR <= (3 DOWNTO 0 => '0');
 
-            -- Return to zero after reaching maximum value
+                -- Return to zero after reaching maximum value
             ELSIF rising_edge(CLK) AND QR = "1111" THEN
                 QR <= (3 DOWNTO 0 => '0');
 
-            -- Increment the stored state
+                -- Increment the stored state
             ELSIF rising_edge(CLK) THEN
                 QR <= STD_LOGIC_VECTOR(to_unsigned(1, 4) + unsigned(QR));
 
@@ -48,11 +48,11 @@ BEGIN
             IF rising_edge(CLK) AND Reset = '1' THEN
                 QR <= (3 DOWNTO 0 => '0');
 
-            -- Return to maximum value after reaching zero
+                -- Return to maximum value after reaching zero
             ELSIF rising_edge(CLK) AND QR = "0000" THEN
                 QR <= "1111";
 
-            -- Increment the stored state
+                -- Decrement the stored state
             ELSIF rising_edge(CLK) THEN
                 -- Decrement the stored state
                 QR <= STD_LOGIC_VECTOR(unsigned(QR) - to_unsigned(1, 4));

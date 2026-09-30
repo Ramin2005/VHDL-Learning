@@ -25,12 +25,12 @@ BEGIN
 
     PROCESS (CLK)
     BEGIN
-    
+
         -- Reset the stored state
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (3 DOWNTO 0 => '0');
 
-        -- Load input data when Load is active
+            -- Load input data when Load is active
         ELSIF rising_edge(CLK) AND Load = '1' THEN
             QR <= Data;
 

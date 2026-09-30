@@ -24,7 +24,7 @@ BEGIN
 
     PROCESS (CLK)
     BEGIN
-    
+
         IF rising_edge(CLK) THEN
             -- Capture input D on the rising edge of the clock
 
