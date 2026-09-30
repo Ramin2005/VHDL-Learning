@@ -1,3 +1,5 @@
+-- Universal Shift Register
+-- Supports hold, parallel load, shift right and shift left operations
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -18,22 +20,28 @@ END ENTITY USRegister4Bit;
 ARCHITECTURE Struct OF USRegister4Bit IS
 
     -- Signals
+    -- QR stores the current register state
     SIGNAL QR : STD_LOGIC_VECTOR(3 DOWNTO 0);
     
 BEGIN
 
+    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 
+        -- Update the state on the rising edge of the clock
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (3 DOWNTO 0 => '0');
 
+        -- Parallel load operation
         ELSIF rising_edge(CLK) AND S = "01" THEN
             QR <= Data;
 
+        -- Shift toward the least significant bit
         ELSIF rising_edge(CLK) AND S = "10" THEN
             QR <= QR(2 DOWNTO 0) & SI;
 
+        -- Shift toward the most significant bit
         ELSIF rising_edge(CLK) AND S = "11" THEN
             QR <= SI & QR(3 DOWNTO 1);
 
