@@ -1,5 +1,5 @@
 -- Priority Encoder
--- Selects the highest priority active input
+-- Selects the lowest priority active input
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;

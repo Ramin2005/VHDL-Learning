@@ -1,4 +1,5 @@
 -- 64-bit ALU
+-- Arithmetic Logic Unit for logic, compare, arithmetic, shift and rotate operations
 
 -- Operations:
 -- Logic Operations: 
@@ -53,6 +54,7 @@ END ENTITY ALU;
 -- Architecture of ALU
 ARCHITECTURE struct OF ALU IS
     -- Signal for logic Operations
+    -- Stores the result of each logic operation
     SIGNAL ResultNOT : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultAND : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
@@ -62,6 +64,7 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL ResultXNOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Signal for compare operations
+    -- Stores the result of each comparison operation
     SIGNAL ResultEQ : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultNE : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultL : STD_LOGIC_VECTOR(63 DOWNTO 0);
@@ -70,6 +73,8 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL ResultGE : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Signal for arithmetic Operations
+    -- Temporary signals store extended arithmetic results
+    -- Result signals store the lower 64 bits of each operation
     SIGNAL TempADD : unsigned(64 DOWNTO 0);
     SIGNAL TempSUB : unsigned(64 DOWNTO 0);
     SIGNAL TempINC : unsigned(64 DOWNTO 0);
@@ -92,6 +97,7 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL OverflowNEG : STD_LOGIC;
 
     -- Signal for shift and Rotating Operations
+    -- Stores the result and carry of each shift operation
     SIGNAL ResultSHL : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultSHR : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultASR : STD_LOGIC_VECTOR(63 DOWNTO 0);
@@ -102,14 +108,17 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL CoutSHR : STD_LOGIC;
 
     -- Temporary Signal
+    -- Used for intermediate unsigned arithmetic operations
     SIGNAL USTemp : unsigned(63 DOWNTO 0);
 
     -- Enable and Select Signals
+    -- One-hot enable signal selects the active ALU operation
     SIGNAL Enable : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 BEGIN
     ------------------------------------------------------------------------------------------
     -- Logic Operations
+    -- Perform bitwise logic operations on A and B
     -- NOT operation
     ResultNOT <= NOT A;
     -- AND operation
@@ -128,6 +137,7 @@ BEGIN
 
     ------------------------------------------------------------------------------------------
     -- Compare operations
+    -- Comparison results are encoded as 64-bit values with bit 0 set when true
     -- EQ compare operation
     ResultEQ <= (0 => '1', OTHERS => '0') WHEN A = B ELSE
         (OTHERS => '0');
@@ -155,7 +165,9 @@ BEGIN
 
     ------------------------------------------------------------------------------------------
     -- Arithmetic operations
+    -- Arithmetic operations use extended operands to preserve the carry output
     -- ADD operation
+    -- Add A and B and preserve the carry-out bit
     TempADD <= unsigned('0' & A) + unsigned('0' & B);
     ResultADD <= STD_LOGIC_VECTOR(TempADD)(63 DOWNTO 0);
     CoutADD <= TempADD(64);
@@ -163,6 +175,7 @@ BEGIN
         OR (A(63) AND B(63) AND NOT ResultADD(63));
 
     -- SUB operation
+    -- Subtract B from A using two's-complement arithmetic
     TempSUB <= unsigned('0' & A) + unsigned('0' & (NOT B)) + to_unsigned(1, 65);
     ResultSUB <= STD_LOGIC_VECTOR(TempSUB)(63 DOWNTO 0);
     CoutSUB <= TempSUB(64);
@@ -170,12 +183,14 @@ BEGIN
         OR (A(63) AND NOT B(63) AND NOT ResultSUB(63));
 
     -- INC operation
+    -- Increment A by one
     TempINC <= unsigned('0' & A) + to_unsigned(1, 65);
     ResultINC <= STD_LOGIC_VECTOR(TempINC)(63 DOWNTO 0);
     CoutINC <= TempINC(64);
     OverflowINC <= (NOT A(63) AND ResultINC(63));
 
     -- DEC operation
+    -- Decrement A by one
     USTemp <= (OTHERS => '1');
     TempDEC <= unsigned('0' & A) + unsigned('0' & USTemp);
     ResultDEC <= STD_LOGIC_VECTOR(TempDEC)(63 DOWNTO 0);
@@ -183,6 +198,7 @@ BEGIN
     OverflowDEC <= (A(63) AND NOT ResultDEC(63));
 
     -- NEG operation
+    -- Negate A using two's-complement arithmetic
     TempNEG <= unsigned('0' & (NOT A)) + to_unsigned(1, 65);
     ResultNEG <= STD_LOGIC_VECTOR(TempNEG)(63 DOWNTO 0);
     CoutNEG <= TempNEG(64);
@@ -192,27 +208,35 @@ BEGIN
 
     ------------------------------------------------------------------------------------------
     -- Shift and Rotating operations
+    -- Perform fixed one-bit shifts and rotations
     -- SHL operation
+    -- Shift A left by one bit
     ResultSHL <= A(62 DOWNTO 0) & '0';
     CoutSHL <= A(63);
 
     -- SHR operation
+    -- Logical shift A right by one bit
     ResultSHR <= '0' & A(63 DOWNTO 1);
     CoutSHR <= A(0);
 
     -- ASR operation
+    -- Arithmetic shift A right by one bit while preserving the sign bit
     ResultASR <= A(63) & A(63 DOWNTO 1);
     CoutASR <= A(0);
 
-    -- ROL operation 
+    -- ROL operation
+    -- Rotate A left by one bit 
     ResultROL <= A(62 DOWNTO 0) & A(63);
 
     -- ROR operation
+    -- Rotate A right by one bit
     ResultROR <= A(0) & A(63 DOWNTO 1);
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
     -- Enable and Select
+    -- Generate a one-hot enable for valid operation codes
+    -- Invalid operation codes select the buffer operation
     Enable <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 32), to_integer(unsigned(S))))
         WHEN (unsigned(S) <= 12) OR ((unsigned(S) >= 16) AND (unsigned(S) <= 25)) ELSE
         x"80000000";
@@ -221,6 +245,7 @@ BEGIN
     ------------------------------------------------------------------------------------------
     -- Multiplexing
     -- Multiplexing Results to Result
+    -- Select the active operation result using the one-hot enable signal
     Result <=
         -- Logic operations
         (ResultNOT AND (63 DOWNTO 0 => Enable(0)))
@@ -253,6 +278,7 @@ BEGIN
         OR (A AND (63 DOWNTO 0 => Enable(31)));
 
     -- Multiplexing Cout
+    -- Select the carry output of the active arithmetic or shift operation
     Cout <=
         -- Arithmetic operations
         (CoutADD AND Enable(16))
@@ -266,6 +292,7 @@ BEGIN
         OR (CoutASR AND Enable(23));
 
     -- Multiplexing Overflow
+    -- Select the overflow output of the active arithmetic operation
 
     Overflow <=
         (OverflowADD AND Enable(16))
