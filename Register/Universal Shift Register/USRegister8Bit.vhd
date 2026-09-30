@@ -8,8 +8,9 @@ ENTITY USRegister8Bit IS
         Reset : IN STD_LOGIC;
         SI : IN STD_LOGIC;
         S : IN STD_LOGIC_VECTOR(1 DOWNTO 0);
-        Data : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
-        SO : OUT STD_LOGIC;
+        Data : IN STD_LOGIC_VECTOR(7 DOWNTO 0)
+        QSL : OUT STD_LOGIC;
+        QSR : OUT STD_LOGIC;
         Q : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
     );
 END ENTITY USRegister8Bit;
@@ -28,15 +29,15 @@ BEGIN
 
         ELSIF rising_edge(CLK) AND S = "10" THEN
             QR <= QR(6 DOWNTO 0) & SI;
-            SO <= QR(7);
 
         ELSIF rising_edge(CLK) AND S = "11" THEN
             QR <= SI & QR(7 DOWNTO 1);
-            SO <= QR(0);
 
         END IF;
 
         Q <= QR;
+        QSL <= Q(7);
+        QSR <= Q(0);
 
     END PROCESS;
 
