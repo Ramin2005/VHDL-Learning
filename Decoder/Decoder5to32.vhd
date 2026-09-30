@@ -15,6 +15,6 @@ ARCHITECTURE Struct OF Decoder5to32 IS
 BEGIN
 
     D <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 32), to_integer(unsigned(A))))
-        AND (1 DOWNTO 0 => E);
+        AND (31 DOWNTO 0 => E);
 
 END Struct;

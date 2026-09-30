@@ -15,6 +15,6 @@ ARCHITECTURE Struct OF Decoder4to16 IS
 BEGIN
 
     D <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 16), to_integer(unsigned(A))))
-        AND (1 DOWNTO 0 => E);
+        AND (15 DOWNTO 0 => E);
 
 END Struct;

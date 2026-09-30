@@ -15,6 +15,6 @@ ARCHITECTURE Struct OF Decoder2to4 IS
 BEGIN
 
     D <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 4), to_integer(unsigned(A))))
-        AND (1 DOWNTO 0 => E);
+        AND (3 DOWNTO 0 => E);
 
 END Struct;
