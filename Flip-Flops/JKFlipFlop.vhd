@@ -38,6 +38,7 @@ BEGIN
             -- Set state
             ELSIF J = '1' AND K = '0' THEN
                 QR <= '1';
+                
             -- Toggle state
             ELSIF J = '1' AND K = '1' THEN
                 QR <= NOT QR;
