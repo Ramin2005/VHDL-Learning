@@ -8,6 +8,8 @@ The repository currently contains:
 - Enabled binary decoders from 1-to-2 through 6-to-64
 - Multiplexers from 2-to-1 through 64-to-1
 - Priority encoders from 2-to-1 through 64-to-6
+- Parallel-load registers from 4-bit through 64-bit
+- Universal shift registers from 4-bit through 64-bit
 - A 1-bit Full Adder
 - D and JK Flip-Flops
 - A 64-bit ALU
@@ -35,6 +37,21 @@ VHDL-Learning/
 │   ├── PriorityEncoder16to4.vhd
 │   ├── PriorityEncoder32to5.vhd
 │   └── PriorityEncoder64to6.vhd
+│
+├── Register/
+│   ├── Parallel Load Register/
+│   │   ├── PLRegister4Bit.vhd
+│   │   ├── PLRegister8Bit.vhd
+│   │   ├── PLRegister16Bit.vhd
+│   │   ├── PLRegister32Bit.vhd
+│   │   └── PLRegister64Bit.vhd
+│   │
+│   └── Universal Shift Register/
+│       ├── USRegister4Bit.vhd
+│       ├── USRegister8Bit.vhd
+│       ├── USRegister16Bit.vhd
+│       ├── USRegister32Bit.vhd
+│       └── USRegister64Bit.vhd
 │
 ├── Full Adder/
 │   └── FA.vhd
@@ -276,6 +293,48 @@ The directory currently contains:
 
 The MUX-based barrel shifter itself is therefore **not yet implemented**. The standalone `Mux64to1` module is implemented.
 
+### 8. Registers
+
+**Directory:** `Register/`
+
+The repository now includes two families of clocked registers, each implemented at 4, 8, 16, 32, and 64 bits.
+
+#### Parallel Load Registers
+
+**Directory:** `Register/Parallel Load Register/`
+
+These registers provide:
+
+- Rising-edge clocking
+- Synchronous reset
+- Parallel data loading controlled by `Load`
+- Widths: 4, 8, 16, 32, and 64 bits
+
+For example, `PLRegister64Bit` stores a 64-bit input vector and loads it on the rising clock edge when `Load = '1'`.
+
+#### Universal Shift Registers
+
+**Directory:** `Register/Universal Shift Register/`
+
+These registers provide:
+
+- Rising-edge clocking
+- Synchronous reset
+- Parallel loading
+- Serial shifting in both directions
+- Serial input `SI`
+- Serial outputs `QSL` and `QSR`
+- Widths: 4, 8, 16, 32, and 64 bits
+
+The 2-bit control input `S` selects the register operation. In the current implementation:
+
+| S | Operation |
+|---|---|
+| `00` | Hold |
+| `01` | Parallel Load |
+| `10` | Shift toward LSB / insert `SI` at bit 0 |
+| `11` | Shift toward MSB / insert `SI` at the MSB |
+
 ## Design Concepts Practiced
 
 The current repository covers several fundamental digital-design concepts:
@@ -296,6 +355,8 @@ The current repository covers several fundamental digital-design concepts:
 - Shift and rotate operations
 - Combinational datapaths
 - Basic sequential storage elements
+- Parallel-load registers
+- Universal shift registers
 - Modular hardware description
 
 ## Libraries
@@ -336,6 +397,8 @@ USE IEEE.numeric_std.ALL;
 | D Flip-Flop | Implemented |
 | JK Flip-Flop | Implemented |
 | 64-bit ALU | Implemented |
+| 4/8/16/32/64-bit Parallel Load Registers | Implemented |
+| 4/8/16/32/64-bit Universal Shift Registers | Implemented |
 | 64-bit Barrel Shifter — Enable Base | Implemented |
 | 64-to-1 MUX for Barrel Shifter | Implemented |
 | Barrel Shifter — MUX Base | Not yet implemented |
