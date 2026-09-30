@@ -1,9 +1,8 @@
+-- Multiplexer
+-- Selects one input according to the select signal
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
-
--- 2-to-1 Multiplexer
--- Selects one input according to the select signal
 
 ENTITY MUX2to1 IS
     PORT (

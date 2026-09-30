@@ -23,6 +23,7 @@ BEGIN
         -- Default output when no input is active
         A <= (1 downto 0 => '0');
 
+        -- Search inputs according to priority
         FOR i IN 3 DOWNTO 0 LOOP
             -- Stop at the first active input
             IF D(i) = '1' THEN
