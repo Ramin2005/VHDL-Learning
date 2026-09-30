@@ -1,3 +1,5 @@
+-- BCD Down Counter
+-- Counts from 9 to 0 and then returns to 9
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -13,16 +15,20 @@ END ENTITY BCDDownCounter;
 ARCHITECTURE Struct OF BCDDownCounter IS
 
     -- Signals
+    -- QR stores the current register or counter state
     SIGNAL QR : STD_LOGIC_VECTOR(3 DOWNTO 0);
     
 BEGIN
 
+    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 
+        -- Update the state on the rising edge of the clock
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (3 DOWNTO 0 => '0');
 
+        -- Return to decimal 9 after reaching zero
         ELSIF rising_edge(CLK) AND QR = "0000" THEN
             QR <= "1001";
 
