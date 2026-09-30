@@ -1,3 +1,5 @@
+-- 4-bit Up/Down Counter
+-- Counts upward or downward according to the select signal
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -14,16 +16,20 @@ END ENTITY UpDownCounter;
 ARCHITECTURE Struct OF UpDownCounter IS
 
     -- Signals
+    -- QR stores the current register or counter state
     SIGNAL QR : STD_LOGIC_VECTOR(3 DOWNTO 0);
     
 BEGIN
 
+    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 
+        -- Select counting direction
         IF S = '0' THEN
 
-            IF rising_edge(CLK) AND Reset = '1' THEN
+            -- Update the state on the rising edge of the clock
+        IF rising_edge(CLK) AND Reset = '1' THEN
                 QR <= (3 DOWNTO 0 => '0');
 
             ELSIF rising_edge(CLK) AND QR = "1111" THEN
@@ -35,7 +41,7 @@ BEGIN
             END IF;
 
         ELSE
-
+            -- Down counting
             IF rising_edge(CLK) AND Reset = '1' THEN
                 QR <= (3 DOWNTO 0 => '0');
 
