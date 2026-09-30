@@ -7,7 +7,7 @@ The repository currently contains:
 - Basic combinational building blocks
 - Enabled binary decoders from 1-to-2 through 6-to-64
 - Multiplexers from 2-to-1 through 64-to-1
-- Priority encoders from 2-to-1 through 64-to-6
+- Greater-priority and smaller-priority encoders from 2-to-1 through 64-to-6
 - Parallel-load registers from 4-bit through 64-bit
 - Universal shift registers from 4-bit through 64-bit
 - A 1-bit Full Adder
@@ -31,12 +31,21 @@ VHDL-Learning/
 │   └── Decoder6to64.vhd
 │
 ├── Priority Encoder/
-│   ├── PriorityEncoder2to1.vhd
-│   ├── PriorityEncoder4to2.vhd
-│   ├── PriorityEncoder8to3.vhd
-│   ├── PriorityEncoder16to4.vhd
-│   ├── PriorityEncoder32to5.vhd
-│   └── PriorityEncoder64to6.vhd
+│   ├── Greater Priority/
+│   │   ├── GreaterPriorityEncoder2to1.vhd
+│   │   ├── GreaterPriorityEncoder4to2.vhd
+│   │   ├── GreaterPriorityEncoder8to3.vhd
+│   │   ├── GreaterPriorityEncoder16to4.vhd
+│   │   ├── GreaterPriorityEncoder32to5.vhd
+│   │   └── GreaterPriorityEncoder64to6.vhd
+│   │
+│   └── Smaller Priority/
+│       ├── SmallerPriorityEncoder2to1.vhd
+│       ├── SmallerPriorityEncoder4to2.vhd
+│       ├── SmallerPriorityEncoder8to3.vhd
+│       ├── SmallerPriorityEncoder16to4.vhd
+│       ├── SmallerPriorityEncoder32to5.vhd
+│       └── SmallerPriorityEncoder64to6.vhd
 │
 ├── Register/
 │   ├── Counters/
@@ -124,20 +133,32 @@ Each decoder has an enable input `E`. The selected output is generated from the 
 
 **Directory:** `Priority Encoder/`
 
-The repository contains priority encoder implementations for progressively wider input vectors:
+The repository contains two priority-order variants, each implemented for 2-to-1 through 64-to-6:
 
-| Module | Inputs | Encoded Output |
-|---|---:|---:|
-| `PriorityEncoder2to1` | 2 | 1 bit |
-| `PriorityEncoder4to2` | 4 | 2 bits |
-| `PriorityEncoder8to3` | 8 | 3 bits |
-| `PriorityEncoder16to4` | 16 | 4 bits |
-| `PriorityEncoder32to5` | 32 | 5 bits |
-| `PriorityEncoder64to6` | 64 | 6 bits |
+#### Greater Priority
 
-Each implementation scans the input vector from the highest index toward the lowest index and encodes the first asserted input, giving higher-index inputs priority. A `Valid` output indicates whether at least one input bit is asserted.
+**Directory:** `Priority Encoder/Greater Priority/`
 
-The current `PriorityEncoder64to6.vhd` is implemented with the expected `PriorityEncoder64to6` entity and architecture names.
+The encoder scans from the highest input index toward the lowest. When multiple input bits are asserted, the highest-index asserted bit wins.
+
+#### Smaller Priority
+
+**Directory:** `Priority Encoder/Smaller Priority/`
+
+The encoder scans from the lowest input index toward the highest. When multiple input bits are asserted, the lowest-index asserted bit wins.
+
+Both variants expose:
+
+- Input vector `D`
+- Encoded output `A`
+- `Valid) output indicating whether at least one input is asserted
+
+| Variant | 2→1 | 4→2 | 8→3 | 16→4 | 32→5 | 64→6 |
+|---|---|---|---|---|---|---|
+| Greater Priority | Implemented | Implemented | Implemented | Implemented | Implemented | Implemented |
+| Smaller Priority | Implemented | Implemented | Implemented | Implemented | Implemented | Implemented |
+
+This gives the repository two complementary priority-selection behaviors rather than only a single encoder ordering.
 
 ### 4. Multiplexers
 
@@ -407,12 +428,8 @@ USE IEEE.numeric_std.ALL;
 | 5-to-32 Decoder | Implemented |
 | 6-to-64 Decoder | Implemented |
 | 1-bit Full Adder | Implemented |
-| Priority Encoder 2-to-1 | Implemented |
-| Priority Encoder 4-to-2 | Implemented |
-| Priority Encoder 8-to-3 | Implemented |
-| Priority Encoder 16-to-4 | Implemented |
-| Priority Encoder 32-to-5 | Implemented |
-| Priority Encoder 64-to-6 | Implemented |
+| Greater Priority Encoder 2-to-1 through 64-to-6 | Implemented |
+| Smaller Priority Encoder 2-to-1 through 64-to-6 | Implemented |
 | 2-to-1 MUX | Implemented |
 | 4-to-1 MUX | Implemented |
 | 8-to-1 MUX | Implemented |
