@@ -15,7 +15,7 @@ ENTITY USRegister8Bit IS
     );
 END ENTITY USRegister8Bit;
 
-ARCHITECTURE Struct OF UsRegister8Bit IS
+ARCHITECTURE Struct OF USRegister8Bit IS
     SIGNAL QR : STD_LOGIC_VECTOR(7 DOWNTO 0);
 BEGIN
 
@@ -36,8 +36,8 @@ BEGIN
         END IF;
 
         Q <= QR;
-        QSL <= Q(7);
-        QSR <= Q(0);
+        QSL <= QR(7);
+        QSR <= QR(0);
 
     END PROCESS;
 

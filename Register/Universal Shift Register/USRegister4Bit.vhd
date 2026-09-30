@@ -15,7 +15,7 @@ ENTITY USRegister4Bit IS
     );
 END ENTITY USRegister4Bit;
 
-ARCHITECTURE Struct OF UsRegister4Bit IS
+ARCHITECTURE Struct OF USRegister4Bit IS
     SIGNAL QR : STD_LOGIC_VECTOR(3 DOWNTO 0);
 BEGIN
 
@@ -36,8 +36,8 @@ BEGIN
         END IF;
 
         Q <= QR;
-        QSL <= Q(3);
-        QSR <= Q(0);
+        QSL <= QR(3);
+        QSR <= QR(0);
 
     END PROCESS;
 
