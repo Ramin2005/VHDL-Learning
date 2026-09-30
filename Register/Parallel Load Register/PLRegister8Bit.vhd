@@ -2,7 +2,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 
-ENTITY PLRegister4Bit IS
+ENTITY PLRegister8Bit IS
     PORT (
         CLK : IN STD_LOGIC;
         Reset : IN STD_LOGIC;
@@ -10,9 +10,9 @@ ENTITY PLRegister4Bit IS
         Data : IN STD_LOGIC_VECTOR(7 DOWNTO 0);
         Q : OUT STD_LOGIC_VECTOR(7 DOWNTO 0)
     );
-END ENTITY PLRegister4Bit;
+END ENTITY PLRegister8Bit;
 
-ARCHITECTURE Struct OF PLRegister4Bit IS
+ARCHITECTURE Struct OF PLRegister8Bit IS
     SIGNAL QR : STD_LOGIC_VECTOR(7 DOWNTO 0);
 BEGIN
 

@@ -17,6 +17,8 @@ BEGIN
     PROCESS (D)
     BEGIN
 
+        A <= (1 DOWNTO 0 => '0');
+
         FOR i IN 0 TO 3 LOOP
             IF D(i) = '1' THEN
                 A <= STD_LOGIC_VECTOR(to_unsigned(i, 2));
