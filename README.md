@@ -453,7 +453,3 @@ USE IEEE.numeric_std.ALL;
 This repository serves as an **educational VHDL laboratory** for developing practical digital-design skills.
 
 The current focus is on progressing from fundamental combinational and sequential components toward larger hardware blocks such as ALUs, barrel shifters, registers, and counters, while practicing how digital-logic structures are represented in synthesizable VHDL.
-
-## License
-
-This repository is intended for educational and experimental use.
