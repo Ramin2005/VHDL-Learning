@@ -21,8 +21,8 @@ ARCHITECTURE Struct OF PLRegister64Bit IS
     SIGNAL QR : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
 BEGIN
-    -- Clocked register process
 
+    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 

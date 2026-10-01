@@ -19,8 +19,8 @@ ARCHITECTURE Struct OF BCDDownCounter IS
     SIGNAL QR : STD_LOGIC_VECTOR(3 DOWNTO 0);
 
 BEGIN
-    -- Clocked counter process
 
+    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 

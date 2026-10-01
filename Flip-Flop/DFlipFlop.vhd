@@ -20,8 +20,8 @@ ARCHITECTURE Struct OF DFlipFlop IS
     SIGNAL QR : STD_LOGIC;
 
 BEGIN
-    -- Clocked D flip-flop
 
+    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 

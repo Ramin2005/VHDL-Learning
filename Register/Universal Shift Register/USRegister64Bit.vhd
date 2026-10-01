@@ -24,8 +24,8 @@ ARCHITECTURE Struct OF USRegister64Bit IS
     SIGNAL QR : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
 BEGIN
-    -- Clocked register process
 
+    -- Clocked register process
     PROCESS (CLK)
     BEGIN
         -- Reset the stored state
@@ -50,8 +50,8 @@ BEGIN
 
     -- Output the stored state
     Q <= QR;
-    -- Output the least and most significant state bits
 
+    -- Output the least and most significant state bits
     QSL <= QR(63);
     QSR <= QR(0);
 

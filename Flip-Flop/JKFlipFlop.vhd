@@ -21,8 +21,8 @@ ARCHITECTURE Struct OF JKFlipFlop IS
     SIGNAL QR : STD_LOGIC := '0';
 
 BEGIN
-    -- Clocked JK flip-flop
 
+    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 

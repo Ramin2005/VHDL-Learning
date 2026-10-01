@@ -20,8 +20,8 @@ ARCHITECTURE Struct OF UpDownCounter16Bit IS
     SIGNAL QR : STD_LOGIC_VECTOR(15 DOWNTO 0);
 
 BEGIN
-    -- Clocked counter process
 
+    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 

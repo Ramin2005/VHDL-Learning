@@ -24,8 +24,8 @@ ARCHITECTURE Struct OF USRegister32Bit IS
     SIGNAL QR : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 BEGIN
-    -- Clocked register process
 
+    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 
@@ -51,8 +51,8 @@ BEGIN
 
     -- Output the stored state
     Q <= QR;
-    -- Output the least and most significant state bits
 
+    -- Output the least and most significant state bits
     QSL <= QR(31);
     QSR <= QR(0);
 
