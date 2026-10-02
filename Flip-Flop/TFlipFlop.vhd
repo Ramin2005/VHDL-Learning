@@ -17,7 +17,7 @@ END ENTITY TFlipFlop;
 ARCHITECTURE Struct OF TFlipFlop IS
 
     -- Stored state signal
-    SIGNAL QR : STD_LOGIC;
+    SIGNAL QR : STD_LOGIC := '0';
 
 BEGIN
 
