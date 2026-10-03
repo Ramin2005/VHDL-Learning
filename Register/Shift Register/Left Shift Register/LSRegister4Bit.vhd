@@ -8,7 +8,6 @@ ENTITY LSRegister4Bit IS
         CLK : IN STD_LOGIC;
         Reset : IN STD_LOGIC;
         SI : IN STD_LOGIC;
-        SO : OUT STD_LOGIC;
         Q : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
     );
 END ENTITY LSRegister4Bit;
@@ -38,8 +37,5 @@ BEGIN
 
     -- Output the stored state
     Q <= QR;
-
-    -- Output the least and most significant state bits
-    SO <= QR(0);
 
 END Struct;

@@ -14,7 +14,7 @@ ENTITY UpDownCounter4Bit IS
 END ENTITY UpDownCounter4Bit;
 
 -- Architecture of Up/Down Counter
-ARCHITECTURE Struct OF UpDownCounter4Bit4Bit IS
+ARCHITECTURE Struct OF UpDownCounter4Bit IS
 
     -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(3 DOWNTO 0);

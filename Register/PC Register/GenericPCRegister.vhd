@@ -3,7 +3,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 
-ENTITY PCRegister IS
+ENTITY GenericPCRegister IS
     GENERIC (
         Width : POSITIVE := 64;
         InstructionWidth : POSITIVE := 4

@@ -8,7 +8,7 @@ USE work.DataArray.ALL;
 ENTITY GenericBus IS
     GENERIC (
         DataWidth : POSITIVE := 64;
-        AddressWidth : POSITIVE := 64;
+        AddressWidth : POSITIVE := 16;
         NumberOfInputs : POSITIVE := 2 ** AddressWidth
     );
     PORT (
@@ -22,6 +22,6 @@ END ENTITY GenericBus;
 ARCHITECTURE Struct OF GenericBus IS
 BEGIN
 
-    O <= Inputs(to_integer(unsigned(S)));
+    O <= Inputs(to_integer(unsigned(S))) AND (width - 1 DOWNTO 0 => Enable);
 
 END Struct;
