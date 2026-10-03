@@ -26,7 +26,7 @@ BEGIN
 
         -- Reset the stored state
         IF rising_edge(CLK) AND Reset = '1' THEN
-            QR <= (3 DOWNTO 0 => '0');
+            QR <= (OTHERS => '0');
 
             -- 
         ELSIF rising_edge(CLK) THEN

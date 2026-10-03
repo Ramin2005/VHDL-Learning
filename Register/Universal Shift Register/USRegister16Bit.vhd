@@ -31,7 +31,7 @@ BEGIN
 
         -- Reset the stored state
         IF rising_edge(CLK) AND Reset = '1' THEN
-            QR <= (15 DOWNTO 0 => '0');
+            QR <= (OTHERS => '0');
 
             -- Parallel load operation
         ELSIF rising_edge(CLK) AND S = "01" THEN

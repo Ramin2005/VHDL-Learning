@@ -4,21 +4,24 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 
-ENTITY PLRegister4Bit IS
+ENTITY PLRegisterGeneric IS
+    GENERIC (
+        Width : POSITIVE := 32
+    );
     PORT (
         CLK : IN STD_LOGIC;
         Reset : IN STD_LOGIC;
         Load : IN STD_LOGIC;
-        Data : IN STD_LOGIC_VECTOR(3 DOWNTO 0);
-        Q : OUT STD_LOGIC_VECTOR(3 DOWNTO 0)
+        Data : IN STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
+        Q : OUT STD_LOGIC_VECTOR(Width - 1 DOWNTO 0)
     );
-END ENTITY PLRegister4Bit;
+END ENTITY PLRegisterGeneric;
 
 -- Architecture of Parallel Load Register
-ARCHITECTURE Struct OF PLRegister4Bit IS
+ARCHITECTURE Struct OF PLRegisterGeneric IS
 
     -- Stored state signal
-    SIGNAL QR : STD_LOGIC_VECTOR(3 DOWNTO 0);
+    SIGNAL QR : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
 
 BEGIN
 
