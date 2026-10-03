@@ -22,6 +22,6 @@ END ENTITY GenericBus;
 ARCHITECTURE Struct OF GenericBus IS
 BEGIN
 
-    O <= Inputs(to_integer(unsigned(S))) AND (width - 1 DOWNTO 0 => Enable);
+    O <= Inputs(to_integer(unsigned(S))) AND (DataWidth - 1 DOWNTO 0 => Enable);
 
 END Struct;
