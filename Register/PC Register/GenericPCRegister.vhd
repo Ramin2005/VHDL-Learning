@@ -3,7 +3,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 
-ENTITY PCRegister64Bit IS
+ENTITY PCRegister IS
     GENERIC (
         Width : POSITIVE := 64;
         InstructionWidth : POSITIVE := 4
@@ -16,7 +16,7 @@ ENTITY PCRegister64Bit IS
         Data : IN STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
         Q : OUT STD_LOGIC_VECTOR(Width - 1 DOWNTO 0)
     );
-END ENTITY PCRegister64Bit;
+END ENTITY GenericPCRegister;
 
 ARCHITECTURE Struct OF PCRegister32Bit IS
 
