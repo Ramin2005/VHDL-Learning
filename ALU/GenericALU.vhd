@@ -1,4 +1,3 @@
--- 64-bit ALUGeneric
 -- Arithmetic Logic Unit for logic, compare, arithmetic, shift and rotate operations
 
 -- Operations:
@@ -40,7 +39,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 
-ENTITY ALUGeneric IS
+ENTITY GenericALU IS
     GENERIC (
         Width : POSITIVE := 64
     );
@@ -52,10 +51,10 @@ ENTITY ALUGeneric IS
         Cout : OUT STD_LOGIC;
         Overflow : OUT STD_LOGIC
     );
-END ENTITY ALUGeneric;
+END ENTITY GenericALU;
 
--- Architecture of ALUGeneric
-ARCHITECTURE struct OF ALUGeneric IS
+-- Architecture of GenericALU
+ARCHITECTURE struct OF GenericALU IS
     -- Logic result signals
     -- Store the result of each logic operation
     SIGNAL ResultNOT : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
@@ -77,12 +76,11 @@ ARCHITECTURE struct OF ALUGeneric IS
 
     -- Arithmetic result signals
     -- Temporary signals store extended arithmetic results
-    -- Result signals store the lower 64 bits of each operation
-    SIGNAL TempADD : unsigned(64 DOWNTO 0);
-    SIGNAL TempSUB : unsigned(64 DOWNTO 0);
-    SIGNAL TempINC : unsigned(64 DOWNTO 0);
-    SIGNAL TempDEC : unsigned(64 DOWNTO 0);
-    SIGNAL TempNEG : unsigned(64 DOWNTO 0);
+    SIGNAL TempADD : unsigned(Width DOWNTO 0);
+    SIGNAL TempSUB : unsigned(Width DOWNTO 0);
+    SIGNAL TempINC : unsigned(Width DOWNTO 0);
+    SIGNAL TempDEC : unsigned(Width DOWNTO 0);
+    SIGNAL TempNEG : unsigned(Width DOWNTO 0);
     SIGNAL ResultADD : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
     SIGNAL ResultSUB : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
     SIGNAL ResultINC : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
@@ -115,7 +113,7 @@ ARCHITECTURE struct OF ALUGeneric IS
     SIGNAL USTemp : unsigned(Width - 1 DOWNTO 0);
 
     -- Enable and Select Signals
-    -- One-hot enable signal selects the active ALUGeneric operation
+    -- One-hot enable signal selects the active ALU operation
     SIGNAL Enable : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 BEGIN
@@ -134,7 +132,6 @@ BEGIN
 
     ------------------------------------------------------------------------------------------
     -- Compare operations
-    -- Comparison results are encoded as 64-bit vALUGenerices with bit 0 set when true
     -- EQ compare operation
 
     ResultEQ <= (0 => '1', OTHERS => '0') WHEN A = B ELSE
@@ -164,23 +161,23 @@ BEGIN
 
     TempADD <= unsigned('0' & A) + unsigned('0' & B);
     ResultADD <= STD_LOGIC_VECTOR(TempADD)(Width - 1 DOWNTO 0);
-    CoutADD <= TempADD(64);
+    CoutADD <= TempADD(Width);
     OverflowADD <= (NOT A(Width - 1) AND NOT B(Width - 1) AND ResultADD(Width - 1))
         OR (A(Width - 1) AND B(Width - 1) AND NOT ResultADD(Width - 1));
 
     -- SUB operation
     -- Subtract B from A using two's-complement arithmetic
-    TempSUB <= unsigned('0' & A) + unsigned('0' & (NOT B)) + to_unsigned(1, 65);
+    TempSUB <= unsigned('0' & A) + unsigned('0' & (NOT B)) + to_unsigned(1, Width + 1);
     ResultSUB <= STD_LOGIC_VECTOR(TempSUB)(Width - 1 DOWNTO 0);
-    CoutSUB <= TempSUB(64);
+    CoutSUB <= TempSUB(Width);
     OverflowSUB <= (NOT A(Width - 1) AND B(Width - 1) AND ResultSUB(Width - 1))
         OR (A(Width - 1) AND NOT B(Width - 1) AND NOT ResultSUB(Width - 1));
 
     -- INC operation
     -- Increment A by one
-    TempINC <= unsigned('0' & A) + to_unsigned(1, 65);
+    TempINC <= unsigned('0' & A) + to_unsigned(1, Width + 1);
     ResultINC <= STD_LOGIC_VECTOR(TempINC)(Width - 1 DOWNTO 0);
-    CoutINC <= TempINC(64);
+    CoutINC <= TempINC(Width);
     OverflowINC <= (NOT A(Width - 1) AND ResultINC(Width - 1));
 
     -- DEC operation
@@ -188,15 +185,15 @@ BEGIN
     USTemp <= (OTHERS => '1');
     TempDEC <= unsigned('0' & A) + unsigned('0' & USTemp);
     ResultDEC <= STD_LOGIC_VECTOR(TempDEC)(Width - 1 DOWNTO 0);
-    CoutDEC <= TempDEC(64);
+    CoutDEC <= TempDEC(Width);
     OverflowDEC <= (A(Width - 1) AND NOT ResultDEC(Width - 1));
 
     -- NEG operation
     -- Negate A using two's-complement arithmetic
-    TempNEG <= unsigned('0' & (NOT A)) + to_unsigned(1, 65);
+    TempNEG <= unsigned('0' & (NOT A)) + to_unsigned(1, Width + 1);
     ResultNEG <= STD_LOGIC_VECTOR(TempNEG)(Width - 1 DOWNTO 0);
-    CoutNEG <= TempNEG(64);
-    OverflowNEG <= '1' WHEN A = x"8000000000000000" ELSE
+    CoutNEG <= TempNEG(Width);
+    OverflowNEG <= '1' WHEN A = (width => '1', OTHERS => '0') ELSE
         '0';
     ------------------------------------------------------------------------------------------
 
