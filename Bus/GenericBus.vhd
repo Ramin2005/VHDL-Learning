@@ -18,3 +18,10 @@ ENTITY GenericBus IS
         O : OUT STD_LOGIC_VECTOR(DataWidth - 1 DOWNTO 0)
     );
 END ENTITY GenericBus;
+
+ARCHITECTURE Struct OF GenericBus IS
+BEGIN
+
+    O <= Inputs(to_integer(unsigned(S)));
+
+END Struct;

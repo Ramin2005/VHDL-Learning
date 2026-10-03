@@ -14,7 +14,7 @@ ENTITY PCRegister64Bit IS
     );
 END ENTITY PCRegister64Bit;
 
-ARCHITECTURE Struct OF PCRegister32Bit IS
+ARCHITECTURE Struct OF PCRegister64Bit IS
 
     -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(63 DOWNTO 0);

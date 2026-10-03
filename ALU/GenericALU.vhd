@@ -193,7 +193,7 @@ BEGIN
     TempNEG <= unsigned('0' & (NOT A)) + to_unsigned(1, Width + 1);
     ResultNEG <= STD_LOGIC_VECTOR(TempNEG)(Width - 1 DOWNTO 0);
     CoutNEG <= TempNEG(Width);
-    OverflowNEG <= '1' WHEN A = (width => '1', OTHERS => '0') ELSE
+    OverflowNEG <= '1' WHEN A = ('1' & (width - 2 OTHERS => '0')) ELSE
         '0';
     ------------------------------------------------------------------------------------------
 

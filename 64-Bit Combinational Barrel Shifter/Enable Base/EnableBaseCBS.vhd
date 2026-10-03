@@ -54,7 +54,7 @@ BEGIN
     -- Enable and Select
     -- Generate a one-hot enable from the operation selector
 
-    Enable <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 7), to_integer(unsigned(S2))))
+    Enable <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 6), to_integer(unsigned(S2))))
         WHEN (unsigned(S2) <= 4 AND unsigned(S1) > 0) ELSE
         "100000";
     ------------------------------------------------------------------------------------------

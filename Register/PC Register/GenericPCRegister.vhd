@@ -18,7 +18,7 @@ ENTITY PCRegister IS
     );
 END ENTITY GenericPCRegister;
 
-ARCHITECTURE Struct OF PCRegister32Bit IS
+ARCHITECTURE Struct OF GenericPCRegister IS
 
     -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
