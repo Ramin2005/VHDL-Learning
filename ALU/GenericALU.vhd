@@ -117,6 +117,10 @@ ARCHITECTURE struct OF GenericALU IS
     SIGNAL Enable : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 BEGIN
+    ASSERT Width >= 2
+    REPORT "Width must be greater than or equal to 2."
+        SEVERITY FAILURE;
+        
     ------------------------------------------------------------------------------------------
     -- Logic Operations
     -- Perform bitwise logic operations on A and B

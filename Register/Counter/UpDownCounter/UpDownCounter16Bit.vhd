@@ -1,4 +1,4 @@
--- 4-bit Up/Down Counter
+-- 16-bit Up/Down Counter
 -- Counts upward or downward according to the select signal
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;

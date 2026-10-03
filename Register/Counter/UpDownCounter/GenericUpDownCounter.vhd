@@ -1,4 +1,4 @@
--- 4-bit Up/Down Counter
+-- Generic Up/Down Counter
 -- Counts upward or downward according to the select signal
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -23,6 +23,9 @@ ARCHITECTURE Struct OF GenericUpDownCounter IS
     SIGNAL QR : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
 
 BEGIN
+    ASSERT Width >= 1
+    REPORT "Width must be greater than or equal to 1."
+        SEVERITY FAILURE;
 
     -- Clocked register process
     PROCESS (CLK)

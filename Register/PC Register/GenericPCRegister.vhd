@@ -24,7 +24,14 @@ ARCHITECTURE Struct OF GenericPCRegister IS
     SIGNAL QR : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
 
 BEGIN
+    ASSERT Width >= 2
+    REPORT "Width must be greater than or equal to 2."
+        SEVERITY FAILURE;
 
+    ASSERT InstructionWidth >= Width
+    REPORT "Width must be greater InstructionWidth"
+        SEVERITY FAILURE;
+        
     -- Clocked register process
     PROCESS (CLK)
     BEGIN
