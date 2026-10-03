@@ -26,11 +26,11 @@ BEGIN
 
         -- Reset the counter state
         IF rising_edge(CLK) AND Reset = '1' THEN
-            QR <= (3 DOWNTO 0 => '0');
+            QR <= (OTHERS => '0');
 
             -- Return to zero after reaching decimal 9
         ELSIF rising_edge(CLK) AND QR = "1001" THEN
-            QR <= (3 DOWNTO 0 => '0');
+            QR <= (OTHERS => '0');
 
             -- Increment the stored state
         ELSIF rising_edge(CLK) THEN

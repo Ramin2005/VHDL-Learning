@@ -31,11 +31,11 @@ BEGIN
 
             -- Reset the counter state
             IF rising_edge(CLK) AND Reset = '1' THEN
-                QR <= (7 DOWNTO 0 => '0');
+                QR <= (OTHERS => '0');
 
                 -- Return to zero after reaching maximum value
-            ELSIF rising_edge(CLK) AND QR = (7 DOWNTO 0 => '1') THEN
-                QR <= (7 DOWNTO 0 => '0');
+            ELSIF rising_edge(CLK) AND QR = (OTHERS => '1') THEN
+                QR <= (OTHERS => '0');
 
                 -- Increment the stored state
             ELSIF rising_edge(CLK) THEN
@@ -46,11 +46,11 @@ BEGIN
         ELSE
             -- Down counting
             IF rising_edge(CLK) AND Reset = '1' THEN
-                QR <= (7 DOWNTO 0 => '1');
+                QR <= (OTHERS => '1');
 
                 -- Return to maximum value after reaching zero
-            ELSIF rising_edge(CLK) AND QR = (7 DOWNTO 0 => '0') THEN
-                QR <= (7 DOWNTO 0 => '1');
+            ELSIF rising_edge(CLK) AND QR = (OTHERS => '0') THEN
+                QR <= (OTHERS => '1');
 
                 -- Decrement the stored state
             ELSIF rising_edge(CLK) THEN

@@ -4,20 +4,23 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 
-ENTITY UpDownCounter16Bit IS
+ENTITY GenericUpDownCounter IS
+    GENERIC (
+        Width : POSITIVE := 16
+    );
     PORT (
         CLK : IN STD_LOGIC;
         Reset : IN STD_LOGIC;
         S : IN STD_LOGIC;
-        Q : OUT STD_LOGIC_VECTOR(15 DOWNTO 0)
+        Q : OUT STD_LOGIC_VECTOR(Width - 1 DOWNTO 0)
     );
-END ENTITY UpDownCounter16Bit;
+END ENTITY GenericUpDownCounter;
 
 -- Architecture of Up/Down Counter
-ARCHITECTURE Struct OF UpDownCounter16Bit IS
+ARCHITECTURE Struct OF GenericUpDownCounter IS
 
     -- Stored state signal
-    SIGNAL QR : STD_LOGIC_VECTOR(15 DOWNTO 0);
+    SIGNAL QR : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
 
 BEGIN
 
@@ -39,7 +42,7 @@ BEGIN
 
                 -- Increment the stored state
             ELSIF rising_edge(CLK) THEN
-                QR <= STD_LOGIC_VECTOR(to_unsigned(1, 16) + unsigned(QR));
+                QR <= STD_LOGIC_VECTOR(to_unsigned(1, Width) + unsigned(QR));
 
             END IF;
 
@@ -54,7 +57,7 @@ BEGIN
 
                 -- Decrement the stored state
             ELSIF rising_edge(CLK) THEN
-                QR <= STD_LOGIC_VECTOR(unsigned(QR) - to_unsigned(1, 16));
+                QR <= STD_LOGIC_VECTOR(unsigned(QR) - to_unsigned(1, Width));
 
             END IF;
 

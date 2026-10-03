@@ -26,7 +26,7 @@ BEGIN
 
         -- Reset the counter state
         IF rising_edge(CLK) AND Reset = '1' THEN
-            QR <= (3 DOWNTO 0 => '0');
+            QR <= "1001";
 
             -- Return to decimal 9 after reaching zero
         ELSIF rising_edge(CLK) AND QR = "0000" THEN
