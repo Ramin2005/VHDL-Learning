@@ -22,26 +22,26 @@ ARCHITECTURE Struct OF JKFlipFlop IS
 
 BEGIN
 
-    -- Clocked register process
+    -- Clocked flip-flop process
     PROCESS (CLK)
     BEGIN
 
         IF rising_edge(CLK) THEN
-            -- Update the state on the rising edge of the clock
+            -- Update the stored state
 
-            -- Hold current state
+            -- Hold the stored state
             IF J = '0' AND K = '0' THEN
                 QR <= QR;
 
-                -- Reset state
+                -- Reset the stored state
             ELSIF J = '0' AND K = '1' THEN
                 QR <= '0';
 
-                -- Set state
+                -- Set the stored state
             ELSIF J = '1' AND K = '0' THEN
                 QR <= '1';
 
-                -- Toggle state
+                -- Toggle the stored state
             ELSIF J = '1' AND K = '1' THEN
                 QR <= NOT QR;
 

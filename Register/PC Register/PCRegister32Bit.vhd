@@ -1,3 +1,5 @@
+-- 32-bit Program Counter Register
+-- Stores program counter state with reset, load and increment controls
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -14,6 +16,7 @@ ENTITY PCRegister32Bit IS
     );
 END ENTITY PCRegister32Bit;
 
+-- Architecture of Program Counter Register
 ARCHITECTURE Struct OF PCRegister32Bit IS
 
     -- Stored state signal

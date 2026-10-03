@@ -1,3 +1,5 @@
+-- 4-bit Right Shift Register
+-- Shifts serial input toward the most significant bit on the rising clock edge
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -12,6 +14,7 @@ ENTITY RSRegister4Bit IS
     );
 END ENTITY RSRegister4Bit;
 
+-- Architecture of Right Shift Register
 ARCHITECTURE Struct OF RSRegister4Bit IS
 
     -- Stored state signal
@@ -27,7 +30,7 @@ BEGIN
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (OTHERS => '0');
 
-            -- 
+            -- Shift the stored state toward the most significant bit
         ELSIF rising_edge(CLK) THEN
             QR <= QR(2 DOWNTO 0) & SI;
 

@@ -222,10 +222,12 @@ BEGIN
     -- Arithmetic shift A right by one bit while preserving the sign bit
     CoutASR <= A(0);
 
+    -- ROL operation
+    -- Rotate A left by one bit
     ResultROL <= A(62 DOWNTO 0) & A(63);
+
     -- ROR operation
     -- Rotate A right by one bit
-
     ResultROR <= A(0) & A(63 DOWNTO 1);
     ------------------------------------------------------------------------------------------
 

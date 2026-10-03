@@ -1,3 +1,5 @@
+-- 64-bit Program Counter Register
+-- Stores program counter state with reset, load and increment controls
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -14,6 +16,7 @@ ENTITY PCRegister64Bit IS
     );
 END ENTITY PCRegister64Bit;
 
+-- Architecture of Program Counter Register
 ARCHITECTURE Struct OF PCRegister64Bit IS
 
     -- Stored state signal

@@ -27,6 +27,7 @@ ARCHITECTURE Struct OF GenericUSRegister IS
     SIGNAL QR : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
 
 BEGIN
+    -- Width must be at least 2 for the shift operations
     ASSERT Width >= 2
     REPORT "Width must be greater than or equal to 2."
         SEVERITY FAILURE;

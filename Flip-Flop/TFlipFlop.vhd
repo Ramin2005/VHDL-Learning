@@ -1,5 +1,5 @@
 -- T Flip-Flop
--- Stores the input value on the rising edge of the clock
+-- Toggles or holds the stored state according to T on the rising edge of the clock
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -21,12 +21,12 @@ ARCHITECTURE Struct OF TFlipFlop IS
 
 BEGIN
 
-    -- Clocked register process
+    -- Clocked flip-flop process
     PROCESS (CLK)
     BEGIN
 
         IF rising_edge(CLK) THEN
-            -- Capture input T on the rising edge of the clock
+            -- Update the stored state
 
             QR <= (T AND NOT QR) OR (NOT T AND QR);
 

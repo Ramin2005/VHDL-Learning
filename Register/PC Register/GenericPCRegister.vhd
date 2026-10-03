@@ -1,3 +1,5 @@
+-- Generic Program Counter Register
+-- Stores program counter state with reset, load and increment controls
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -18,12 +20,14 @@ ENTITY GenericPCRegister IS
     );
 END ENTITY GenericPCRegister;
 
+-- Architecture of Program Counter Register
 ARCHITECTURE Struct OF GenericPCRegister IS
 
     -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
 
 BEGIN
+    -- Width must be at least 2 for the program counter implementation
     ASSERT Width >= 2
     REPORT "Width must be greater than or equal to 2."
         SEVERITY FAILURE;

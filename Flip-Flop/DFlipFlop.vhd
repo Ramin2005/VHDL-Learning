@@ -1,5 +1,5 @@
 -- D Flip-Flop
--- Stores the input value on the rising edge of the clock
+-- Stores input D on the rising edge of the clock
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -21,12 +21,12 @@ ARCHITECTURE Struct OF DFlipFlop IS
 
 BEGIN
 
-    -- Clocked register process
+    -- Clocked flip-flop process
     PROCESS (CLK)
     BEGIN
 
         IF rising_edge(CLK) THEN
-            -- Capture input D on the rising edge of the clock
+            -- Capture input D
 
             QR <= D;
 

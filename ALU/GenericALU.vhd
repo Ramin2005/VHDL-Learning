@@ -1,3 +1,4 @@
+-- Generic ALU
 -- Arithmetic Logic Unit for logic, compare, arithmetic, shift and rotate operations
 
 -- Operations:
@@ -117,6 +118,7 @@ ARCHITECTURE struct OF GenericALU IS
     SIGNAL Enable : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 BEGIN
+    -- Width must be at least 2 for the shift and rotate operations
     ASSERT Width >= 2
     REPORT "Width must be greater than or equal to 2."
         SEVERITY FAILURE;
@@ -136,6 +138,7 @@ BEGIN
 
     ------------------------------------------------------------------------------------------
     -- Compare operations
+    -- Comparison results are encoded as Width-bit values with bit 0 set when true
     -- EQ compare operation
 
     ResultEQ <= (0 => '1', OTHERS => '0') WHEN A = B ELSE
@@ -220,10 +223,12 @@ BEGIN
     -- Arithmetic shift A right by one bit while preserving the sign bit
     CoutASR <= A(0);
 
+    -- ROL operation
+    -- Rotate A left by one bit
     ResultROL <= A(Width - 2 DOWNTO 0) & A(Width - 1);
+
     -- ROR operation
     -- Rotate A right by one bit
-
     ResultROR <= A(0) & A(Width - 1 DOWNTO 1);
     ------------------------------------------------------------------------------------------
 
