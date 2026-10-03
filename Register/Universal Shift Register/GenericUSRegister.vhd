@@ -4,7 +4,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 
-ENTITY USRegisterGeneric IS
+ENTITY GenericUSRegister IS
     GENERIC (
         Width : POSITIVE := 32
     );
@@ -18,10 +18,10 @@ ENTITY USRegisterGeneric IS
         QSR : OUT STD_LOGIC;
         Q : OUT STD_LOGIC_VECTOR(Width - 1 DOWNTO 0)
     );
-END ENTITY USRegisterGeneric;
+END ENTITY GenericUSRegister;
 
 -- Architecture of Universal Shift Register
-ARCHITECTURE Struct OF USRegisterGeneric IS
+ARCHITECTURE Struct OF GenericUSRegister IS
 
     -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);

@@ -4,7 +4,7 @@ LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 
-ENTITY PLRegisterGeneric IS
+ENTITY GenericPLRegister IS
     GENERIC (
         Width : POSITIVE := 32
     );
@@ -15,10 +15,10 @@ ENTITY PLRegisterGeneric IS
         Data : IN STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
         Q : OUT STD_LOGIC_VECTOR(Width - 1 DOWNTO 0)
     );
-END ENTITY PLRegisterGeneric;
+END ENTITY GenericPLRegister;
 
 -- Architecture of Parallel Load Register
-ARCHITECTURE Struct OF PLRegisterGeneric IS
+ARCHITECTURE Struct OF GenericPLRegister IS
 
     -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
