@@ -17,20 +17,16 @@ END ENTITY PLRegister4Bit;
 -- Architecture of Parallel Load Register
 ARCHITECTURE Struct OF PLRegister4Bit IS
 
-    -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(3 DOWNTO 0);
 
 BEGIN
 
-    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 
-        -- Reset the stored state
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (OTHERS => '0');
 
-            -- Load input data when Load is active
         ELSIF rising_edge(CLK) AND Load = '1' THEN
             QR <= Data;
 

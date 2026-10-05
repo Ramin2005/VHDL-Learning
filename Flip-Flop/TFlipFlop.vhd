@@ -1,5 +1,4 @@
 -- T Flip-Flop
--- Toggles or holds the stored state according to T on the rising edge of the clock
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -16,20 +15,15 @@ END ENTITY TFlipFlop;
 -- Architecture of T Flip-Flop
 ARCHITECTURE Struct OF TFlipFlop IS
 
-    -- Stored state signal
     SIGNAL QR : STD_LOGIC := '0';
 
 BEGIN
 
-    -- Clocked flip-flop process
     PROCESS (CLK)
     BEGIN
 
         IF rising_edge(CLK) THEN
-            -- Update the stored state
-
             QR <= (T AND NOT QR) OR (NOT T AND QR);
-
         END IF;
 
     END PROCESS;

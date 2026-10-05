@@ -19,7 +19,6 @@ END ENTITY GenericUpDownCounter;
 -- Architecture of Up/Down Counter
 ARCHITECTURE Struct OF GenericUpDownCounter IS
 
-    -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
 
 BEGIN
@@ -27,43 +26,32 @@ BEGIN
     REPORT "Width must be greater than or equal to 1."
         SEVERITY FAILURE;
 
-    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 
-        -- Select counting direction
         IF S = '0' THEN
-            -- Up counting
-
-            -- Reset the counter state
             IF rising_edge(CLK) AND Reset = '1' THEN
                 QR <= (OTHERS => '0');
 
-                -- Return to zero after reaching maximum value
             ELSIF rising_edge(CLK) AND QR = (OTHERS => '1') THEN
                 QR <= (OTHERS => '0');
 
-                -- Increment the stored state
             ELSIF rising_edge(CLK) THEN
                 QR <= STD_LOGIC_VECTOR(to_unsigned(1, Width) + unsigned(QR));
 
             END IF;
 
         ELSE
-            -- Down counting
             IF rising_edge(CLK) AND Reset = '1' THEN
                 QR <= (OTHERS => '1');
 
-                -- Return to maximum value after reaching zero
             ELSIF rising_edge(CLK) AND QR = (OTHERS => '0') THEN
                 QR <= (OTHERS => '1');
 
-                -- Decrement the stored state
             ELSIF rising_edge(CLK) THEN
                 QR <= STD_LOGIC_VECTOR(unsigned(QR) - to_unsigned(1, Width));
 
             END IF;
-
         END IF;
 
     END PROCESS;

@@ -1,5 +1,4 @@
 -- Multiplexer
--- Selects one input according to the select signal
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -15,7 +14,7 @@ END ENTITY MUX64to1;
 -- Architecture of Multiplexer
 ARCHITECTURE Struct OF MUX64to1 IS
 BEGIN
-    -- Multiplexing operation
+
     O <= Inputs(to_integer(unsigned(S)));
 
 END Struct;

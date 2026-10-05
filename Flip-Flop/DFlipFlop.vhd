@@ -1,5 +1,4 @@
 -- D Flip-Flop
--- Stores input D on the rising edge of the clock
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -16,20 +15,15 @@ END ENTITY DFlipFlop;
 -- Architecture of D Flip-Flop
 ARCHITECTURE Struct OF DFlipFlop IS
 
-    -- Stored state signal
     SIGNAL QR : STD_LOGIC;
 
 BEGIN
 
-    -- Clocked flip-flop process
     PROCESS (CLK)
     BEGIN
 
-        IF rising_edge(CLK) THEN
-            -- Capture input D
-
+        IF rising_edge(CLK) THE
             QR <= D;
-
         END IF;
 
     END PROCESS;

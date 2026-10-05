@@ -20,28 +20,22 @@ END ENTITY USRegister16Bit;
 -- Architecture of Universal Shift Register
 ARCHITECTURE Struct OF USRegister16Bit IS
 
-    -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(15 DOWNTO 0);
 
 BEGIN
 
-    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 
-        -- Reset the stored state
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (OTHERS => '0');
 
-            -- Parallel load operation
         ELSIF rising_edge(CLK) AND S = "01" THEN
             QR <= Data;
 
-            -- Shift toward the least significant bit
         ELSIF rising_edge(CLK) AND S = "10" THEN
             QR <= QR(14 DOWNTO 0) & SI;
 
-            -- Shift toward the most significant bit
         ELSIF rising_edge(CLK) AND S = "11" THEN
             QR <= SI & QR(15 DOWNTO 1);
 
@@ -49,10 +43,8 @@ BEGIN
 
     END PROCESS;
 
-    -- Output the stored state
     Q <= QR;
 
-    -- Output the least and most significant state bits
     QSL <= QR(15);
     QSR <= QR(0);
 

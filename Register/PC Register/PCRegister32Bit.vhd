@@ -1,6 +1,5 @@
 -- 32-bit Program Counter Register
 -- Stores program counter state with reset, load and increment controls
-
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
@@ -19,24 +18,19 @@ END ENTITY PCRegister32Bit;
 -- Architecture of Program Counter Register
 ARCHITECTURE Struct OF PCRegister32Bit IS
 
-    -- Stored state signal
     SIGNAL QR : STD_LOGIC_VECTOR(31 DOWNTO 0);
 
 BEGIN
 
-    -- Clocked register process
     PROCESS (CLK)
     BEGIN
 
-        -- Reset the stored state
         IF rising_edge(CLK) AND Reset = '1' THEN
             QR <= (OTHERS => '0');
 
-            -- Load input data when Load is active
         ELSIF rising_edge(CLK) AND Load = '1' THEN
             QR <= Data;
 
-            -- Increment the stored state
         ELSIF rising_edge(CLK) AND Increment = '1' THEN
             QR <= STD_LOGIC_VECTOR(to_unsigned(4, 32) + unsigned(QR));
 

@@ -14,9 +14,8 @@ END ENTITY FA;
 -- Architecture of Full Adder
 ARCHITECTURE struct OF FA IS
 BEGIN
-    -- Sum operation
+
     S <= A XOR B XOR Cin;
-    -- Carry operation
     Cout <= (A AND B) OR (A AND Cin) OR (B AND Cin);
 
 END struct;

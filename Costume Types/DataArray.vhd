@@ -1,5 +1,4 @@
 -- Data Array Type
--- Defines an unconstrained array of std_logic_vector elements
 LIBRARY IEEE;
 USE IEEE.STD_LOGIC_1164.ALL;
 

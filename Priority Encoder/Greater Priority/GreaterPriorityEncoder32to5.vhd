@@ -15,15 +15,11 @@ END ENTITY GreaterPriorityEncoder32to5;
 -- Architecture of Priority Encoder
 ARCHITECTURE Struct OF GreaterPriorityEncoder32to5 IS
 BEGIN
-    -- Priority encoding process
 
     PROCESS (D)
     BEGIN
 
         A <= (4 DOWNTO 0 => '0');
-
-        -- Default output is zero when no input is active
-        -- Search inputs from the highest index to the lowest index
 
         FOR i IN 31 DOWNTO 0 LOOP
             IF D(i) = '1' THEN

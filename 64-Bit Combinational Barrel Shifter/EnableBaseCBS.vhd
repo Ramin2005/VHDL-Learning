@@ -37,23 +37,19 @@ ARCHITECTURE Struct OF EnableBaseCBS IS
 BEGIN
     ------------------------------------------------------------------------------------------
     -- Shift and Rotating operations
-    -- Perform variable-distance shifts and rotations on input A
-    -- SHL operation
     ResultSHL <= STD_LOGIC_VECTOR(SHIFT_LEFT(unsigned(A), to_integer(unsigned(S1))));
-    -- SHR operation
+    
     ResultSHR <= STD_LOGIC_VECTOR(SHIFT_RIGHT(unsigned(A), to_integer(unsigned(S1))));
-    -- ASR operation
+    
     ResultASR <= STD_LOGIC_VECTOR(SHIFT_RIGHT(signed(A), to_integer(unsigned(S1))));
-    -- ROL operation
+    
     ResultROL <= STD_LOGIC_VECTOR(ROTATE_LEFT(unsigned(A), to_integer(unsigned(S1))));
-    -- ROR operation
+    
     ResultROR <= STD_LOGIC_VECTOR(ROTATE_RIGHT(unsigned(A), to_integer(unsigned(S1))));
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
     -- Enable and Select
-    -- Generate a one-hot enable from the operation selector
-
     Enable <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 6), to_integer(unsigned(S2))))
         WHEN (unsigned(S2) <= 4 AND unsigned(S1) > 0) ELSE
         "100000";
@@ -61,16 +57,12 @@ BEGIN
 
     ------------------------------------------------------------------------------------------
     -- Multiplexing
-    -- Select the active shift or rotate result using the enable signal
-
     Result <=
-        -- Shift and Rotating operations
         (ResultSHL AND (63 DOWNTO 0 => Enable(0)))
         OR (ResultSHR AND (63 DOWNTO 0 => Enable(1)))
         OR (ResultASR AND (63 DOWNTO 0 => Enable(2)))
         OR (ResultROL AND (63 DOWNTO 0 => Enable(3)))
         OR (ResultROR AND (63 DOWNTO 0 => Enable(4)))
-        -- Buffer and invalid opcodes
         OR (A AND (63 DOWNTO 0 => Enable(5)));
     ------------------------------------------------------------------------------------------
 
