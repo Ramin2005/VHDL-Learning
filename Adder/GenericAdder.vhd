@@ -17,7 +17,7 @@ END ENTITY;
 ARCHITECTURE Struct OF GenericAdder IS
     SIGNAL Temp : unsigned(width DOWNTO 0);
     SIGNAL Result : STD_LOGIC_VECTOR(width - 1 DOWNTO 0);
-    CONSTANT Zero : STD_LOGIC_VECTOR(width - 1 DOWNTO 0) := (others => '0');
+    CONSTANT Zero : STD_LOGIC_VECTOR(width - 1 DOWNTO 0) := (OTHERS => '0');
 BEGIN
 
     Temp <= unsigned('0' & A) + unsigned('0' & B) + unsigned(Zero & CarryIn);
