@@ -21,10 +21,15 @@
 
 -- Arithmetic Operations:
 -- ADD      -> opcode: "10000"
--- SUB      -> opcode: "10001"
--- INC      -> opcode: "10010"
--- DEC      -> opcode: "10011"
--- NEG      -> opcode: "10100"
+-- UnADD    -> opcode: "10001"
+-- SUB      -> opcode: "10010"
+-- UnSUB    -> opcode: "10011"
+-- INC      -> opcode: "10100"
+-- UnINC    -> opcode: "10101"
+-- DEC      -> opcode: "10110"
+-- UnDEC    -> opcode: "10111"
+-- NEG      -> opcode: "11000"
+-- UnNEG    -> opcode: "11001"
 
 -- Shift and Rotating Operations:
 -- SHL      -> opcode: "10101"
