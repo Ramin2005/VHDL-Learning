@@ -3,37 +3,46 @@
 
 -- Operations:
 -- Logic Operations:
--- not      -> opcode: "00000"
--- and      -> opcode: "00001"
--- or       -> opcode: "00010"
--- xor      -> opcode: "00011"
--- nand     -> opcode: "00100"
--- nor      -> opcode: "00101"
--- xnor     -> opcode: "00110"
+-- not      -> opcode: "000000"
+-- and      -> opcode: "000001"
+-- or       -> opcode: "000010"
+-- xor      -> opcode: "000011"
+-- nand     -> opcode: "000100"
+-- nor      -> opcode: "000101"
+-- xnor     -> opcode: "000110"
 
 -- Compare Operations:
--- A == B   -> opcode: "00111"
--- A != B   -> opcode: "01000"
--- A < B    -> opcode: "01001"
--- A > B    -> opcode: "01010"
--- A <= B   -> opcode: "01011"
--- A >= B   -> opcode: "01100"
+-- A == B   -> opcode: "000111"
+-- A != B   -> opcode: "001000"
+-- A < B    -> opcode: "001001"
+-- A > B    -> opcode: "001010"
+-- A <= B   -> opcode: "001011"
+-- A >= B   -> opcode: "001100"
 
 -- Arithmetic Operations:
--- ADD      -> opcode: "10000"
--- SUB      -> opcode: "10001"
--- INC      -> opcode: "10010"
--- DEC      -> opcode: "10011"
--- NEG      -> opcode: "10100"
+-- Mul      -> opcode: "010000"
+-- UnMul    -> opcode: "010001"
+-- Div      -> opcode: "010010"
+-- UnDiv    -> opcode: "010011"
+-- ADD      -> opcode: "010100"
+-- UnADD    -> opcode: "010101"
+-- SUB      -> opcode: "010110"
+-- UnSUB    -> opcode: "010111"
+-- INC      -> opcode: "011000"
+-- UnINC    -> opcode: "011001"
+-- DEC      -> opcode: "011010"
+-- UnDEC    -> opcode: "011011"
+-- NEG      -> opcode: "011100"
+-- UnNEG    -> opcode: "011101"
 
 -- Shift and Rotating Operations:
--- SHL      -> opcode: "10101"
--- SHR      -> opcode: "10110"
--- ASR      -> opcode: "10111"
--- ROL      -> opcode: "11000"
--- ROR      -> opcode: "11001"
+-- SHL      -> opcode: "011110"
+-- SHR      -> opcode: "011111"
+-- ASR      -> opcode: "100000"
+-- ROL      -> opcode: "100001"
+-- ROR      -> opcode: "100010"
 
--- Buffer   -> opcode: "11111"
+-- Buffer   -> opcode: "111111"
 -- Out of list opcodes -> Buffer
 
 LIBRARY IEEE;
@@ -47,7 +56,7 @@ ENTITY GenericALU IS
     PORT (
         A : IN STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
         B : IN STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
-        S : IN STD_LOGIC_VECTOR(4 DOWNTO 0);
+        S : IN STD_LOGIC_VECTOR(5 DOWNTO 0);
         Result : OUT STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
         Cout : OUT STD_LOGIC;
         Overflow : OUT STD_LOGIC
@@ -116,7 +125,7 @@ BEGIN
     ASSERT Width >= 2
     REPORT "Width must be greater than or equal to 2."
         SEVERITY FAILURE;
-        
+
     ------------------------------------------------------------------------------------------
     -- Logic Operations
     ResultNOT <= NOT A;
