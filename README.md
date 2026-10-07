@@ -1,48 +1,51 @@
 # VHDL Learning
 
-A collection of **VHDL RTL and digital-design implementations** for practicing combinational logic, sequential logic, datapath components, registers, counters, and reusable generic hardware blocks.
+A collection of **VHDL RTL and digital-design implementations** for practicing combinational logic, sequential logic, arithmetic datapath components, registers, counters, and reusable generic hardware blocks.
 
 The repository is progressing from fundamental digital building blocks toward reusable, parameterized datapath components suitable as a foundation for future processor and FPGA-oriented work.
 
-> **Scope:** This is an educational VHDL laboratory. The repository currently contains standalone RTL components and reusable generic blocks; it is not yet a complete processor or FPGA system.
+> **Scope:** This is an educational VHDL laboratory. The repository currently contains standalone RTL components and reusable generic blocks; it is not yet a complete processor, CPU, or FPGA system.
 
 ## Repository Structure
 
 ```text
 VHDL-Learning/
-├── 64-Bit Combinational Barrel Shifter/
-│   └── EnableBaseCBS.vhd
-├── ALU/
-│   ├── ALU.vhd
-│   └── GenericALU.vhd
-├── Bus/
-│   └── GenericBus.vhd
+├── Combinational Circuits/
+│   ├── 64-Bit Combinational Barrel Shifter/
+│   ├── ALU/
+│   ├── Adder/
+│   ├── Bus/
+│   ├── Decoder/
+│   ├── Divider/
+│   ├── FPU/
+│   ├── Full Adder/
+│   ├── MUX/
+│   ├── Multiplier/
+│   └── Priority Encoder/
+│       ├── Greater Priority/
+│       └── Smaller Priority/
 ├── Costume Types/
-│   └── DataArray.vhd
-├── Decoder/
-├── Flip-Flop/
-├── Full Adder/
-├── MUX/
-├── Priority Encoder/
-│   ├── Greater Priority/
-│   └── Smaller Priority/
-└── Register/
-    ├── Counter/
-    │   ├── BCD Counter/
-    │   └── UpDownCounter/
-    ├── PC Register/
-    ├── Parallel Load Register/
-    ├── Shift Register/
-    │   ├── Left Shift Register/
-    │   └── Right Shift Register/
-    └── Universal Shift Register/
+├── Sequential Circuits/
+│   ├── File Register/
+│   ├── Flip-Flop/
+│   └── Register/
+│       ├── Counter/
+│       │   ├── BCD Counter/
+│       │   └── UpDownCounter/
+│       ├── PC Register/
+│       ├── Parallel Load Register/
+│       ├── Shift Register/
+│       │   ├── Left Shift Register/
+│       │   └── Right Shift Register/
+│       └── Universal Shift Register/
+└── README.md
 ```
 
-## Implemented Modules
+## Combinational Circuits
 
 ### Full Adder
 
-**Source:** `Full Adder/FA.vhd`
+**Source:** `Combinational Circuits/Full Adder/FA.vhd`
 
 A 1-bit full adder with two operands, carry input, sum output, and carry output.
 
@@ -51,9 +54,27 @@ S    = A XOR B XOR Cin
 Cout = AB + ACin + BCin
 ```
 
+### Generic Adder
+
+**Source:** `Combinational Circuits/Adder/GenericAdder.vhd`
+
+A parameterized binary adder with:
+
+- Configurable operand width
+- Carry input
+- Sum output
+- Carry output
+- Signed overflow detection
+
+Default width:
+
+```vhdl
+Width : POSITIVE := 64
+```
+
 ### Decoders
 
-**Directory:** `Decoder/`
+**Directory:** `Combinational Circuits/Decoder/`
 
 Enabled one-hot decoders are implemented from 1-to-2 through 6-to-64.
 
@@ -68,7 +89,7 @@ Enabled one-hot decoders are implemented from 1-to-2 through 6-to-64.
 
 ### Multiplexers
 
-**Directory:** `MUX/`
+**Directory:** `Combinational Circuits/MUX/`
 
 Standalone multiplexers are implemented from 2-to-1 through 64-to-1.
 
@@ -83,7 +104,7 @@ Standalone multiplexers are implemented from 2-to-1 through 64-to-1.
 
 ### Priority Encoders
 
-**Directory:** `Priority Encoder/`
+**Directory:** `Combinational Circuits/Priority Encoder/`
 
 Two priority-encoder families are implemented from 2-to-1 through 64-to-6.
 
@@ -92,9 +113,122 @@ Two priority-encoder families are implemented from 2-to-1 through 64-to-6.
 
 Both families provide the encoded result and a `Valid` indication.
 
+### 64-bit ALU
+
+**Directory:** `Combinational Circuits/ALU/`
+
+#### Fixed ALU
+
+**Source:** `ALU.vhd`
+
+A combinational 64-bit ALU supporting:
+
+- Logic: `NOT`, `AND`, `OR`, `XOR`, `NAND`, `NOR`, `XNOR`
+- Comparison: equality, inequality, less-than, greater-than, less/equal, greater/equal
+- Arithmetic: `ADD`, `SUB`, `INC`, `DEC`, `NEG`
+- Shift/rotate: `SHL`, `SHR`, `ASR`, `ROL`, `ROR`
+- Buffer
+
+Arithmetic operations provide carry and overflow outputs.
+
+#### Generic ALU
+
+**Source:** `GenericALU.vhd`
+
+A width-parameterized version of the ALU.
+
+```vhdl
+GENERIC (
+    Width : POSITIVE := 64
+);
+```
+
+The generic implementation uses the configured width for operands, results, arithmetic intermediates, comparisons, carry/overflow logic, and shift/rotate operations.
+
+### 64-bit Combinational Barrel Shifter
+
+**Directory:** `Combinational Circuits/64-Bit Combinational Barrel Shifter/`
+
+**Source:** `EnableBaseCBS.vhd`
+
+The current barrel shifter is an enable-based combinational design supporting variable-distance:
+
+- SHL
+- SHR
+- ASR
+- ROL
+- ROR
+
+The datapath is 64-bit and the shift amount is 6 bits.
+
+### Generic Bus
+
+**Source:** `Combinational Circuits/Bus/GenericBus.vhd`
+
+A parameterized bus/multiplexer structure using the reusable `DataArray` type.
+
+Configurable parameters include:
+
+- `DataWidth`
+- `AddressWidth`
+- `NumberOfInputs`
+
+The implementation selects an input using the address signal and gates the selected data with `Enable`.
+
+### Generic Multipliers
+
+**Directory:** `Combinational Circuits/Multiplier/`
+
+Implemented:
+
+- `GenericSignedMultiplier`
+- `GenericUnsignedMultiplier`
+
+Both use configurable operand width and produce a full-width product of:
+
+`2 × WIDTH` bits.
+
+Default width:
+
+`WIDTH = 64`
+
+### Generic Dividers
+
+**Directory:** `Combinational Circuits/Divider/`
+
+Implemented:
+
+- `GenericSignedDivider`
+- `GenericUnsignedDivider`
+
+Both provide:
+
+- Quotient
+- Remainder
+- Configurable operand width
+
+Default width:
+
+`WIDTH = 64`
+
+### FPU
+
+**Directory:** `Combinational Circuits/FPU/`
+
+The repository currently contains:
+
+- `FPU.vhd`
+- `GenericFPU.vhd`
+
+Both files are currently empty placeholders.
+
+**Status: Not yet implemented.**
+
+## Sequential Circuits
+
 ### Flip-Flops
 
-**Directory:** `Flip-Flop/`
+**Directory:** `Sequential Circuits/Flip-Flop/`
 
 Implemented:
 
@@ -102,18 +236,38 @@ Implemented:
 - JK Flip-Flop
 - T Flip-Flop
 
-The T flip-flop uses the standard behavior:
+The T flip-flop follows the standard behavior:
 
 | T | Operation |
 |---|---|
 | 0 | Hold |
 | 1 | Toggle |
 
-### Registers
+### Register File
 
-**Directory:** `Register/`
+**Directory:** `Sequential Circuits/File Register/`
 
-#### Parallel Load Registers
+#### 32 × 64-bit Register File
+
+**Source:** `FileRegister32R64B.vhd`
+
+Provides:
+
+- 32 registers
+- 64-bit register width
+- Two asynchronous read ports
+- One synchronous write port
+- 5-bit addresses
+
+#### 32 × 64-bit Register File with Clear
+
+**Source:** `FileRegister32R64BWithClear.vhd`
+
+Extends the register file with a synchronous clear operation that clears all 32 registers.
+
+### Parallel Load Registers
+
+**Directory:** `Sequential Circuits/Register/Parallel Load Register/`
 
 Fixed-width implementations:
 
@@ -123,16 +277,20 @@ Fixed-width implementations:
 - 32-bit
 - 64-bit
 
-A generic `GenericPLRegister` is also implemented.
+A reusable `GenericPLRegister` is also implemented.
 
-#### Shift Registers
+### Shift Registers
+
+**Directory:** `Sequential Circuits/Register/Shift Register/`
 
 Standalone implementations:
 
 - 4-bit Left Shift Register
 - 4-bit Right Shift Register
 
-#### Universal Shift Registers
+### Universal Shift Registers
+
+**Directory:** `Sequential Circuits/Register/Universal Shift Register/`
 
 Fixed-width implementations:
 
@@ -142,7 +300,7 @@ Fixed-width implementations:
 - 32-bit
 - 64-bit
 
-A generic `GenericUSRegister` is also implemented.
+A reusable `GenericUSRegister` is also implemented.
 
 The universal shift-register family supports:
 
@@ -155,7 +313,7 @@ The universal shift-register family supports:
 
 ### Counters
 
-**Directory:** `Register/Counter/`
+**Directory:** `Sequential Circuits/Register/Counter/`
 
 #### BCD Counters
 
@@ -174,7 +332,7 @@ A generic `GenericUpDownCounter` is also implemented with configurable width and
 
 ### Program Counter
 
-**Directory:** `Register/PC Register/`
+**Directory:** `Sequential Circuits/Register/PC Register/`
 
 Implemented:
 
@@ -182,72 +340,11 @@ Implemented:
 - 64-bit PC Register
 - Generic PC Register
 
-The generic PC register exposes configurable:
+The generic PC register exposes configurable width and instruction width and supports reset, load, and increment control.
 
-- `Width`
-- `InstructionWidth`
+## Custom Types
 
-and supports reset, load, and increment control.
-
-> **Current implementation note:** the generic PC register is present and implemented, but its generic parameter validation should be reviewed before treating it as a fully reusable component for arbitrary parameter combinations.
-
-### 64-bit ALU
-
-**Directory:** `ALU/`
-
-#### Fixed ALU
-
-**Source:** `ALU/ALU.vhd`
-
-A combinational 64-bit ALU supporting:
-
-- Logic: `NOT`, `AND`, `OR`, `XOR`, `NAND`, `NOR`, `XNOR`
-- Comparison: `=`, `≠`, `<`, `>`, `≤`, `≥`
-- Arithmetic: `ADD`, `SUB`, `INC`, `DEC`, `NEG`
-- Shift/rotate: `SHL`, `SHR`, `ASR`, `ROL`, `ROR`
-- Buffer
-
-Arithmetic operations provide carry and overflow outputs.
-
-#### Generic ALU
-
-**Source:** `ALU/GenericALU.vhd`
-
-A width-parameterized ALU with:
-
-```vhdl
-GENERIC (
-    Width : POSITIVE := 64
-);
-```
-
-The generic implementation uses the configured width for its operands, results, arithmetic intermediates, carry/overflow logic, comparisons, and shift/rotate operations.
-
-It retains the same 5-bit operation encoding as the fixed ALU.
-
-### 64-bit Combinational Barrel Shifter
-
-**Directory:** `64-Bit Combinational Barrel Shifter/`
-
-**Source:** `EnableBaseCBS.vhd`
-
-The current barrel-shifter implementation is an enable-based combinational design supporting variable-distance:
-
-- SHL
-- SHR
-- ASR
-- ROL
-- ROR
-
-The data path is 64-bit and the shift amount is 6 bits.
-
-Invalid operation selectors use the buffer path.
-
-> The previous MUX-based barrel-shifter development files are no longer present in the current repository tree. The current barrel-shifter implementation is the Enable-Based version.
-
-## Bus and Custom Types
-
-### DataArray Package
+### DataArray
 
 **Source:** `Costume Types/DataArray.vhd`
 
@@ -257,23 +354,7 @@ Defines an unconstrained VHDL array type for variable-width data words:
 TYPE DataArray IS ARRAY (NATURAL RANGE <>) OF STD_LOGIC_VECTOR;
 ```
 
-### Generic Bus
-
-**Source:** `Bus/GenericBus.vhd`
-
-A parameterized bus/multiplexer structure with:
-
-- `DataWidth`
-- `AddressWidth`
-- `NumberOfInputs`
-
-The bus:
-
-1. selects an input from `Inputs) using the address signal `S`;
-2. gates the selected data with the `Enable) signal;
-3. outputs the result through `O`.
-
-The implementation uses the local `DataArray` package.
+This type is used by reusable datapath components such as the Generic Bus.
 
 ## Current Status
 
@@ -284,9 +365,22 @@ The implementation uses the local `DataArray` package.
 | Greater Priority Encoders, 2-to-1 through 64-to-6 | Implemented |
 | Smaller Priority Encoders, 2-to-1 through 64-to-6 | Implemented |
 | 1-bit Full Adder | Implemented |
+| Generic Adder | Implemented |
+| 64-bit ALU | Implemented |
+| Generic ALU | Implemented |
+| 64-bit Barrel Shifter — Enable Base | Implemented |
+| Generic Bus | Implemented |
+| Generic Signed Multiplier | Implemented |
+| Generic Unsigned Multiplier | Implemented |
+| Generic Signed Divider | Implemented |
+| Generic Unsigned Divider | Implemented |
+| FPU | Not yet implemented |
+| Generic FPU | Not yet implemented |
 | D Flip-Flop | Implemented |
 | JK Flip-Flop | Implemented |
 | T Flip-Flop | Implemented |
+| 32 × 64-bit Register File | Implemented |
+| 32 × 64-bit Register File with Clear | Implemented |
 | Parallel Load Registers, 4/8/16/32/64-bit | Implemented |
 | Generic Parallel Load Register | Implemented |
 | Left Shift Register, 4-bit | Implemented |
@@ -300,12 +394,7 @@ The implementation uses the local `DataArray` package.
 | PC Register, 32-bit | Implemented |
 | PC Register, 64-bit | Implemented |
 | Generic PC Register | Implemented |
-| 64-bit ALU | Implemented |
-| Generic ALU | Implemented |
-| 64-bit Barrel Shifter — Enable Base | Implemented |
 | DataArray Package | Implemented |
-| Generic Bus | Implemented |
-| MUX-Based Barrel Shifter | Not present in current tree |
 
 ## Generic RTL Direction
 
@@ -314,15 +403,20 @@ Generic/parameterized RTL is now a central development direction of the reposito
 Current generic components include:
 
 ```text
+GenericAdder
+GenericALU
+GenericBus
+GenericSignedMultiplier
+GenericUnsignedMultiplier
+GenericSignedDivider
+GenericUnsignedDivider
 GenericPLRegister
 GenericUSRegister
 GenericUpDownCounter
 GenericPCRegister
-GenericALU
-GenericBus
 ```
 
-The goal is to reduce duplicated fixed-width implementations while preserving predictable hardware behavior through VHDL generics.
+These components are intended to reduce duplicated fixed-width implementations and make the datapath easier to reuse at different widths.
 
 ## Design Concepts Practiced
 
@@ -334,7 +428,7 @@ The goal is to reduce duplicated fixed-width implementations while preserving pr
 - IEEE `numeric_std`
 - Boolean and bitwise logic
 - Arithmetic operations
-- Signed comparisons
+- Signed and unsigned comparisons
 - Carry and overflow handling
 - Multiplexing and decoding
 - Priority encoding
@@ -346,8 +440,12 @@ The goal is to reduce duplicated fixed-width implementations while preserving pr
 - Universal shift registers
 - BCD counters
 - Up/down counters
+- Register-file organization
 - Program-counter structures
 - Generic and parameterized RTL
+- Signed and unsigned multiplication
+- Signed and unsigned division
+- Quotient and remainder generation
 - Unconstrained VHDL array types
 - Datapath-oriented hardware organization
 
@@ -361,11 +459,7 @@ USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 ```
 
-The Generic Bus additionally uses:
-
-```vhdl
-USE work.DataArray.ALL;
-```
+The Generic Bus additionally uses the local `DataArray` package.
 
 ## Development Progression
 
@@ -374,21 +468,25 @@ Basic Logic
     ↓
 Decoders / MUXes
     ↓
-Priority Encoders / Full Adder
+Priority Encoders / Adders
     ↓
 Flip-Flops
     ↓
 Registers / Shift Registers / Counters
     ↓
-Program Counter
+Register File / Program Counter
     ↓
 64-bit ALU
     ↓
-Generic / Parameterized RTL
+Generic Arithmetic
     ↓
-Bus and Datapath Components
+Generic Bus / Datapath Components
     ↓
 Barrel Shifter
+    ↓
+Multiplier / Divider
+    ↓
+Future FPU
     ↓
 Future CPU / FPGA Integration
 ```
@@ -397,11 +495,12 @@ Future CPU / FPGA Integration
 
 - The repository primarily uses IEEE `std_logic_1164` and `numeric_std`.
 - Fixed-width module families are being complemented by reusable generic implementations.
-- Generic components currently cover registers, counters, program counters, the ALU, and the bus.
+- Generic components now cover arithmetic, ALU, bus, registers, counters, and program-counter structures.
 - The repository is increasingly focused on reusable datapath-oriented RTL rather than only isolated fixed-width exercises.
-- The current tree should be treated as the source of truth for module availability; removed or superseded files are not described as active implementations.
+- The FPU files are currently placeholders and are intentionally marked as not implemented.
+- The current repository tree is the source of truth for module availability; removed or superseded files are not described as active implementations.
 - The repository remains a collection of standalone RTL components and is not yet integrated into a complete processor or FPGA system.
 
 ## Purpose
 
-This repository is an **educational VHDL laboratory** for developing practical RTL, digital-design, and processor-datapath skills through progressively more reusable hardware components.
+This repository is an **educational VHDL laboratory** for developing practical RTL, digital-design, arithmetic-datapath, and processor-design skills through progressively more reusable hardware components.
