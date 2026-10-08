@@ -3,47 +3,51 @@
 
 -- Operations:
 -- Logic Operations:
--- not      -> opcode: "000000"
--- and      -> opcode: "000001"
--- or       -> opcode: "000010"
--- xor      -> opcode: "000011"
--- nand     -> opcode: "000100"
--- nor      -> opcode: "000101"
--- xnor     -> opcode: "000110"
+-- not          -> opcode: "000000"
+-- and          -> opcode: "000001"
+-- or           -> opcode: "000010"
+-- xor          -> opcode: "000011"
+-- nand         -> opcode: "000100"
+-- nor          -> opcode: "000101"
+-- xnor         -> opcode: "000110"
 
 -- Compare Operations:
--- A == B   -> opcode: "000111"
--- A != B   -> opcode: "001000"
--- A < B    -> opcode: "001001"
--- A > B    -> opcode: "001010"
--- A <= B   -> opcode: "001011"
--- A >= B   -> opcode: "001100"
+-- A == B       -> opcode: "000111"
+-- A != B       -> opcode: "001000"
+-- A < B        -> opcode: "001001"
+-- Un A < B     -> opcode: "001010"
+-- A > B        -> opcode: "001011"
+-- Un A > B     -> opcode: "001100"
+-- A <= B       -> opcode: "001101"
+-- Un A <= B    -> opcode: "001110"
+-- A >= B       -> opcode: "001111"
+-- Un A >= B    -> opcode: "010000"
 
 -- Arithmetic Operations:
--- Mul      -> opcode: "010000"
--- UnMul    -> opcode: "010001"
--- Div      -> opcode: "010010"
--- UnDiv    -> opcode: "010011"
--- ADD      -> opcode: "010100"
--- UnADD    -> opcode: "010101"
--- SUB      -> opcode: "010110"
--- UnSUB    -> opcode: "010111"
--- INC      -> opcode: "011000"
--- UnINC    -> opcode: "011001"
--- DEC      -> opcode: "011010"
--- UnDEC    -> opcode: "011011"
--- NEG      -> opcode: "011100"
--- UnNEG    -> opcode: "011101"
+-- Mul          -> opcode: "100000"
+-- UnMul        -> opcode: "100001"
+-- Div          -> opcode: "100010"
+-- UnDiv        -> opcode: "100011"
+-- ADD          -> opcode: "100100"
+-- UnADD        -> opcode: "100101"
+-- SUB          -> opcode: "100110"
+-- UnSUB        -> opcode: "100111"
+-- INC          -> opcode: "101000"
+-- UnINC        -> opcode: "101001"
+-- DEC          -> opcode: "101010"
+-- UnDEC        -> opcode: "101011"
+-- NEG          -> opcode: "101100"
+-- UnNEG        -> opcode: "101101"
 
 -- Shift and Rotating Operations:
--- SHL      -> opcode: "011110"
--- SHR      -> opcode: "011111"
--- ASR      -> opcode: "100000"
--- ROL      -> opcode: "100001"
--- ROR      -> opcode: "100010"
+-- SHL          -> opcode: "101110"
+-- SHR          -> opcode: "101111"
+-- ASR          -> opcode: "110000"
+-- ROL          -> opcode: "110001"
+-- ROR          -> opcode: "110010"
 
--- Buffer   -> opcode: "111111"
--- Out of list opcodes -> Buffer
+-- Buffer       -> opcode: "111111"
+-- Out of list opcodes  -> Buffer
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -57,7 +61,8 @@ ENTITY GenericALU IS
         A : IN STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
         B : IN STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
         S : IN STD_LOGIC_VECTOR(5 DOWNTO 0);
-        Result : OUT STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
+        Result1 : OUT STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
+        Result2 : OUT STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
         Cout : OUT STD_LOGIC;
         Overflow : OUT STD_LOGIC
     );
