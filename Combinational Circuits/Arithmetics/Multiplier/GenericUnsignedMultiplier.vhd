@@ -1,6 +1,6 @@
-LIBRARY ieee;
-USE ieee.std_logic_1164.ALL;
-USE ieee.numeric_std.ALL;
+LIBRARY IEEE;
+USE IEEE.std_logic_1164.ALL;
+USE IEEE.numeric_std.ALL;
 
 ENTITY GenericUnsignedMultiplier IS
     GENERIC (
@@ -16,18 +16,8 @@ END ENTITY GenericUnsignedMultiplier;
 
 -- 
 ARCHITECTURE Struct OF GenericUnsignedMultiplier IS
-
-    SIGNAL TempUnsignedA : Unsigned(WIDTH - 1 DOWNTO 0);
-    SIGNAL TempUnsignedB : Unsigned(WIDTH - 1 DOWNTO 0);
-    SIGNAL Result : Unsigned(2 * WIDTH - 1 DOWNTO 0);
-
 BEGIN
 
-    TempUnsignedA <= Unsigned(A);
-    TempUnsignedB <= Unsigned(B);
-
-    Result <= TempUnsignedA * TempUnsignedB;
-
-    PRODUCT <= STD_LOGIC_VECTOR(Result);
+    PRODUCT <= STD_LOGIC_VECTOR(unsigned(A) * unsigned(B));
 
 END ARCHITECTURE Struct;
