@@ -1,10 +1,10 @@
 # VHDL Learning
 
-A collection of **VHDL RTL and digital-design implementations** for practicing combinational logic, sequential logic, arithmetic datapath components, registers, counters, and reusable generic hardware blocks.
+A collection of **VHDL RTL and digital-design implementations** covering combinational logic, arithmetic datapaths, sequential circuits, register files, counters, and reusable generic hardware blocks.
 
-The repository is progressing from fundamental digital building blocks toward reusable, parameterized datapath components suitable as a foundation for future processor and FPGA-oriented work.
+The project is evolving from fundamental digital building blocks toward parameterized datapath components that can serve as a foundation for future processor and FPGA work.
 
-> **Scope:** This is an educational VHDL laboratory. The repository currently contains standalone RTL components and reusable generic blocks; it is not yet a complete processor, CPU, or FPGA system.
+> **Scope:** This is an educational RTL repository, not yet a complete CPU or FPGA system. The status below describes the files currently present in the repository; it does not imply that every module has been simulated, synthesized, or formally verified.
 
 ## Repository Structure
 
@@ -13,63 +13,45 @@ VHDL-Learning/
 ├── Combinational Circuits/
 │   ├── 64-Bit Combinational Barrel Shifter/
 │   ├── ALU/
-│   ├── Adder/
+│   ├── Arithmetics/
+│   │   ├── AdderSubtractor/
+│   │   ├── Divider/
+│   │   ├── FPU/
+│   │   ├── Full Adder/
+│   │   └── Multiplier/
 │   ├── Bus/
 │   ├── Decoder/
-│   ├── Divider/
-│   ├── FPU/
-│   ├── Full Adder/
 │   ├── MUX/
-│   ├── Multiplier/
 │   └── Priority Encoder/
 │       ├── Greater Priority/
 │       └── Smaller Priority/
 ├── Costume Types/
-├── Sequential Circuits/
-│   ├── File Register/
-│   ├── Flip-Flop/
-│   └── Register/
-│       ├── Counter/
-│       │   ├── BCD Counter/
-│       │   └── UpDownCounter/
-│       ├── PC Register/
-│       ├── Parallel Load Register/
-│       ├── Shift Register/
-│       │   ├── Left Shift Register/
-│       │   └── Right Shift Register/
-│       └── Universal Shift Register/
-└── README.md
+└── Sequential Circuits/
+    ├── File Register/
+    ├── Flip-Flop/
+    └── Register/
+        ├── Counter/
+        │   ├── BCD Counter/
+        │   └── UpDownCounter/
+        ├── PC Register/
+        ├── Parallel Load Register/
+        ├── Shift Register/
+        │   ├── Left Shift Register/
+        │   └── Right Shift Register/
+        └── Universal Shift Register/
 ```
 
 ## Combinational Circuits
 
 ### Full Adder
 
-**Source:** `Combinational Circuits/Full Adder/FA.vhd`
+**Source:** `Combinational Circuits/Arithmetics/Full Adder/FA.vhd`
 
-A 1-bit full adder with two operands, carry input, sum output, and carry output.
+A 1-bit full adder with two data inputs, a carry input, a sum output, and a carry output.
 
 ```text
-S    = A XOR B XOR Cin
+Sum  = A XOR B XOR Cin
 Cout = AB + ACin + BCin
-```
-
-### Generic Adder
-
-**Source:** `Combinational Circuits/Adder/GenericAdder.vhd`
-
-A parameterized binary adder with:
-
-- Configurable operand width
-- Carry input
-- Sum output
-- Carry output
-- Signed overflow detection
-
-Default width:
-
-```vhdl
-Width : POSITIVE := 64
 ```
 
 ### Decoders
@@ -91,136 +73,89 @@ Enabled one-hot decoders are implemented from 1-to-2 through 6-to-64.
 
 **Directory:** `Combinational Circuits/MUX/`
 
-Standalone multiplexers are implemented from 2-to-1 through 64-to-1.
-
-| Module | Inputs | Select |
-|---|---:|---:|
-| `MUX2to1` | 2 | 1 bit |
-| `MUX4to1` | 4 | 2 bits |
-| `MUX8to1` | 8 | 3 bits |
-| `MUX16to1` | 16 | 4 bits |
-| `MUX32to1` | 32 | 5 bits |
-| `MUX64to1` | 64 | 6 bits |
+Standalone multiplexers are implemented from 2-to-1 through 64-to-1, with the select width increasing from 1 to 6 bits.
 
 ### Priority Encoders
 
 **Directory:** `Combinational Circuits/Priority Encoder/`
 
-Two priority-encoder families are implemented from 2-to-1 through 64-to-6.
+Two encoder families are implemented from 2-to-1 through 64-to-6:
 
 - **Greater Priority:** selects the highest-index asserted input.
 - **Smaller Priority:** selects the lowest-index asserted input.
 
-Both families provide the encoded result and a `Valid` indication.
+Both families provide an encoded result and a `Valid` indication.
 
-### 64-bit ALU
+### ALU
 
 **Directory:** `Combinational Circuits/ALU/`
 
-#### Fixed ALU
+The repository contains a fixed 64-bit ALU and a width-parameterized `GenericALU`.
 
-**Source:** `ALU.vhd`
+The ALU source describes logic, comparison, arithmetic, shift/rotate, and buffer operations. The generic version exposes a `Width` generic (default 64) and result, carry, overflow, and divide-by-zero output ports.
 
-A combinational 64-bit ALU supporting:
+> Operation encodings and implemented behavior should be verified against the current VHDL source before integrating the ALU into a processor. The source's operation comments and selection logic may not describe every operation consistently.
 
-- Logic: `NOT`, `AND`, `OR`, `XOR`, `NAND`, `NOR`, `XNOR`
-- Comparison: equality, inequality, less-than, greater-than, less/equal, greater/equal
-- Arithmetic: `ADD`, `SUB`, `INC`, `DEC`, `NEG`
-- Shift/rotate: `SHL`, `SHR`, `ASR`, `ROL`, `ROR`
-- Buffer
+### Barrel Shifter
 
-Arithmetic operations provide carry and overflow outputs.
+**Source:** `Combinational Circuits/64-Bit Combinational Barrel Shifter/EnableBaseCBS.vhd`
 
-#### Generic ALU
+A 64-bit enable-based combinational barrel shifter supporting:
 
-**Source:** `GenericALU.vhd`
+- SHL — logical left shift
+- SHR — logical right shift
+- ASR — arithmetic right shift
+- ROL — rotate left
+- ROR — rotate right
 
-A width-parameterized version of the ALU.
-
-```vhdl
-GENERIC (
-    Width : POSITIVE := 64
-);
-```
-
-The generic implementation uses the configured width for operands, results, arithmetic intermediates, comparisons, carry/overflow logic, and shift/rotate operations.
-
-### 64-bit Combinational Barrel Shifter
-
-**Directory:** `Combinational Circuits/64-Bit Combinational Barrel Shifter/`
-
-**Source:** `EnableBaseCBS.vhd`
-
-The current barrel shifter is an enable-based combinational design supporting variable-distance:
-
-- SHL
-- SHR
-- ASR
-- ROL
-- ROR
-
-The datapath is 64-bit and the shift amount is 6 bits.
+The shift amount is 6 bits.
 
 ### Generic Bus
 
 **Source:** `Combinational Circuits/Bus/GenericBus.vhd`
 
-A parameterized bus/multiplexer structure using the reusable `DataArray` type.
+A parameterized input-selection bus using the local `DataArray` type. Its generics include `DataWidth`, `AddressWidth`, and `NumberOfInputs`; the selected input is gated by `Enable`.
 
-Configurable parameters include:
+## Generic Arithmetic
 
-- `DataWidth`
-- `AddressWidth`
-- `NumberOfInputs`
+The arithmetic modules are grouped under `Combinational Circuits/Arithmetics/`.
 
-The implementation selects an input using the address signal and gates the selected data with `Enable`.
+### Generic Adder/Subtractors
+
+**Directory:** `AdderSubtractor/`
+
+- `GenericSignedAdderSubtractor.vhd`
+- `GenericUnsignedAdderSubtractor.vhd`
+
+Both expose a configurable `Width` (default 64), operands `A` and `B), a mode selector `S`, and a `Result` output. The signed version also declares overflow output; the unsigned version provides carry output.
+
+**Development note:** these files are present in the current tree, but their source should be reviewed and compiled before relying on them. In particular, the signed implementation currently contains inconsistent signal identifiers, so it should not be treated as verified RTL.
 
 ### Generic Multipliers
 
-**Directory:** `Combinational Circuits/Multiplier/`
+**Directory:** `Multiplier/`
 
-Implemented:
+- `GenericSignedMultiplier.vhd`
+- `GenericUnsignedMultiplier.vhd`
 
-- `GenericSignedMultiplier`
-- `GenericUnsignedMultiplier`
-
-Both use configurable operand width and produce a full-width product of:
-
-`2 × WIDTH` bits.
-
-Default width:
-
-`WIDTH = 64`
+Both accept configurable-width operands (default 64 bits) and produce a full-width product of `2 × WIDTH` bits.
 
 ### Generic Dividers
 
-**Directory:** `Combinational Circuits/Divider/`
+**Directory:** `Divider/`
 
-Implemented:
+- `GenericSignedDivider.vhd`
+- `GenericUnsignedDivider.vhd`
 
-- `GenericSignedDivider`
-- `GenericUnsignedDivider`
+Both provide quotient and remainder outputs for configurable-width operands (default 64 bits).
 
-Both provide:
+**Important:** the current divider entities do not expose a divide-by-zero status output. Division by zero and signed overflow cases should be handled or explicitly constrained by the surrounding design and verified in simulation.
 
-- Quotient
-- Remainder
-- Configurable operand width
+### Floating-Point Unit (FPU)
 
-Default width:
+**Directory:** `FPU/`
 
-`WIDTH = 64`
-
-### FPU
-
-**Directory:** `Combinational Circuits/FPU/`
-
-The repository currently contains:
-
-- `FPU.vhd`
-- `GenericFPU.vhd`
-
-Both files are currently empty placeholders.
+The repository contains `FPU.vhd` and `GenericFPU.vhd`, but both files are empty placeholders.
 
 **Status: Not yet implemented.**
 
@@ -230,18 +165,13 @@ Both files are currently empty placeholders.
 
 **Directory:** `Sequential Circuits/Flip-Flop/`
 
-Implemented:
+Implemented files:
 
-- D Flip-Flop
-- JK Flip-Flop
-- T Flip-Flop
+- `DFlipFlop.vhd`
+- `JKFlipFlop.vhd`
+- `TFlipFlop.vhd`
 
-The T flip-flop follows the standard behavior:
-
-| T | Operation |
-|---|---|
-| 0 | Hold |
-| 1 | Toggle |
+The T flip-flop follows the conventional behavior: `T = 0` holds the state and `T = 1` toggles it.
 
 ### Register File
 
@@ -249,98 +179,60 @@ The T flip-flop follows the standard behavior:
 
 #### 32 × 64-bit Register File
 
-**Source:** `FileRegister32R64B.vhd`
+`FileRegister32R64B.vhd` defines a register file with 32 64-bit registers, two asynchronous read ports, one synchronous write port, and 5-bit addresses.
 
-Provides:
+#### Register File with Clear
 
-- 32 registers
-- 64-bit register width
-- Two asynchronous read ports
-- One synchronous write port
-- 5-bit addresses
-
-#### 32 × 64-bit Register File with Clear
-
-**Source:** `FileRegister32R64BWithClear.vhd`
-
-Extends the register file with a synchronous clear operation that clears all 32 registers.
+`FileRegister32R64BWithClear.vhd` adds a synchronous clear operation for the register bank.
 
 ### Parallel Load Registers
 
 **Directory:** `Sequential Circuits/Register/Parallel Load Register/`
 
-Fixed-width implementations:
-
-- 4-bit
-- 8-bit
-- 16-bit
-- 32-bit
-- 64-bit
-
-A reusable `GenericPLRegister` is also implemented.
+Fixed-width 4-, 8-, 16-, 32-, and 64-bit implementations are present, along with `GenericPLRegister`.
 
 ### Shift Registers
 
 **Directory:** `Sequential Circuits/Register/Shift Register/`
 
-Standalone implementations:
-
-- 4-bit Left Shift Register
-- 4-bit Right Shift Register
+The repository contains a 4-bit left shift register and a 4-bit right shift register.
 
 ### Universal Shift Registers
 
 **Directory:** `Sequential Circuits/Register/Universal Shift Register/`
 
-Fixed-width implementations:
+Fixed-width 4-, 8-, 16-, 32-, and 64-bit implementations are present, along with `GenericUSRegister`.
 
-- 4-bit
-- 8-bit
-- 16-bit
-- 32-bit
-- 64-bit
-
-A reusable `GenericUSRegister` is also implemented.
-
-The universal shift-register family supports:
+The documented control modes are:
 
 | `S` | Operation |
 |---|---|
 | `00` | Hold |
-| `01` | Parallel Load |
+| `01` | Parallel load |
 | `10` | Shift toward LSB |
 | `11` | Shift toward MSB |
+
+Check the individual source files for exact serial-input and bit-direction conventions.
 
 ### Counters
 
 **Directory:** `Sequential Circuits/Register/Counter/`
 
-#### BCD Counters
+BCD counters:
 
-- BCD Up Counter: `0 → 1 → ... → 9 → 0`
-- BCD Down Counter: `9 → 8 → ... → 0 → 9`
+- `BCDUpCounter.vhd`
+- `BCDDownCounter.vhd`
 
-#### Up/Down Counters
+Up/down counters:
 
-Fixed-width implementations:
-
-- 4-bit
-- 8-bit
-- 16-bit
-
-A generic `GenericUpDownCounter` is also implemented with configurable width and selectable counting direction.
+- Fixed 4-bit, 8-bit, and 16-bit implementations
+- `GenericUpDownCounter.vhd`
 
 ### Program Counter
 
 **Directory:** `Sequential Circuits/Register/PC Register/`
 
-Implemented:
-
-- 32-bit PC Register
-- 64-bit PC Register
-- Generic PC Register
-
-The generic PC register exposes configurable width and instruction width and supports reset, load, and increment control.
+The repository contains 32-bit and 64-bit PC registers plus `GenericPCRegister.vhd`. The generic implementation exposes configurable width and instruction width and supports reset, load, and increment control.
 
 ## Custom Types
 
@@ -348,104 +240,90 @@ The generic PC register exposes configurable width and instruction width and sup
 
 **Source:** `Costume Types/DataArray.vhd`
 
-Defines an unconstrained VHDL array type for variable-width data words:
+Defines an unconstrained array type for vectors of data:
 
 ```vhdl
 TYPE DataArray IS ARRAY (NATURAL RANGE <>) OF STD_LOGIC_VECTOR;
 ```
 
-This type is used by reusable datapath components such as the Generic Bus.
+It is used by the Generic Bus to represent an array of input words.
 
 ## Current Status
 
-| Component | Status |
+| Component | Current repository status |
 |---|---|
-| 1-to-2 through 6-to-64 Decoders | Implemented |
-| 2-to-1 through 64-to-1 MUXes | Implemented |
-| Greater Priority Encoders, 2-to-1 through 64-to-6 | Implemented |
-| Smaller Priority Encoders, 2-to-1 through 64-to-6 | Implemented |
-| 1-bit Full Adder | Implemented |
-| Generic Adder | Implemented |
-| 64-bit ALU | Implemented |
-| Generic ALU | Implemented |
-| 64-bit Barrel Shifter — Enable Base | Implemented |
-| Generic Bus | Implemented |
-| Generic Signed Multiplier | Implemented |
-| Generic Unsigned Multiplier | Implemented |
-| Generic Signed Divider | Implemented |
-| Generic Unsigned Divider | Implemented |
-| FPU | Not yet implemented |
-| Generic FPU | Not yet implemented |
-| D Flip-Flop | Implemented |
-| JK Flip-Flop | Implemented |
-| T Flip-Flop | Implemented |
-| 32 × 64-bit Register File | Implemented |
-| 32 × 64-bit Register File with Clear | Implemented |
-| Parallel Load Registers, 4/8/16/32/64-bit | Implemented |
-| Generic Parallel Load Register | Implemented |
-| Left Shift Register, 4-bit | Implemented |
-| Right Shift Register, 4-bit | Implemented |
-| Universal Shift Registers, 4/8/16/32/64-bit | Implemented |
-| Generic Universal Shift Register | Implemented |
-| BCD Up Counter | Implemented |
-| BCD Down Counter | Implemented |
-| Up/Down Counter, 4/8/16-bit | Implemented |
-| Generic Up/Down Counter | Implemented |
-| PC Register, 32-bit | Implemented |
-| PC Register, 64-bit | Implemented |
-| Generic PC Register | Implemented |
-| DataArray Package | Implemented |
+| Decoders, 1-to-2 through 6-to-64 | Source files present |
+| MUXes, 2-to-1 through 64-to-1 | Source files present |
+| Greater-priority encoders, 2-to-1 through 64-to-6 | Source files present |
+| Smaller-priority encoders, 2-to-1 through 64-to-6 | Source files present |
+| 1-bit Full Adder | Source file present |
+| Generic Signed Adder/Subtractor | Present; source review needed |
+| Generic Unsigned Adder/Subtractor | Source file present |
+| Fixed 64-bit ALU | Source file present |
+| Generic ALU | Source file present; operation mapping needs verification |
+| 64-bit Enable-Based Barrel Shifter | Source file present |
+| Generic Bus | Source file present |
+| Generic Signed Multiplier | Source file present |
+| Generic Unsigned Multiplier | Source file present |
+| Generic Signed Divider | Source file present |
+| Generic Unsigned Divider | Source file present |
+| FPU / Generic FPU | Empty placeholders; not implemented |
+| D / JK / T Flip-Flops | Source files present |
+| 32 × 64-bit Register File | Source file present |
+| Register File with Clear | Source file present |
+| Parallel Load Registers, 4/8/16/32/64-bit | Source files present |
+| Generic Parallel Load Register | Source file present |
+| 4-bit Left and Right Shift Registers | Source files present |
+| Universal Shift Registers, 4/8/16/32/64-bit | Source files present |
+| Generic Universal Shift Register | Source file present |
+| BCD Up/Down Counters | Source files present |
+| Up/Down Counters, 4/8/16-bit | Source files present |
+| Generic Up/Down Counter | Source file present |
+| 32-bit and 64-bit PC Registers | Source files present |
+| Generic PC Register | Source file present |
+| DataArray Package | Source file present |
+
+**Status terminology:** “Source file present” means that a file exists in the repository; it is not a claim that the design has passed compilation, simulation, synthesis, or hardware testing.
 
 ## Generic RTL Direction
 
-Generic/parameterized RTL is now a central development direction of the repository.
-
-Current generic components include:
+Current generic modules include:
 
 ```text
-GenericAdder
 GenericALU
-GenericBus
+GenericSignedAdderSubtractor
+GenericUnsignedAdderSubtractor
 GenericSignedMultiplier
 GenericUnsignedMultiplier
 GenericSignedDivider
 GenericUnsignedDivider
+GenericBus
 GenericPLRegister
 GenericUSRegister
 GenericUpDownCounter
 GenericPCRegister
 ```
 
-These components are intended to reduce duplicated fixed-width implementations and make the datapath easier to reuse at different widths.
+The overall direction is to reduce duplicated fixed-width RTL and make datapath blocks reusable through VHDL generics.
 
 ## Design Concepts Practiced
 
-- VHDL entity/architecture structure
-- Combinational RTL
-- Clocked sequential RTL
+- Entity and architecture structure
+- Combinational and clocked sequential RTL
 - `std_logic` and `std_logic_vector`
-- `signed` and `unsigned`
-- IEEE `numeric_std`
+- `signed`, `unsigned`, and IEEE `numeric_std`
 - Boolean and bitwise logic
-- Arithmetic operations
-- Signed and unsigned comparisons
-- Carry and overflow handling
-- Multiplexing and decoding
-- Priority encoding
-- Enable-based selection
-- Shift and rotate operations
-- Flip-flops
-- Parallel-load registers
-- Shift registers
-- Universal shift registers
-- BCD counters
-- Up/down counters
+- Arithmetic and signed/unsigned comparisons
+- Carry and overflow signals
+- Decoding, multiplexing, and priority encoding
+- Shifts and rotates
+- Flip-flops and registers
 - Register-file organization
+- BCD and up/down counters
 - Program-counter structures
-- Generic and parameterized RTL
-- Signed and unsigned multiplication
-- Signed and unsigned division
-- Quotient and remainder generation
+- Parameterized RTL
+- Signed and unsigned multiplication/division
+- Quotient and remainder outputs
 - Unconstrained VHDL array types
 - Datapath-oriented hardware organization
 
@@ -459,47 +337,37 @@ USE IEEE.std_logic_1164.ALL;
 USE IEEE.numeric_std.ALL;
 ```
 
-The Generic Bus additionally uses the local `DataArray` package.
+The Generic Bus also imports the local `DataArray` package.
 
-## Development Progression
+## Development Roadmap
 
 ```text
-Basic Logic
+Basic Combinational Logic
     ↓
-Decoders / MUXes
+Decoders / MUXes / Priority Encoders
     ↓
-Priority Encoders / Adders
+Arithmetic Building Blocks
     ↓
-Flip-Flops
-    ↓
-Registers / Shift Registers / Counters
+Flip-Flops / Registers / Counters
     ↓
 Register File / Program Counter
     ↓
-64-bit ALU
+ALU and Generic Datapath Components
     ↓
-Generic Arithmetic
+Multiplier / Divider Integration
     ↓
-Generic Bus / Datapath Components
-    ↓
-Barrel Shifter
-    ↓
-Multiplier / Divider
-    ↓
-Future FPU
+FPU Development
     ↓
 Future CPU / FPGA Integration
 ```
 
 ## Implementation Notes
 
-- The repository primarily uses IEEE `std_logic_1164` and `numeric_std`.
-- Fixed-width module families are being complemented by reusable generic implementations.
-- Generic components now cover arithmetic, ALU, bus, registers, counters, and program-counter structures.
-- The repository is increasingly focused on reusable datapath-oriented RTL rather than only isolated fixed-width exercises.
-- The FPU files are currently placeholders and are intentionally marked as not implemented.
-- The current repository tree is the source of truth for module availability; removed or superseded files are not described as active implementations.
-- The repository remains a collection of standalone RTL components and is not yet integrated into a complete processor or FPGA system.
+- The source tree is the authority for which modules currently exist.
+- Fixed-width modules are being complemented by generic implementations.
+- Some newly added arithmetic RTL needs compilation and functional review; file presence alone does not guarantee correctness.
+- The FPU files are empty placeholders.
+- No complete processor or FPGA top-level integration is currently documented in this repository.
 
 ## Purpose
 
