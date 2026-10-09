@@ -24,18 +24,16 @@
 -- Un A >= B    -> opcode: "011001"
 
 -- Arithmetic Operations:
--- MUL          -> opcode: "100000"
--- UnMUL        -> opcode: "100001"
--- DIV          -> opcode: "100010"
--- UnDIV        -> opcode: "100011"
+-- SiSiMUL      -> opcode: "100000"
+-- SiUnMUL      -> opcode: "100001"
+-- UnUnMUL      -> opcode: "100010"
+-- SiSiDIV      -> opcode: "100010"
+-- SiUnDIV      -> opcode: "100011"
+-- UnUnDIV      -> opcode: "100011"
 -- ADD          -> opcode: "100100"
--- UnADD        -> opcode: "100101"
--- SUB          -> opcode: "100110"
--- UnSUB        -> opcode: "100111"
+-- SUB          -> opcode: "100101"
 -- INC          -> opcode: "101000"
--- UnINC        -> opcode: "101001"
 -- DEC          -> opcode: "101010"
--- UnDEC        -> opcode: "101011"
 -- NEG          -> opcode: "101100"
 
 -- Shift and Rotating Operations:
@@ -99,22 +97,14 @@ ARCHITECTURE struct OF GenericALU IS
     SIGNAL ResultMOD : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
     SIGNAL ResultUnMOD : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
     SIGNAL ResultADD : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
-    SIGNAL ResultUnADD : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
     SIGNAL ResultSUB : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
-    SIGNAL ResultUnSUB : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
     SIGNAL ResultINC : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
-    SIGNAL ResultUnINC : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
     SIGNAL ResultDEC : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
-    SIGNAL ResultUnDEC : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
     SIGNAL ResultNEG : STD_LOGIC_VECTOR(Width - 1 DOWNTO 0);
     SIGNAL CoutADD : STD_LOGIC;
-    SIGNAL CoutUnADD : STD_LOGIC;
     SIGNAL CoutSUB : STD_LOGIC;
-    SIGNAL CoutUnSUB : STD_LOGIC;
     SIGNAL CoutINC : STD_LOGIC;
-    SIGNAL CoutUnINC : STD_LOGIC;
     SIGNAL CoutDEC : STD_LOGIC;
-    SIGNAL CoutUnDEC : STD_LOGIC;
     SIGNAL CoutNEG : STD_LOGIC;
     SIGNAL OverflowADD : STD_LOGIC;
     SIGNAL OverflowSUB : STD_LOGIC;
@@ -134,13 +124,9 @@ ARCHITECTURE struct OF GenericALU IS
 
     -- Temporary signal
     SIGNAL TempADD : unsigned(Width DOWNTO 0);
-    SIGNAL TempUnADD : unsigned(Width DOWNTO 0);
     SIGNAL TempSUB : unsigned(Width DOWNTO 0);
-    SIGNAL TempUnSUB : unsigned(Width DOWNTO 0);
     SIGNAL TempINC : unsigned(Width DOWNTO 0);
-    SIGNAL TempUnINC : unsigned(Width DOWNTO 0);
     SIGNAL TempDEC : unsigned(Width DOWNTO 0);
-    SIGNAL TempUnDEC : unsigned(Width DOWNTO 0);
     SIGNAL TempNEG : unsigned(Width DOWNTO 0);
     SIGNAL USTemp : unsigned(Width - 1 DOWNTO 0);
 
@@ -155,83 +141,109 @@ BEGIN
 
     ------------------------------------------------------------------------------------------
     -- Logic Operations
+    -- NOT
     ResultNOT <= NOT A;
+    -- AND
     ResultAND <= A AND B;
+    -- OR
     ResultOR <= A OR B;
+    -- XOR
     ResultXOR <= A XOR B;
+    -- NAND
     ResultNAND <= A NAND B;
+    -- NOR
     ResultNOR <= A NOR B;
+    -- XNOR
     ResultXNOR <= A XNOR B;
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
     -- Compare operations
+    -- A = B
     ResultEQ <= (0 => '1', OTHERS => '0') WHEN A = B ELSE
         (OTHERS => '0');
 
+    -- A != B
     ResultNE <= (OTHERS => '0') WHEN A = B ELSE
         (0 => '1', OTHERS => '0');
 
+    -- A < B
     ResultS <= (0 => '1', OTHERS => '0') WHEN signed(A) < signed(B) ELSE
         (OTHERS => '0');
 
+    -- Un A < B
     ResultUnS <= (0 => '1', OTHERS => '0') WHEN unsigned(A) < unsigned(B) ELSE
         (OTHERS => '0');
 
+    -- A > B
     ResultG <= (0 => '1', OTHERS => '0') WHEN signed(A) > signed(B) ELSE
         (OTHERS => '0');
 
+    -- Un A > B
     ResultUnG <= (0 => '1', OTHERS => '0') WHEN unsigned(A) > unsigned(B) ELSE
         (OTHERS => '0');
 
+    -- A <= B
     ResultSE <= (0 => '1', OTHERS => '0') WHEN signed(A) <= signed(B) ELSE
         (OTHERS => '0');
 
+    -- Un A <= B
     ResultUnSE <= (0 => '1', OTHERS => '0') WHEN unsigned(A) <= unsigned(B) ELSE
         (OTHERS => '0');
 
+    -- A >= B
     ResultGE <= (0 => '1', OTHERS => '0') WHEN signed(A) >= signed(B) ELSE
         (OTHERS => '0');
 
-    ResultUnGE <= (0 => '1', OTHERS => '0') WHEN signed(A) >= signed(B) ELSE
+    -- Un A >= B
+    ResultUnGE <= (0 => '1', OTHERS => '0') WHEN unsigned(A) >= unsigned(B) ELSE
         (OTHERS => '0');
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
     -- Arithmetic operations
+    -- MUL
     ResultMUL <= STD_LOGIC_VECTOR(signed(A) * signed(B));
 
+    -- UnMUL
     ResultUnMUL <= STD_LOGIC_VECTOR(unsigned(A) * unsigned(B));
 
+    -- DIV
     ResultDIV <= STD_LOGIC_VECTOR(signed(A) / signed(B));
     ResultMOD <= STD_LOGIC_VECTOR(signed(A) MOD signed(B));
 
+    -- UnDIV
     ResultUnDIV <= STD_LOGIC_VECTOR(unsigned(A) / unsigned(B));
     ResultUnMOD <= STD_LOGIC_VECTOR(unsigned(A) MOD unsigned(B));
 
+    -- ADD
     TempADD <= unsigned('0' & A) + unsigned('0' & B);
     ResultADD <= STD_LOGIC_VECTOR(TempADD)(Width - 1 DOWNTO 0);
     CoutADD <= TempADD(Width);
     OverflowADD <= (NOT A(Width - 1) AND NOT B(Width - 1) AND ResultADD(Width - 1))
         OR (A(Width - 1) AND B(Width - 1) AND NOT ResultADD(Width - 1));
 
+    -- SUB
     TempSUB <= unsigned('0' & A) + unsigned('0' & (NOT B)) + to_unsigned(1, Width + 1);
     ResultSUB <= STD_LOGIC_VECTOR(TempSUB)(Width - 1 DOWNTO 0);
     CoutSUB <= TempSUB(Width);
     OverflowSUB <= (NOT A(Width - 1) AND B(Width - 1) AND ResultSUB(Width - 1))
         OR (A(Width - 1) AND NOT B(Width - 1) AND NOT ResultSUB(Width - 1));
 
+    -- INC
     TempINC <= unsigned('0' & A) + to_unsigned(1, Width + 1);
     ResultINC <= STD_LOGIC_VECTOR(TempINC)(Width - 1 DOWNTO 0);
     CoutINC <= TempINC(Width);
     OverflowINC <= (NOT A(Width - 1) AND ResultINC(Width - 1));
 
+    -- DEC
     USTemp <= (OTHERS => '1');
     TempDEC <= unsigned('0' & A) + unsigned('0' & USTemp);
     ResultDEC <= STD_LOGIC_VECTOR(TempDEC)(Width - 1 DOWNTO 0);
     CoutDEC <= TempDEC(Width);
     OverflowDEC <= (A(Width - 1) AND NOT ResultDEC(Width - 1));
 
+    -- NEG
     TempNEG <= unsigned('0' & (NOT A)) + to_unsigned(1, Width + 1);
     ResultNEG <= STD_LOGIC_VECTOR(TempNEG)(Width - 1 DOWNTO 0);
     CoutNEG <= TempNEG(Width);
@@ -241,17 +253,22 @@ BEGIN
 
     ------------------------------------------------------------------------------------------
     -- Shift and Rotating operations
+    -- SHL
     ResultSHL <= A(Width - 2 DOWNTO 0) & '0';
     CoutSHL <= A(Width - 1);
 
+    -- SHR
     ResultSHR <= '0' & A(Width - 1 DOWNTO 1);
     CoutSHR <= A(0);
 
+    -- ASR
     ResultASR <= A(Width - 1) & A(Width - 1 DOWNTO 1);
     CoutASR <= A(0);
 
+    -- ROL
     ResultROL <= A(Width - 2 DOWNTO 0) & A(Width - 1);
 
+    -- ROR
     ResultROR <= A(0) & A(Width - 1 DOWNTO 1);
     ------------------------------------------------------------------------------------------
 
