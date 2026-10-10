@@ -163,19 +163,19 @@ BEGIN
         (OTHERS => '1');
 
     -- A < B
-    ResultS <= (OTHERS => '0') WHEN signed(A) < signed(B) ELSE
+    ResultL <= (OTHERS => '0') WHEN signed(A) < signed(B) ELSE
         (OTHERS => '1');
 
     -- Un A < B
-    ResultUnS <= (OTHERS => '0') WHEN unsigned(A) < unsigned(B) ELSE
+    ResultUnL <= (OTHERS => '0') WHEN unsigned(A) < unsigned(B) ELSE
         (OTHERS => '1');
 
     -- A <= B
-    ResultSE <= (OTHERS => '0') WHEN signed(A) <= signed(B) ELSE
+    ResultLE <= (OTHERS => '0') WHEN signed(A) <= signed(B) ELSE
         (OTHERS => '1');
 
     -- Un A <= B
-    ResultUnSE <= (OTHERS => '0') WHEN unsigned(A) <= unsigned(B) ELSE
+    ResultUnLE <= (OTHERS => '0') WHEN unsigned(A) <= unsigned(B) ELSE
         (OTHERS => '1');
     ------------------------------------------------------------------------------------------
 
@@ -336,8 +336,8 @@ BEGIN
         OR (ResultREMUW AND (63 DOWNTO 0 => Enable(35)))
         OR (ResultADD AND (63 DOWNTO 0 => Enable(36)))
         OR (ResultSUB AND (63 DOWNTO 0 => Enable(37)))
-        OR (ResultADDW AND (63 DOWNTO 0 => Enable(38)));
-    OR (ResultSUBW AND (63 DOWNTO 0 => Enable(39)));
+        OR (ResultADDW AND (63 DOWNTO 0 => Enable(38)))
+        OR (ResultSUBW AND (63 DOWNTO 0 => Enable(39)));
 
     Cout <=
         (CoutSLL AND Enable(13))
@@ -359,5 +359,5 @@ BEGIN
 
     Zero <= '1' WHEN Result = (OTHERS => '0') ELSE
         '0';
-        
+
 END struct;
