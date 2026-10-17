@@ -124,6 +124,8 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL OverflowSUBW : STD_LOGIC;
 
     -- Temporary signal
+    SIGNAL TempAL : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL TempBL : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL TempSLLW : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL TempSRLW : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL TempSRAW : STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -147,6 +149,8 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL Enable : STD_LOGIC_VECTOR(39 DOWNTO 0);
 
 BEGIN
+    TempAL <= A(31 DOWNTO 0);
+    TempBL <= B(31 DOWNTO 0);
     ------------------------------------------------------------------------------------------
     -- Logic Operations
     -- NOT
@@ -206,23 +210,23 @@ BEGIN
     ResultROR <= STD_LOGIC_VECTOR(ROTATE_RIGHT(unsigned(A), to_integer(unsigned(B(5 DOWNTO 0)))));
 
     -- SLLW
-    TempSLLW <= STD_LOGIC_VECTOR(SHIFT_LEFT(unsigned(A(31 DOWNTO 0)), to_integer(unsigned(B(4 DOWNTO 0)))));
+    TempSLLW <= STD_LOGIC_VECTOR(SHIFT_LEFT(unsigned(TempAL), to_integer(unsigned(B(4 DOWNTO 0)))));
     ResultSLLW <= (63 DOWNTO 32 => TempSLLW(31)) & TempSLLW;
 
     -- SRLW
-    TempSRLW <= STD_LOGIC_VECTOR(SHIFT_RIGHT(unsigned(A(31 DOWNTO 0)), to_integer(unsigned(B(4 DOWNTO 0)))));
+    TempSRLW <= STD_LOGIC_VECTOR(SHIFT_RIGHT(unsigned(TempAL), to_integer(unsigned(B(4 DOWNTO 0)))));
     ResultSRLW <= (63 DOWNTO 32 => TempSRLW(31)) & TempSRLW;
 
     -- SRAW
-    TempSRAW <= STD_LOGIC_VECTOR(SHIFT_RIGHT(signed(A(31 DOWNTO 0)), to_integer(unsigned(B(4 DOWNTO 0)))));
+    TempSRAW <= STD_LOGIC_VECTOR(SHIFT_RIGHT(signed(TempAL), to_integer(unsigned(B(4 DOWNTO 0)))));
     ResultSRAW <= (63 DOWNTO 32 => TempSRAW(31)) & TempSRAW;
 
     -- ROLW
-    TempROLW <= STD_LOGIC_VECTOR(ROTATE_LEFT(unsigned(A(31 DOWNTO 0)), to_integer(unsigned(B(4 DOWNTO 0)))));
+    TempROLW <= STD_LOGIC_VECTOR(ROTATE_LEFT(unsigned(TempAL), to_integer(unsigned(B(4 DOWNTO 0)))));
     ResultROLW <= (63 DOWNTO 32 => TempROLW(31)) & TempROLW;
 
     -- RORW
-    TempRORW <= STD_LOGIC_VECTOR(ROTATE_RIGHT(unsigned(A(31 DOWNTO 0)), to_integer(unsigned(B(4 DOWNTO 0)))));
+    TempRORW <= STD_LOGIC_VECTOR(ROTATE_RIGHT(unsigned(TempAL), to_integer(unsigned(B(4 DOWNTO 0)))));
     ResultRORW <= (63 DOWNTO 32 => TempRORW(31)) & TempRORW;
     ------------------------------------------------------------------------------------------
 
@@ -253,11 +257,11 @@ BEGIN
     ResultDIVU <= STD_LOGIC_VECTOR(unsigned(A) / unsigned(B));
 
     -- DIVW
-    TempDIVW <= signed(A(31 DOWNTO 0)) / signed(B(31 DOWNTO 0));
+    TempDIVW <= signed(TempAL) / signed(TempBL);
     ResultDIVW <= (63 DOWNTO 32 => TempDIVUW(31)) & STD_LOGIC_VECTOR(TempDIVUW(31 DOWNTO 0));
 
     -- DIVUW
-    TempDIVUW <= unsigned(A(31 DOWNTO 0)) / unsigned(B(31 DOWNTO 0));
+    TempDIVUW <= unsigned(TempAL) / unsigned(TempBL);
     ResultDIVUW <= (63 DOWNTO 32 => TempDIVUW(31)) & STD_LOGIC_VECTOR(TempDIVUW(31 DOWNTO 0));
 
     -- REM
@@ -268,11 +272,11 @@ BEGIN
     ResultREMU <= STD_LOGIC_VECTOR(unsigned(A) REM unsigned(B));
 
     -- REMW
-    TempREMW <= signed(A(31 DOWNTO 0)) REM signed(B(31 DOWNTO 0));
+    TempREMW <= signed(TempAL) REM signed(TempBL);
     ResultREMW <= (63 DOWNTO 32 => TempREMW(31)) & STD_LOGIC_VECTOR(TempREMW);
 
     -- REMUW
-    TempREMUW <= unsigned(A(31 DOWNTO 0)) REM unsigned(B(31 DOWNTO 0));
+    TempREMUW <= unsigned(TempAL) REM unsigned(TempBL);
     ResultREMUW <= (63 DOWNTO 32 => TempREMUW(31)) & STD_LOGIC_VECTOR(TempREMUW);
 
     -- ADD
@@ -290,14 +294,14 @@ BEGIN
         OR (A(63) AND NOT B(63) AND NOT ResultSUB(63));
 
     -- ADDW
-    TempADDW <= unsigned('0' & A(31 DOWNTO 0)) + unsigned('0' & B(31 DOWNTO 0));
+    TempADDW <= unsigned('0' & TempAL) + unsigned('0' & TempBL);
     ResultADDW <= (31 DOWNTO 0 => TempADDW(31)) & STD_LOGIC_VECTOR(TempADDW)(31 DOWNTO 0);
     CoutADDW <= TempADDW(32);
     OverflowADDW <= (NOT A(31) AND NOT B(31) AND ResultADDW(31))
         OR (A(31) AND B(31) AND NOT ResultADDW(31));
 
     -- SUBW
-    TempSUBW <= unsigned('0' & A(31 DOWNTO 0)) + unsigned('0' & (NOT B(31 DOWNTO 0))) + to_unsigned(1, 33);
+    TempSUBW <= unsigned('0' & TempAL) + unsigned('0' & (NOT TempBL)) + to_unsigned(1, 33);
     ResultSUBW <= (31 DOWNTO 0 => TempSUBW(31)) & STD_LOGIC_VECTOR(TempSUBW)(31 DOWNTO 0);
     CoutSUBW <= TempSUBW(32);
     OverflowSUBW <= (NOT A(31) AND B(31) AND ResultSUBW(31))
