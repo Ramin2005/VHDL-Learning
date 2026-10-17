@@ -283,7 +283,7 @@ BEGIN
     ResultDIVUW <= (63 DOWNTO 32 => TempDIVUW(31)) & STD_LOGIC_VECTOR(TempDIVUW(31 DOWNTO 0));
 
     -- REM
-    TempREM <= signed(A(63 DOWNTO 0)) REM signed(B(63 DOWNTO 0));
+    TempREM <= TempSA REM TempSB;
     ResultREM <= STD_LOGIC_VECTOR(TempREM);
 
     -- REMU
