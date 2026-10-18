@@ -293,7 +293,7 @@ BEGIN
     -- DIVW
     TempDIVW <= TempSAL / TempSBL WHEN TempSBL /= 0 ELSE
         (OTHERS => '0');
-    ResultDIVW <= (OTHERS => '1') WHEN TempSBL = 0ELSE
+    ResultDIVW <= (OTHERS => '1') WHEN TempSBL = 0 ELSE
         (63 DOWNTO 32 => TempDIVW(31)) & STD_LOGIC_VECTOR(TempDIVW(31 DOWNTO 0));
 
     -- DIVUW
