@@ -170,6 +170,28 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL ResultMAX : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultMAXU : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
+    -- Custom Bit Count Operations:
+    SIGNAL ResultCLZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultCTZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultCPOP : STD_LOGIC_VECTOR(63 DOWNTO 0);
+
+    -- Custom Shift and Add Operations:
+    SIGNAL ResultSH1ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultSH2ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultSH3ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultSH4ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultSH8ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
+
+    -- Custom Bit Manipulation Operations:
+    SIGNAL ResultBSET : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultBCLR : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultBINV : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultBEXT : STD_LOGIC_VECTOR(63 DOWNTO 0);
+
+    -- Custom Rotate and Count Operations:
+    SIGNAL ResultREV8 : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultORCB : STD_LOGIC_VECTOR(63 DOWNTO 0);
+
     -- Temporary signal
     CONSTANT TempZero : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '0');
     SIGNAL TempAL : STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -430,11 +452,11 @@ BEGIN
     ------------------------------------------------------------------------------------------
     -- Enable and Select
     Enable <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 64), to_integer(unsigned(S))))
-    ------------------------------------------------------------------------------------------
+        ------------------------------------------------------------------------------------------
 
-    ------------------------------------------------------------------------------------------
-    -- Multiplexing
-    TempResult <=
+        ------------------------------------------------------------------------------------------
+        -- Multiplexing
+        TempResult <=
         -- Arithmetic operations
         (ResultADD AND (63 DOWNTO 0 => Enable(0)))
         OR (ResultSUB AND (63 DOWNTO 0 => Enable(1)))
