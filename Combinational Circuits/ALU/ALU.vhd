@@ -1,55 +1,87 @@
 -- RV64IM Base + Custom ALU Extensions
 -- ALUControl: 6-bit operation codes
 
+-- Arithmetic Operations:
+-- ADD          -> opcode: "000000"(0)
+-- SUB          -> opcode: "000001"(1)
+-- ADDW         -> opcode: "000010"(2)
+-- SUBW         -> opcode: "000011"(3)
+-- ABS          -> opcode: "000100"(4)  -- Extended
+-- ABSW         -> opcode: "000101"(5)  -- Extended
+-- MUL          -> opcode: "000110"(6)  -- Low 64 bits of product
+-- MULH         -> opcode: "000111"(7)  -- High 64 bits, signed x signed
+-- MULHSU       -> opcode: "001000"(8)  -- High 64 bits, signed x unsigned
+-- MULHU        -> opcode: "001001"(9)  -- High 64 bits, unsigned x unsigned
+-- MULW         -> opcode: "001010"(10) -- Low 32-bit product, sign-extended
+-- DIV          -> opcode: "001011"(11) -- Signed 64-bit quotient
+-- DIVU         -> opcode: "001100"(12) -- Unsigned 64-bit quotient
+-- DIVW         -> opcode: "001101"(13) -- Signed 32-bit quotient, sign-extended
+-- DIVUW        -> opcode: "001110"(14) -- Unsigned 32-bit quotient, sign-extended
+-- REM          -> opcode: "001111"(15) -- Signed 64-bit remainder
+-- REMU         -> opcode: "010000"(16) -- Unsigned 64-bit remainder
+-- REMW         -> opcode: "010001"(17) -- Signed 32-bit remainder, sign-extended
+-- REMUW        -> opcode: "010010"(18) -- Unsigned 32-bit remainder, sign-extended
+
 -- Logic Operations:
--- Buffer       -> opcode: "000000"
--- NOT          -> opcode: "000001" -- Extended
--- AND          -> opcode: "000010"
--- OR           -> opcode: "000011"
--- XOR          -> opcode: "000100"
--- NAND         -> opcode: "000101" -- Extended
--- NOR          -> opcode: "000110" -- Extended
--- XNOR         -> opcode: "000111" -- Extended
+-- Buffer       -> opcode: "010011"(19) -- Extended
+-- NOT          -> opcode: "010100"(20) -- Extended
+-- AND          -> opcode: "010101"(21)
+-- OR           -> opcode: "010110"(22)
+-- XOR          -> opcode: "010111"(23)
+-- ANDN         -> opcode: "011000"(24) -- Extended
+-- ORN          -> opcode: "011001"(25) -- Extended
+-- XORN         -> opcode: "011010"(26) -- Extended
+-- NAND         -> opcode: "011011"(27) -- Extended
+-- NOR          -> opcode: "011100"(28) -- Extended
+-- XNOR         -> opcode: "011101"(29) -- Extended
 
 -- Compare Operations:
--- A == B       -> opcode: "001000" -- Equal
--- A < B        -> opcode: "001001" -- SLT
--- Un A < B     -> opcode: "001010" -- SLTU
--- A <= B       -> opcode: "001011" -- Extended
--- Un A <= B    -> opcode: "001100" -- Extended
+-- A == B       -> opcode: "011110"(30) -- Equal
+-- A != B       -> opcode: "011111"(31) -- Not Equal
+-- A < B        -> opcode: "100000"(32) -- SLT
+-- A > B        -> opcode: "100001"(33) -- SGT
+-- A <= B       -> opcode: "100010"(34) -- LE
+-- A >= B       -> opcode: "100011"(35) -- GE
 
 -- Shift and Rotate Operations:
--- SLL          -> opcode: "001101"
--- SRL          -> opcode: "001110"
--- SRA          -> opcode: "001111"
--- ROL          -> opcode: "010000" -- Extended
--- ROR          -> opcode: "010001" -- Extended
--- SLLW         -> opcode: "010010"
--- SRLW         -> opcode: "010011"
--- SRAW         -> opcode: "010100" 
--- ROLW         -> opcode: "010101" -- Extended
--- RORW         -> opcode: "010110" -- Extended
+-- SLL          -> opcode: "100100"(36)
+-- SRL          -> opcode: "100101"(37)
+-- SRA          -> opcode: "100110"(38)
+-- ROL          -> opcode: "100111"(39) -- Extended
+-- ROR          -> opcode: "101000"(40) -- Extended
+-- SLLW         -> opcode: "101001"(41)
+-- SRLW         -> opcode: "101010"(42)
+-- SRAW         -> opcode: "101011"(43)
+-- ROLW         -> opcode: "101100"(44) -- Extended
+-- RORW         -> opcode: "101101"(45) -- Extended
 
--- Arithmetic Operations:
--- MUL          -> opcode: "010111"  -- Low 64 bits of product
--- MULH         -> opcode: "011000"  -- High 64 bits, signed x signed
--- MULHSU       -> opcode: "011001"  -- High 64 bits, signed x unsigned
--- MULHU        -> opcode: "011010"  -- High 64 bits, unsigned x unsigned
--- MULW         -> opcode: "011011"  -- Low 32-bit product, sign-extended
--- DIV          -> opcode: "011100"  -- Signed 64-bit quotient
--- DIVU         -> opcode: "011101"  -- Unsigned 64-bit quotient
--- DIVW         -> opcode: "011110"  -- Signed 32-bit quotient, sign-extended
--- DIVUW        -> opcode: "011111"  -- Unsigned 32-bit quotient, sign-extended
--- REM          -> opcode: "100000"  -- Signed 64-bit remainder
--- REMU         -> opcode: "100001"  -- Unsigned 64-bit remainder
--- REMW         -> opcode: "100010"  -- Signed 32-bit remainder, sign-extended
--- REMUW        -> opcode: "100011"  -- Unsigned 32-bit remainder, sign-extended
--- ADD          -> opcode: "100100"
--- SUB          -> opcode: "100101"
--- ADDW         -> opcode: "100110"
--- SUBW         -> opcode: "100111"
--- ABS          -> opcode: "101000" -- Extended
--- ABSW         -> opcode: "101001" -- Extended
+-- Custom Compare Operations:
+-- MIN          -> opcode: "101110"(46) -- Extended
+-- MINU         -> opcode: "101111"(47) -- Extended
+-- MAX          -> opcode: "110000"(48) -- Extended
+-- MAXU         -> opcode: "110001"(49) -- Extended
+
+-- Custom Bit Count Operations:
+-- CLZ          -> opcode: "110010"(50) -- Extended
+-- CTZ          -> opcode: "110011"(51) -- Extended
+-- CPOP         -> opcode: "110100"(52) -- Extended
+
+-- Custom Shift and Add Operations:
+-- SH1ADD       -> opcode: "110101"(53) -- Extended
+-- SH2ADD       -> opcode: "110110"(54) -- Extended
+-- SH3ADD       -> opcode: "110111"(55) -- Extended
+-- SH4ADD       -> opcode: "111000"(56) -- Extended
+-- SH8ADD       -> opcode: "111001"(57) -- Extended
+
+-- Custom Bit Manipulation Operations:
+-- BSET         -> opcode: "111010"(58) -- Extended
+-- BCLR         -> opcode: "111011"(59) -- Extended
+-- BINV         -> opcode: "111100"(60) -- Extended
+-- BEXT         -> opcode: "111101"(61) -- Extended
+
+-- Custom Rotate and Count Operations:
+-- REV8         -> opcode: "111110"(62) -- Extended
+-- ORC.B        -> opcode: "111111"(63) -- Extended
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -266,7 +298,7 @@ BEGIN
     TempMULSS <= STD_LOGIC_VECTOR(TempSA * TempSB);
     TempMULSU <= STD_LOGIC_VECTOR(signed(A(63) & A) * signed('0' & B));
     TempMULUU <= STD_LOGIC_VECTOR(TempUA * TempUB);
-    
+
     -- MUL
     ResultMUL <= TempMULSS(63 DOWNTO 0);
 
@@ -371,52 +403,53 @@ BEGIN
     ------------------------------------------------------------------------------------------
     -- Multiplexing
     TempResult <=
-        -- Logic operations
-        (A AND (63 DOWNTO 0 => Enable(0)))
-        OR (ResultNOT AND (63 DOWNTO 0 => Enable(1)))
-        OR (ResultAND AND (63 DOWNTO 0 => Enable(2)))
-        OR (ResultOR AND (63 DOWNTO 0 => Enable(3)))
-        OR (ResultXOR AND (63 DOWNTO 0 => Enable(4)))
-        OR (ResultNAND AND (63 DOWNTO 0 => Enable(5)))
-        OR (ResultNOR AND (63 DOWNTO 0 => Enable(6)))
-        OR (ResultXNOR AND (63 DOWNTO 0 => Enable(7)))
-        -- Compare operations
-        OR (ResultEQ AND (63 DOWNTO 0 => Enable(8)))
-        OR (ResultL AND (63 DOWNTO 0 => Enable(9)))
-        OR (ResultUnL AND (63 DOWNTO 0 => Enable(10)))
-        OR (ResultLE AND (63 DOWNTO 0 => Enable(11)))
-        OR (ResultUnLE AND (63 DOWNTO 0 => Enable(12)))
-        -- Shift and Rotating operations
-        OR (ResultSLL AND (63 DOWNTO 0 => Enable(13)))
-        OR (ResultSRL AND (63 DOWNTO 0 => Enable(14)))
-        OR (ResultSRA AND (63 DOWNTO 0 => Enable(15)))
-        OR (ResultROL AND (63 DOWNTO 0 => Enable(16)))
-        OR (ResultROR AND (63 DOWNTO 0 => Enable(17)))
-        OR (ResultSLLW AND (63 DOWNTO 0 => Enable(18)))
-        OR (ResultSRLW AND (63 DOWNTO 0 => Enable(19)))
-        OR (ResultSRAW AND (63 DOWNTO 0 => Enable(20)))
-        OR (ResultROLW AND (63 DOWNTO 0 => Enable(21)))
-        OR (ResultRORW AND (63 DOWNTO 0 => Enable(22)))
+
         -- Arithmetic operations
-        OR (ResultMUL AND (63 DOWNTO 0 => Enable(23)))
-        OR (ResultMULH AND (63 DOWNTO 0 => Enable(24)))
-        OR (ResultMULHSU AND (63 DOWNTO 0 => Enable(25)))
-        OR (ResultMULHU AND (63 DOWNTO 0 => Enable(26)))
-        OR (ResultMULW AND (63 DOWNTO 0 => Enable(27)))
-        OR (ResultDIV AND (63 DOWNTO 0 => Enable(28)))
-        OR (ResultDIVU AND (63 DOWNTO 0 => Enable(29)))
-        OR (ResultDIVW AND (63 DOWNTO 0 => Enable(30)))
-        OR (ResultDIVUW AND (63 DOWNTO 0 => Enable(31)))
-        OR (ResultREM AND (63 DOWNTO 0 => Enable(32)))
-        OR (ResultREMU AND (63 DOWNTO 0 => Enable(33)))
-        OR (ResultREMW AND (63 DOWNTO 0 => Enable(34)))
-        OR (ResultREMUW AND (63 DOWNTO 0 => Enable(35)))
-        OR (ResultADD AND (63 DOWNTO 0 => Enable(36)))
-        OR (ResultSUB AND (63 DOWNTO 0 => Enable(37)))
-        OR (ResultADDW AND (63 DOWNTO 0 => Enable(38)))
-        OR (ResultSUBW AND (63 DOWNTO 0 => Enable(39)))
-        OR (ResultABS AND (63 DOWNTO 0 => Enable(40)))
-        OR (ResultABSW AND (63 DOWNTO 0 => Enable(41)));
+        (ResultADD AND (63 DOWNTO 0 => Enable(0)))
+        OR (ResultSUB AND (63 DOWNTO 0 => Enable(1)))
+        OR (ResultADDW AND (63 DOWNTO 0 => Enable(2)))
+        OR (ResultSUBW AND (63 DOWNTO 0 => Enable(3)))
+        OR (ResultABS AND (63 DOWNTO 0 => Enable(4)))
+        OR (ResultABSW AND (63 DOWNTO 0 => Enable(5)))
+        OR (ResultMUL AND (63 DOWNTO 0 => Enable(6)))
+        OR (ResultMULH AND (63 DOWNTO 0 => Enable(7)))
+        OR (ResultMULHSU AND (63 DOWNTO 0 => Enable(8)))
+        OR (ResultMULHU AND (63 DOWNTO 0 => Enable(9)))
+        OR (ResultMULW AND (63 DOWNTO 0 => Enable(10)))
+        OR (ResultDIV AND (63 DOWNTO 0 => Enable(11)))
+        OR (ResultDIVU AND (63 DOWNTO 0 => Enable(12)))
+        OR (ResultDIVW AND (63 DOWNTO 0 => Enable(13)))
+        OR (ResultDIVUW AND (63 DOWNTO 0 => Enable(14)))
+        OR (ResultREM AND (63 DOWNTO 0 => Enable(15)))
+        OR (ResultREMU AND (63 DOWNTO 0 => Enable(16)))
+        OR (ResultREMW AND (63 DOWNTO 0 => Enable(17)))
+        OR (ResultREMUW AND (63 DOWNTO 0 => Enable(18)))
+        -- Logic operations
+        OR (A AND (63 DOWNTO 0 => Enable(19)))
+        OR (ResultNOT AND (63 DOWNTO 0 => Enable(20)))
+        OR (ResultAND AND (63 DOWNTO 0 => Enable(21)))
+        OR (ResultOR AND (63 DOWNTO 0 => Enable(22)))
+        OR (ResultXOR AND (63 DOWNTO 0 => Enable(23)))
+        OR (ResultNAND AND (63 DOWNTO 0 => Enable(24)))
+        OR (ResultNOR AND (63 DOWNTO 0 => Enable(25)))
+        OR (ResultXNOR AND (63 DOWNTO 0 => Enable(26)))
+        -- Compare operations
+        OR (ResultEQ AND (63 DOWNTO 0 => Enable(27)))
+        OR (ResultL AND (63 DOWNTO 0 => Enable(28)))
+        OR (ResultUnL AND (63 DOWNTO 0 => Enable(29)))
+        OR (ResultLE AND (63 DOWNTO 0 => Enable(30)))
+        OR (ResultUnLE AND (63 DOWNTO 0 => Enable(31)))
+        -- Shift and Rotating operations
+        OR (ResultSLL AND (63 DOWNTO 0 => Enable(32)))
+        OR (ResultSRL AND (63 DOWNTO 0 => Enable(33)))
+        OR (ResultSRA AND (63 DOWNTO 0 => Enable(34)))
+        OR (ResultROL AND (63 DOWNTO 0 => Enable(35)))
+        OR (ResultROR AND (63 DOWNTO 0 => Enable(36)))
+        OR (ResultSLLW AND (63 DOWNTO 0 => Enable(37)))
+        OR (ResultSRLW AND (63 DOWNTO 0 => Enable(38)))
+        OR (ResultSRAW AND (63 DOWNTO 0 => Enable(39)))
+        OR (ResultROLW AND (63 DOWNTO 0 => Enable(40)))
+        OR (ResultRORW AND (63 DOWNTO 0 => Enable(41)));
 
     Cout <=
         (CoutADD AND Enable(36))
