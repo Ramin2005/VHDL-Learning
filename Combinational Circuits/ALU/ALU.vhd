@@ -101,17 +101,52 @@ END ENTITY ALU;
 
 -- Architecture of ALU
 ARCHITECTURE struct OF ALU IS
+
+    -- Arithmetic result signals
+    SIGNAL ResultADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultSUB : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultADDW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultSUBW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultABS : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultABSW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultMUL : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultMULH : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultMULHSU : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultMULHU : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultMULW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultDIV : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultDIVU : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultDIVW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultDIVUW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultREM : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultREMU : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultREMW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultREMUW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+
+    SIGNAL CoutADD : STD_LOGIC;
+    SIGNAL CoutSUB : STD_LOGIC;
+    SIGNAL CoutADDW : STD_LOGIC;
+    SIGNAL CoutSUBW : STD_LOGIC;
+    SIGNAL OverflowADD : STD_LOGIC;
+    SIGNAL OverflowSUB : STD_LOGIC;
+    SIGNAL OverflowADDW : STD_LOGIC;
+    SIGNAL OverflowSUBW : STD_LOGIC;
+
     -- Logic result signals
     SIGNAL ResultNOT : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultAND : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultXOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultANDN : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultORN : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultXORN : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultNAND : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultNOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultXNOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Compare result signals
     SIGNAL ResultEQ : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultNEQ : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultL : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultUnL : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultLE : STD_LOGIC_VECTOR(63 DOWNTO 0);
@@ -129,35 +164,11 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL ResultROLW : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultRORW : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-    -- Arithmetic result signals
-    SIGNAL ResultMUL : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultMULH : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultMULHSU : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultMULHU : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultMULW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultDIV : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultDIVU : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultDIVW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultDIVUW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultREM : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultREMU : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultREMW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultREMUW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultSUB : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultADDW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultSUBW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultABS : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultABSW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-
-    SIGNAL CoutADD : STD_LOGIC;
-    SIGNAL CoutSUB : STD_LOGIC;
-    SIGNAL CoutADDW : STD_LOGIC;
-    SIGNAL CoutSUBW : STD_LOGIC;
-    SIGNAL OverflowADD : STD_LOGIC;
-    SIGNAL OverflowSUB : STD_LOGIC;
-    SIGNAL OverflowADDW : STD_LOGIC;
-    SIGNAL OverflowSUBW : STD_LOGIC;
+    -- Custom Compare Signal
+    SIGNAL ResultMIN : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultMINU : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultMAX : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultMAXU : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Temporary signal
     CONSTANT TempZero : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '0');
@@ -236,6 +247,10 @@ BEGIN
     -- Compare operations
     -- A = B
     ResultEQ <= (0 => '1', OTHERS => '0') WHEN A = B ELSE
+        TempZero;
+
+    -- A != B
+    ResultNEQ <= (0 => '1', OTHERS => '0') WHEN A /= B ELSE
         TempZero;
 
     -- A < B
@@ -391,6 +406,25 @@ BEGIN
 
     -- ABSW
     ResultABSW <= (63 DOWNTO 32 => TempAbsAL(31)) & STD_LOGIC_VECTOR(TempAbsAL);
+    ------------------------------------------------------------------------------------------
+
+    ------------------------------------------------------------------------------------------
+    -- Custom Compare Operations
+    -- MIN
+    ResultMIN <= A WHEN TempSA < TempSB ELSE
+        B;
+
+    -- MINU
+    ResultMINU <= A WHEN TempUA < TempUB ELSE
+        B;
+
+    -- MAX
+    ResultMAX <= A WHEN TempSA < TempSB ELSE
+        B;
+
+    -- MAXU
+    ResultMAXU <= A WHEN TempUA < TempUB ELSE
+        B;
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
