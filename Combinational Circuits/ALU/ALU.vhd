@@ -429,15 +429,12 @@ BEGIN
 
     ------------------------------------------------------------------------------------------
     -- Enable and Select
-    Enable <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 44), to_integer(unsigned(S))))
-        WHEN (unsigned(S) <= 41) ELSE
-        (0 => '1', OTHERS => '0');
+    Enable <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 64), to_integer(unsigned(S))))
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
     -- Multiplexing
     TempResult <=
-
         -- Arithmetic operations
         (ResultADD AND (63 DOWNTO 0 => Enable(0)))
         OR (ResultSUB AND (63 DOWNTO 0 => Enable(1)))
