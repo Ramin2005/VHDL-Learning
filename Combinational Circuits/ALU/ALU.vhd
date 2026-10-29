@@ -164,72 +164,85 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL ResultROLW : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultRORW : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-    -- Custom Compare Signal
+    -- Custom Compare result signals
     SIGNAL ResultMIN : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultMINU : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultMAX : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultMAXU : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-    -- Custom Bit Count Operations:
+    -- Custom Bit Count result signals
     SIGNAL ResultCLZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultCTZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultCPOP : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-    -- Custom Shift and Add Operations:
+    -- Custom Shift and Add result signals
     SIGNAL ResultSH1ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultSH2ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultSH3ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultSH4ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultSH8ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-    -- Custom Bit Manipulation Operations:
+    -- Custom Bit Manipulation result signals
     SIGNAL ResultBSET : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultBCLR : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultBINV : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultBEXT : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-    -- Custom Rotate and Count Operations:
+    -- Custom Rotate and Count result signals
     SIGNAL ResultREV8 : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultORCB : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-    -- Temporary signal
-    CONSTANT TempZero : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '0');
+    -- Temporary signals
+    -- 32 Low bits temps
     SIGNAL TempAL : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL TempBL : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    -- Shift and Routing temps
     SIGNAL TempSLLW : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL TempSRLW : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL TempSRAW : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL TempROLW : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL TempRORW : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    -- Arithmetic temps
+    SIGNAL TempADD : unsigned(64 DOWNTO 0);
+    SIGNAL TempSUB : unsigned(64 DOWNTO 0);
+    SIGNAL TempADDW : unsigned(32 DOWNTO 0);
+    SIGNAL TempSUBW : unsigned(32 DOWNTO 0);
     SIGNAL TempMULSS : STD_LOGIC_VECTOR(127 DOWNTO 0);
     SIGNAL TempMULSU : STD_LOGIC_VECTOR(129 DOWNTO 0);
     SIGNAL TempMULUU : STD_LOGIC_VECTOR(127 DOWNTO 0);
-    SIGNAL TempSA : signed (63 DOWNTO 0);
-    SIGNAL TempSB : signed (63 DOWNTO 0);
-    SIGNAL TempAbsA : signed (63 DOWNTO 0);
-    SIGNAL TempAbsB : signed (63 DOWNTO 0);
-    SIGNAL TempUA : unsigned (63 DOWNTO 0);
-    SIGNAL TempUB : unsigned (63 DOWNTO 0);
-    SIGNAL TempSAL : signed (31 DOWNTO 0);
-    SIGNAL TempSBL : signed (31 DOWNTO 0);
-    SIGNAL TempAbsAL : signed (31 DOWNTO 0);
-    SIGNAL TempAbsBL : signed (31 DOWNTO 0);
-    SIGNAL TempUAL : unsigned (31 DOWNTO 0);
-    SIGNAL TempUBL : unsigned (31 DOWNTO 0);
     SIGNAL TempDIVW : signed (31 DOWNTO 0);
     SIGNAL TempDIVUW : unsigned (31 DOWNTO 0);
     SIGNAL TempREM : signed (63 DOWNTO 0);
     SIGNAL TempREMW : signed (31 DOWNTO 0);
     SIGNAL TempREMUW : unsigned (31 DOWNTO 0);
-    SIGNAL TempADD : unsigned(64 DOWNTO 0);
-    SIGNAL TempSUB : unsigned(64 DOWNTO 0);
-    SIGNAL TempADDW : unsigned(32 DOWNTO 0);
-    SIGNAL TempSUBW : unsigned(32 DOWNTO 0);
+    -- Signed and Unsigned of A, B, AL, BL temps
+    SIGNAL TempSA : signed (63 DOWNTO 0);
+    SIGNAL TempSB : signed (63 DOWNTO 0);
+    SIGNAL TempUA : unsigned (63 DOWNTO 0);
+    SIGNAL TempUB : unsigned (63 DOWNTO 0);
+    SIGNAL TempSAL : signed (31 DOWNTO 0);
+    SIGNAL TempSBL : signed (31 DOWNTO 0);
+    SIGNAL TempUAL : unsigned (31 DOWNTO 0);
+    SIGNAL TempUBL : unsigned (31 DOWNTO 0);
+    -- Abs of Signed of A, B, AL, BL temps
+    SIGNAL TempAbsA : signed (63 DOWNTO 0);
+    SIGNAL TempAbsB : signed (63 DOWNTO 0);
+    SIGNAL TempAbsAL : signed (31 DOWNTO 0);
+    SIGNAL TempAbsBL : signed (31 DOWNTO 0);
+    -- Custom Shift and Add operations temps
+    SIGNAL ResultSH1ADD : signed(64 DOWNTO 0);
+    SIGNAL ResultSH2ADD : signed(64 DOWNTO 0);
+    SIGNAL ResultSH3ADD : signed(64 DOWNTO 0);
+    SIGNAL ResultSH4ADD : signed(64 DOWNTO 0);
+    SIGNAL ResultSH8ADD : signed(64 DOWNTO 0);
+    -- Result temp
     SIGNAL TempResult : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Enable and Select Signals
     SIGNAL Enable : STD_LOGIC_VECTOR(43 DOWNTO 0);
 
+    -- Zero constant
+    CONSTANT TempZero : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '0');
 BEGIN
 
     TempAL <= A(31 DOWNTO 0);
@@ -246,89 +259,6 @@ BEGIN
     TempAbsB <= ABS(TempSB);
     TempAbsAL <= ABS(TempSAL);
     TempAbsBL <= ABS(TempSBL);
-
-    ------------------------------------------------------------------------------------------
-    -- Logic Operations
-    -- NOT
-    ResultNOT <= NOT A;
-    -- AND
-    ResultAND <= A AND B;
-    -- OR
-    ResultOR <= A OR B;
-    -- XOR
-    ResultXOR <= A XOR B;
-    -- NAND
-    ResultNAND <= A NAND B;
-    -- NOR
-    ResultNOR <= A NOR B;
-    -- XNOR
-    ResultXNOR <= A XNOR B;
-    ------------------------------------------------------------------------------------------
-
-    ------------------------------------------------------------------------------------------
-    -- Compare operations
-    -- A = B
-    ResultEQ <= (0 => '1', OTHERS => '0') WHEN A = B ELSE
-        TempZero;
-
-    -- A != B
-    ResultNEQ <= (0 => '1', OTHERS => '0') WHEN A /= B ELSE
-        TempZero;
-
-    -- A < B
-    ResultL <= (0 => '1', OTHERS => '0') WHEN TempSA < TempSB ELSE
-        TempZero;
-
-    -- Un A < B
-    ResultUnL <= (0 => '1', OTHERS => '0') WHEN TempUA < TempUB ELSE
-        TempZero;
-
-    -- A <= B
-    ResultLE <= (0 => '1', OTHERS => '0') WHEN TempSA <= TempSB ELSE
-        TempZero;
-
-    -- Un A <= B
-    ResultUnLE <= (0 => '1', OTHERS => '0') WHEN TempUA <= TempUB ELSE
-        TempZero;
-    ------------------------------------------------------------------------------------------
-
-    ------------------------------------------------------------------------------------------
-    -- Shift and Rotating operations
-    -- SLL
-    ResultSLL <= STD_LOGIC_VECTOR(SHIFT_LEFT(TempUA, to_integer(unsigned(B(5 DOWNTO 0)))));
-
-    -- SRL
-    ResultSRL <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempUA, to_integer(unsigned(B(5 DOWNTO 0)))));
-
-    -- SRA
-    ResultSRA <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempSA, to_integer(unsigned(B(5 DOWNTO 0)))));
-
-    -- ROL
-    ResultROL <= STD_LOGIC_VECTOR(ROTATE_LEFT(TempUA, to_integer(unsigned(B(5 DOWNTO 0)))));
-
-    -- ROR
-    ResultROR <= STD_LOGIC_VECTOR(ROTATE_RIGHT(TempUA, to_integer(unsigned(B(5 DOWNTO 0)))));
-
-    -- SLLW
-    TempSLLW <= STD_LOGIC_VECTOR(SHIFT_LEFT(TempUAL, to_integer(unsigned(B(4 DOWNTO 0)))));
-    ResultSLLW <= (63 DOWNTO 32 => TempSLLW(31)) & TempSLLW;
-
-    -- SRLW
-    TempSRLW <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempUAL, to_integer(unsigned(B(4 DOWNTO 0)))));
-    ResultSRLW <= (63 DOWNTO 32 => TempSRLW(31)) & TempSRLW;
-
-    -- SRAW
-    TempSRAW <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempSAL, to_integer(unsigned(B(4 DOWNTO 0)))));
-    ResultSRAW <= (63 DOWNTO 32 => TempSRAW(31)) & TempSRAW;
-
-    -- ROLW
-    TempROLW <= STD_LOGIC_VECTOR(ROTATE_LEFT(TempUAL, to_integer(unsigned(B(4 DOWNTO 0)))));
-    ResultROLW <= (63 DOWNTO 32 => TempROLW(31)) & TempROLW;
-
-    -- RORW
-    TempRORW <= STD_LOGIC_VECTOR(ROTATE_RIGHT(TempUAL, to_integer(unsigned(B(4 DOWNTO 0)))));
-    ResultRORW <= (63 DOWNTO 32 => TempRORW(31)) & TempRORW;
-    ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
     -- Arithmetic operations
@@ -431,6 +361,95 @@ BEGIN
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
+    -- Logic Operations
+    -- NOT
+    ResultNOT <= NOT A;
+    -- AND
+    ResultAND <= A AND B;
+    -- OR
+    ResultOR <= A OR B;
+    -- XOR
+    ResultXOR <= A XOR B;
+    -- ANDN
+    ResultANDN <= A AND NOT B;
+    -- ORN
+    ResultORN <= A OR NOT B;
+    -- XORN
+    ResultXORN <= A XOR NOT B;
+    -- NAND
+    ResultNAND <= A NAND B;
+    -- NOR
+    ResultNOR <= A NOR B;
+    -- XNOR
+    ResultXNOR <= A XNOR B;
+    ------------------------------------------------------------------------------------------
+
+    ------------------------------------------------------------------------------------------
+    -- Compare operations
+    -- A = B
+    ResultEQ <= (0 => '1', OTHERS => '0') WHEN A = B ELSE
+        TempZero;
+
+    -- A != B
+    ResultNEQ <= (0 => '1', OTHERS => '0') WHEN A /= B ELSE
+        TempZero;
+
+    -- A < B
+    ResultL <= (0 => '1', OTHERS => '0') WHEN TempSA < TempSB ELSE
+        TempZero;
+
+    -- Un A < B
+    ResultUnL <= (0 => '1', OTHERS => '0') WHEN TempUA < TempUB ELSE
+        TempZero;
+
+    -- A <= B
+    ResultLE <= (0 => '1', OTHERS => '0') WHEN TempSA <= TempSB ELSE
+        TempZero;
+
+    -- Un A <= B
+    ResultUnLE <= (0 => '1', OTHERS => '0') WHEN TempUA <= TempUB ELSE
+        TempZero;
+    ------------------------------------------------------------------------------------------
+
+    ------------------------------------------------------------------------------------------
+    -- Shift and Rotating operations
+    -- SLL
+    ResultSLL <= STD_LOGIC_VECTOR(SHIFT_LEFT(TempUA, to_integer(unsigned(B(5 DOWNTO 0)))));
+
+    -- SRL
+    ResultSRL <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempUA, to_integer(unsigned(B(5 DOWNTO 0)))));
+
+    -- SRA
+    ResultSRA <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempSA, to_integer(unsigned(B(5 DOWNTO 0)))));
+
+    -- ROL
+    ResultROL <= STD_LOGIC_VECTOR(ROTATE_LEFT(TempUA, to_integer(unsigned(B(5 DOWNTO 0)))));
+
+    -- ROR
+    ResultROR <= STD_LOGIC_VECTOR(ROTATE_RIGHT(TempUA, to_integer(unsigned(B(5 DOWNTO 0)))));
+
+    -- SLLW
+    TempSLLW <= STD_LOGIC_VECTOR(SHIFT_LEFT(TempUAL, to_integer(unsigned(B(4 DOWNTO 0)))));
+    ResultSLLW <= (63 DOWNTO 32 => TempSLLW(31)) & TempSLLW;
+
+    -- SRLW
+    TempSRLW <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempUAL, to_integer(unsigned(B(4 DOWNTO 0)))));
+    ResultSRLW <= (63 DOWNTO 32 => TempSRLW(31)) & TempSRLW;
+
+    -- SRAW
+    TempSRAW <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempSAL, to_integer(unsigned(B(4 DOWNTO 0)))));
+    ResultSRAW <= (63 DOWNTO 32 => TempSRAW(31)) & TempSRAW;
+
+    -- ROLW
+    TempROLW <= STD_LOGIC_VECTOR(ROTATE_LEFT(TempUAL, to_integer(unsigned(B(4 DOWNTO 0)))));
+    ResultROLW <= (63 DOWNTO 32 => TempROLW(31)) & TempROLW;
+
+    -- RORW
+    TempRORW <= STD_LOGIC_VECTOR(ROTATE_RIGHT(TempUAL, to_integer(unsigned(B(4 DOWNTO 0)))));
+    ResultRORW <= (63 DOWNTO 32 => TempRORW(31)) & TempRORW;
+    ------------------------------------------------------------------------------------------
+
+    ------------------------------------------------------------------------------------------
     -- Custom Compare Operations
     -- MIN
     ResultMIN <= A WHEN TempSA < TempSB ELSE
@@ -450,13 +469,57 @@ BEGIN
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
-    -- Enable and Select
-    Enable <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 64), to_integer(unsigned(S))))
-        ------------------------------------------------------------------------------------------
+    -- Custom Bit Count Operations
+    SIGNAL ResultCLZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultCTZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultCPOP : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    ------------------------------------------------------------------------------------------
 
-        ------------------------------------------------------------------------------------------
-        -- Multiplexing
-        TempResult <=
+    ------------------------------------------------------------------------------------------
+    -- Custom Shift and Add Operations
+    -- SH1ADD
+    TempSH1ADD <= SHIFT_LEFT((TempSA(63) & TempSA), 1) + (TempSB(63) & TempSB);
+    ResultSH1ADD <= STD_LOGIC_VECTOR(TempSH1ADD);
+
+    -- SH2ADD
+    TempSH2ADD <= SHIFT_LEFT((TempSA(63) & TempSA), 2) + (TempSB(63) & TempSB);
+    ResultSH2ADD <= STD_LOGIC_VECTOR(TempSH2ADD);
+
+    -- SH3ADD
+    TempSH3ADD <= SHIFT_LEFT((TempSA(63) & TempSA), 3) + (TempSB(63) & TempSB);
+    ResultSH3ADD <= STD_LOGIC_VECTOR(TempSH3ADD);
+
+    -- SH4ADD
+    TempSH4ADD <= SHIFT_LEFT((TempSA(63) & TempSA), 4) + (TempSB(63) & TempSB);
+    ResultSH4ADD <= STD_LOGIC_VECTOR(TempSH4ADD);
+
+    -- SH8ADD
+    TempSH8ADD <= SHIFT_LEFT((TempSA(63) & TempSA), 8) + (TempSB(63) & TempSB);
+    ResultSH8ADD <= STD_LOGIC_VECTOR(TempSH8ADD);
+    ------------------------------------------------------------------------------------------
+
+    ------------------------------------------------------------------------------------------
+    -- Custom Bit Manipulation Operations
+    SIGNAL ResultBSET : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultBCLR : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultBINV : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultBEXT : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    ------------------------------------------------------------------------------------------
+
+    ------------------------------------------------------------------------------------------
+    -- Custom Rotate and Count Operations
+    SIGNAL ResultREV8 : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultORCB : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    ------------------------------------------------------------------------------------------
+
+    ------------------------------------------------------------------------------------------
+    -- Enable and Select
+    Enable <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 64), to_integer(unsigned(S))));
+    ------------------------------------------------------------------------------------------
+
+    ------------------------------------------------------------------------------------------
+    -- Multiplexing
+    TempResult <=
         -- Arithmetic operations
         (ResultADD AND (63 DOWNTO 0 => Enable(0)))
         OR (ResultSUB AND (63 DOWNTO 0 => Enable(1)))
