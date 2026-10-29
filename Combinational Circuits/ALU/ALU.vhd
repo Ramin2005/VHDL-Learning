@@ -79,7 +79,7 @@
 -- BINV         -> opcode: "111100"(60) -- Extended
 -- BEXT         -> opcode: "111101"(61) -- Extended
 
--- Custom Rotate and Count Operations:
+-- Other Custom Operations:
 -- REV8         -> opcode: "111110"(62) -- Extended
 -- ORC.B        -> opcode: "111111"(63) -- Extended
 
@@ -188,7 +188,7 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL ResultBINV : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultBEXT : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-    -- Custom Rotate and Count result signals
+    -- Other Custom Operations signals
     SIGNAL ResultREV8 : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultORCB : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
@@ -507,8 +507,11 @@ BEGIN
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
-    -- Custom Rotate and Count Operations
-    SIGNAL ResultREV8 : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    -- Other Custom Operations
+    -- REV8
+    ResultREV8 <= A(7 DOWNTO 0) & A(15 DOWNTO 8) & A(23 DOWNTO 16) & A(31 DOWNTO 24)
+        & A(39 DOWNTO 32) & A(47 DOWNTO 40) & A(55 DOWNTO 48) & A(63 DOWNTO 56);
+
     SIGNAL ResultORCB : STD_LOGIC_VECTOR(63 DOWNTO 0);
     ------------------------------------------------------------------------------------------
 
