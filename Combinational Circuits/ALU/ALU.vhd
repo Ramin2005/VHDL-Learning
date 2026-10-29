@@ -229,20 +229,25 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL TempAbsB : signed (63 DOWNTO 0);
     SIGNAL TempAbsAL : signed (31 DOWNTO 0);
     SIGNAL TempAbsBL : signed (31 DOWNTO 0);
+    -- Custom Bit Count operations temps
+    SIGNAL TempCLZ : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '1');
+    SIGNAL TempCTZ : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '1');
+    SIGNAL TempCPOP : STD_LOGIC_VECTOR(63 DOWNTO 0);
     -- Custom Shift and Add operations temps
-    SIGNAL ResultSH1ADD : signed(64 DOWNTO 0);
-    SIGNAL ResultSH2ADD : signed(64 DOWNTO 0);
-    SIGNAL ResultSH3ADD : signed(64 DOWNTO 0);
-    SIGNAL ResultSH4ADD : signed(64 DOWNTO 0);
-    SIGNAL ResultSH8ADD : signed(64 DOWNTO 0);
+    SIGNAL TempSH1ADD : signed(64 DOWNTO 0);
+    SIGNAL TempSH2ADD : signed(64 DOWNTO 0);
+    SIGNAL TempSH3ADD : signed(64 DOWNTO 0);
+    SIGNAL TempSH4ADD : signed(64 DOWNTO 0);
+    SIGNAL TempSH8ADD : signed(64 DOWNTO 0);
     -- Result temp
     SIGNAL TempResult : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Enable and Select Signals
     SIGNAL Enable : STD_LOGIC_VECTOR(43 DOWNTO 0);
 
-    -- Zero constant
-    CONSTANT TempZero : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '0');
+    -- Constants
+    CONSTANT ConstantZero : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '0');
+    CONSTANT ConstantFull : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '1');
 BEGIN
 
     TempAL <= A(31 DOWNTO 0);
@@ -388,27 +393,27 @@ BEGIN
     -- Compare operations
     -- A = B
     ResultEQ <= (0 => '1', OTHERS => '0') WHEN A = B ELSE
-        TempZero;
+        ConstantZero;
 
     -- A != B
     ResultNEQ <= (0 => '1', OTHERS => '0') WHEN A /= B ELSE
-        TempZero;
+        ConstantZero;
 
     -- A < B
     ResultL <= (0 => '1', OTHERS => '0') WHEN TempSA < TempSB ELSE
-        TempZero;
+        ConstantZero;
 
     -- Un A < B
     ResultUnL <= (0 => '1', OTHERS => '0') WHEN TempUA < TempUB ELSE
-        TempZero;
+        ConstantZero;
 
     -- A <= B
     ResultLE <= (0 => '1', OTHERS => '0') WHEN TempSA <= TempSB ELSE
-        TempZero;
+        ConstantZero;
 
     -- Un A <= B
     ResultUnLE <= (0 => '1', OTHERS => '0') WHEN TempUA <= TempUB ELSE
-        TempZero;
+        ConstantZero;
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
@@ -470,6 +475,14 @@ BEGIN
 
     ------------------------------------------------------------------------------------------
     -- Custom Bit Count Operations
+
+    FOR i IN 63 DOWNTO 0 LOOP
+        IF A(i) = '1' THEN
+            TempCLZ <= STD_LOGIC_VECTOR(to_unsigned(63 - i, 64));
+            EXIT;
+        END IF;
+    END LOOP;
+
     SIGNAL ResultCLZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultCTZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultCPOP : STD_LOGIC_VECTOR(63 DOWNTO 0);
@@ -584,7 +597,7 @@ BEGIN
 
     Result <= TempResult;
 
-    Zero <= '1' WHEN TempResult = TempZero ELSE
+    Zero <= '1' WHEN TempResult = ConstantZero ELSE
         '0';
 
 END struct;
