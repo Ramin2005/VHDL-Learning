@@ -193,6 +193,10 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL ResultORCB : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Temporary signals
+    -- 5, 6 Low bit unsigned temps
+    SIGNAL TempBN5 : unsigned(4 DOWNTO 0);
+    SIGNAL TempBN6 : unsigned(5 DOWNTO 0);
+    SIGNAL TempBS : STD_LOGIC_VECTOR(63 DOWNTO 0);
     -- 32 Low bits temps
     SIGNAL TempAL : STD_LOGIC_VECTOR(31 DOWNTO 0);
     SIGNAL TempBL : STD_LOGIC_VECTOR(31 DOWNTO 0);
@@ -232,7 +236,7 @@ ARCHITECTURE struct OF ALU IS
     -- Custom Bit Count operations temps
     SIGNAL TempCLZ : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '1');
     SIGNAL TempCTZ : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '1');
-    SIGNAL TempCPOP : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL TempCPOP : unsigned(63 DOWNTO 0) := (OTHERS => '0');
     -- Custom Shift and Add operations temps
     SIGNAL TempSH1ADD : signed(64 DOWNTO 0);
     SIGNAL TempSH2ADD : signed(64 DOWNTO 0);
@@ -250,6 +254,8 @@ ARCHITECTURE struct OF ALU IS
     CONSTANT ConstantFull : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '1');
 BEGIN
 
+    TempBN5 <= unsigned(B(4 DOWNTO 0));
+    TempBN6 <= unsigned(B(5 DOWNTO 0));
     TempAL <= A(31 DOWNTO 0);
     TempBL <= B(31 DOWNTO 0);
     TempSA <= signed(A);
@@ -419,38 +425,38 @@ BEGIN
     ------------------------------------------------------------------------------------------
     -- Shift and Rotating operations
     -- SLL
-    ResultSLL <= STD_LOGIC_VECTOR(SHIFT_LEFT(TempUA, to_integer(unsigned(B(5 DOWNTO 0)))));
+    ResultSLL <= STD_LOGIC_VECTOR(SHIFT_LEFT(TempUA, to_integer(TempBN6)));
 
     -- SRL
-    ResultSRL <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempUA, to_integer(unsigned(B(5 DOWNTO 0)))));
+    ResultSRL <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempUA, to_integer(TempBN6)));
 
     -- SRA
-    ResultSRA <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempSA, to_integer(unsigned(B(5 DOWNTO 0)))));
+    ResultSRA <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempSA, to_integer(TempBN6)));
 
     -- ROL
-    ResultROL <= STD_LOGIC_VECTOR(ROTATE_LEFT(TempUA, to_integer(unsigned(B(5 DOWNTO 0)))));
+    ResultROL <= STD_LOGIC_VECTOR(ROTATE_LEFT(TempUA, to_integer(TempBN6)));
 
     -- ROR
-    ResultROR <= STD_LOGIC_VECTOR(ROTATE_RIGHT(TempUA, to_integer(unsigned(B(5 DOWNTO 0)))));
+    ResultROR <= STD_LOGIC_VECTOR(ROTATE_RIGHT(TempUA, to_integer(TempBN6)));
 
     -- SLLW
-    TempSLLW <= STD_LOGIC_VECTOR(SHIFT_LEFT(TempUAL, to_integer(unsigned(B(4 DOWNTO 0)))));
+    TempSLLW <= STD_LOGIC_VECTOR(SHIFT_LEFT(TempUAL, to_integer(TempBN5)));
     ResultSLLW <= (63 DOWNTO 32 => TempSLLW(31)) & TempSLLW;
 
     -- SRLW
-    TempSRLW <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempUAL, to_integer(unsigned(B(4 DOWNTO 0)))));
+    TempSRLW <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempUAL, to_integer(TempBN5)));
     ResultSRLW <= (63 DOWNTO 32 => TempSRLW(31)) & TempSRLW;
 
     -- SRAW
-    TempSRAW <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempSAL, to_integer(unsigned(B(4 DOWNTO 0)))));
+    TempSRAW <= STD_LOGIC_VECTOR(SHIFT_RIGHT(TempSAL, to_integer(TempBN5)));
     ResultSRAW <= (63 DOWNTO 32 => TempSRAW(31)) & TempSRAW;
 
     -- ROLW
-    TempROLW <= STD_LOGIC_VECTOR(ROTATE_LEFT(TempUAL, to_integer(unsigned(B(4 DOWNTO 0)))));
+    TempROLW <= STD_LOGIC_VECTOR(ROTATE_LEFT(TempUAL, to_integer(TempBN5)));
     ResultROLW <= (63 DOWNTO 32 => TempROLW(31)) & TempROLW;
 
     -- RORW
-    TempRORW <= STD_LOGIC_VECTOR(ROTATE_RIGHT(TempUAL, to_integer(unsigned(B(4 DOWNTO 0)))));
+    TempRORW <= STD_LOGIC_VECTOR(ROTATE_RIGHT(TempUAL, to_integer(TempBN5)));
     ResultRORW <= (63 DOWNTO 32 => TempRORW(31)) & TempRORW;
     ------------------------------------------------------------------------------------------
 
@@ -475,17 +481,31 @@ BEGIN
 
     ------------------------------------------------------------------------------------------
     -- Custom Bit Count Operations
-
+    -- CLZ
     FOR i IN 63 DOWNTO 0 LOOP
         IF A(i) = '1' THEN
             TempCLZ <= STD_LOGIC_VECTOR(to_unsigned(63 - i, 64));
             EXIT;
         END IF;
     END LOOP;
+    ResultCLZ <= TempCLZ;
 
-    SIGNAL ResultCLZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultCTZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultCPOP : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    -- CTZ
+    FOR i IN 0 TO 63 LOOP
+        IF A(i) = '1' THEN
+            TempCTZ <= STD_LOGIC_VECTOR(to_unsigned(i + 1, 64));
+            EXIT;
+        END IF;
+    END LOOP;
+    ResultCTZ <= TempCTZ;
+
+    -- CPOP
+    FOR i IN 0 TO 63 LOOP
+        IF A(i) = '1' THEN
+            TempCPOP <= TempCPOP + to_unsigned(1, 64);
+        END IF;
+    END LOOP;
+    ResultCPOP <= STD_LOGIC_VECTOR(TempCPOP);
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
@@ -513,10 +533,19 @@ BEGIN
 
     ------------------------------------------------------------------------------------------
     -- Custom Bit Manipulation Operations
-    SIGNAL ResultBSET : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultBCLR : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultBINV : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultBEXT : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    TempBS <= STD_LOGIC_VECTOR(shift_left(to_unsigned(1, 64), to_integer(TempBN6)));
+
+    -- BSET
+    ResultBSET <= A OR TempBS;
+
+    -- BCLR
+    ResultBCLR <= A AND NOT TempBS;
+
+    -- BINV
+    ResultBINV <= A XOR TempBS;
+
+    -- BEXT
+    ResultBEXT <= A AND TempBS;
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
