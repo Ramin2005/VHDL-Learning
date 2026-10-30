@@ -235,9 +235,9 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL TempAbsAL : signed (31 DOWNTO 0);
     SIGNAL TempAbsBL : signed (31 DOWNTO 0);
     -- Custom Bit Count operations temps
-    SIGNAL TempCLZ : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '1');
-    SIGNAL TempCTZ : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '1');
-    SIGNAL TempCPOP : unsigned(63 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL TempCLZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL TempCTZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    VARIABLE TempCPOP : unsigned(63 DOWNTO 0);
     -- Custom Shift and Add operations temps
     SIGNAL TempSH1ADD : signed(64 DOWNTO 0);
     SIGNAL TempSH2ADD : signed(64 DOWNTO 0);
@@ -307,7 +307,7 @@ BEGIN
         STD_LOGIC_VECTOR(TempSA / TempSB);
 
     -- DIVU
-    ResultDIVU <= (OTHERS => '1') WHEN TempSB = 0 ELSE
+    ResultDIVU <= (OTHERS => '1') WHEN TempUB = 0 ELSE
         STD_LOGIC_VECTOR(TempUA / TempUB);
 
     -- DIVW
@@ -317,31 +317,31 @@ BEGIN
         (63 DOWNTO 32 => TempDIVW(31)) & STD_LOGIC_VECTOR(TempDIVW(31 DOWNTO 0));
 
     -- DIVUW
-    TempDIVUW <= TempUAL / TempUBL WHEN TempSBL /= 0 ELSE
+    TempDIVUW <= TempUAL / TempUBL WHEN TempUBL /= 0 ELSE
         (OTHERS => '0');
-    ResultDIVUW <= (OTHERS => '1') WHEN TempSBL = 0 ELSE
+    ResultDIVUW <= (OTHERS => '1') WHEN TempUBL = 0 ELSE
         (63 DOWNTO 32 => TempDIVUW(31)) & STD_LOGIC_VECTOR(TempDIVUW(31 DOWNTO 0));
 
     -- REM
-    TempREM <= signed(unsigned(TempAbsA) MOD unsigned(TempAbsB)) WHEN TempSB /= 0 ELSE
+    TempREM <= signed(unsigned(TempAbsA) MOD unsigned(TempAbsB)) WHEN TempAbsB /= 0 ELSE
         (OTHERS => '0');
-    ResultREM <= A WHEN TempSB = 0 ELSE
+    ResultREM <= A WHEN TempAbsB = 0 ELSE
         STD_LOGIC_VECTOR(TempREM) WHEN TempSA >= 0 ELSE
         STD_LOGIC_VECTOR(-TempREM);
 
     -- REMU
-    ResultREMU <= A WHEN TempSB = 0 ELSE
+    ResultREMU <= A WHEN TempUB = 0 ELSE
         STD_LOGIC_VECTOR(TempUA MOD TempUB);
 
     -- REMW
-    TempREMW <= signed(unsigned(TempAbsAL) MOD unsigned(TempAbsBL)) WHEN TempSBL /= 0 ELSE
+    TempREMW <= signed(unsigned(TempAbsAL) MOD unsigned(TempAbsBL)) WHEN TempAbsBL /= 0 ELSE
         (OTHERS => '0');
     ResultREMW <= ((63 DOWNTO 32 => A(31)) & A(31 DOWNTO 0)) WHEN TempSBL = 0 ELSE
         (63 DOWNTO 32 => TempREMW(31)) & STD_LOGIC_VECTOR(TempREMW) WHEN TempSAL >= 0 ELSE
         STD_LOGIC_VECTOR(RESIZE(-TempREMW, 64));
 
     -- REMUW
-    TempREMUW <= TempUAL MOD TempUBL WHEN TempSBL /= 0 ELSE
+    TempREMUW <= TempUAL MOD TempUBL WHEN TempUBL /= 0 ELSE
         (OTHERS => '0');
     ResultREMUW <= ((63 DOWNTO 32 => A(31)) & A(31 DOWNTO 0)) WHEN TempSBL = 0 ELSE
         (63 DOWNTO 32 => TempREMUW(31)) & STD_LOGIC_VECTOR(TempREMUW);
@@ -494,6 +494,7 @@ BEGIN
     PROCESS (A)
     BEGIN
         -- CLZ
+        TempCLZ <= (OTHERS => '1');
         FOR i IN 63 DOWNTO 0 LOOP
             IF A(i) = '1' THEN
                 TempCLZ <= STD_LOGIC_VECTOR(to_unsigned(63 - i, 64));
@@ -502,6 +503,7 @@ BEGIN
         END LOOP;
 
         -- CTZ
+        TempCTZ <= (OTHERS => '1');
         FOR i IN 0 TO 63 LOOP
             IF A(i) = '1' THEN
                 TempCTZ <= STD_LOGIC_VECTOR(to_unsigned(i, 64));
@@ -510,6 +512,7 @@ BEGIN
         END LOOP;
 
         -- CPOP
+        CPOP <= (OTHERS => '0');
         FOR i IN 0 TO 63 LOOP
             IF A(i) = '1' THEN
                 TempCPOP <= TempCPOP + to_unsigned(1, 64);
