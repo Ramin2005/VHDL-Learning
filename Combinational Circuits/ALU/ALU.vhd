@@ -23,65 +23,64 @@
 -- REMUW        -> opcode: "010010"(18) -- Unsigned 32-bit remainder, sign-extended
 
 -- Logic Operations:
--- Buffer       -> opcode: "010011"(19) -- Extended
--- NOT          -> opcode: "010100"(20) -- Extended
--- AND          -> opcode: "010101"(21)
--- OR           -> opcode: "010110"(22)
--- XOR          -> opcode: "010111"(23)
--- ANDN         -> opcode: "011000"(24) -- Extended
--- ORN          -> opcode: "011001"(25) -- Extended
--- XORN         -> opcode: "011010"(26) -- Extended
--- NAND         -> opcode: "011011"(27) -- Extended
--- NOR          -> opcode: "011100"(28) -- Extended
--- XNOR         -> opcode: "011101"(29) -- Extended
+-- NOT          -> opcode: "010011"(19) -- Extended
+-- AND          -> opcode: "010100"(20)
+-- OR           -> opcode: "010101"(21)
+-- XOR          -> opcode: "010110"(22)
+-- ANDN         -> opcode: "010111"(23) -- Extended
+-- ORN          -> opcode: "011000"(24) -- Extended
+-- XORN         -> opcode: "011001"(25) -- Extended
+-- NAND         -> opcode: "011010"(26) -- Extended
+-- NOR          -> opcode: "011011"(27) -- Extended
+-- XNOR         -> opcode: "011100"(28) -- Extended
 
 -- Compare Operations:
--- A == B       -> opcode: "011110"(30) -- Equal
--- A != B       -> opcode: "011111"(31) -- Not Equal
--- A < B        -> opcode: "100000"(32) -- SLT
--- A > B        -> opcode: "100001"(33) -- SGT
--- A <= B       -> opcode: "100010"(34) -- LE
--- A >= B       -> opcode: "100011"(35) -- GE
+-- A == B       -> opcode: "011101"(29) -- Equal
+-- A != B       -> opcode: "011110"(30) -- Not Equal
+-- A < B        -> opcode: "011111"(31) -- SLT
+-- A > B        -> opcode: "100000"(32) -- SGT
+-- A <= B       -> opcode: "100001"(33) -- LE
+-- A >= B       -> opcode: "100010"(34) -- GE
 
 -- Shift and Rotate Operations:
--- SLL          -> opcode: "100100"(36)
--- SRL          -> opcode: "100101"(37)
--- SRA          -> opcode: "100110"(38)
--- ROL          -> opcode: "100111"(39) -- Extended
--- ROR          -> opcode: "101000"(40) -- Extended
--- SLLW         -> opcode: "101001"(41)
--- SRLW         -> opcode: "101010"(42)
--- SRAW         -> opcode: "101011"(43)
--- ROLW         -> opcode: "101100"(44) -- Extended
--- RORW         -> opcode: "101101"(45) -- Extended
+-- SLL          -> opcode: "100011"(35)
+-- SRL          -> opcode: "100100"(36)
+-- SRA          -> opcode: "100101"(37)
+-- ROL          -> opcode: "100110"(38) -- Extended
+-- ROR          -> opcode: "100111"(39) -- Extended
+-- SLLW         -> opcode: "101000"(40)
+-- SRLW         -> opcode: "101001"(41)
+-- SRAW         -> opcode: "101010"(42)
+-- ROLW         -> opcode: "101011"(43) -- Extended
+-- RORW         -> opcode: "101100"(44) -- Extended
 
 -- Custom Compare Operations:
--- MIN          -> opcode: "101110"(46) -- Extended
--- MINU         -> opcode: "101111"(47) -- Extended
--- MAX          -> opcode: "110000"(48) -- Extended
--- MAXU         -> opcode: "110001"(49) -- Extended
+-- MIN          -> opcode: "101101"(45) -- Extended
+-- MINU         -> opcode: "101110"(46) -- Extended
+-- MAX          -> opcode: "101111"(47) -- Extended
+-- MAXU         -> opcode: "110000"(48) -- Extended
 
 -- Custom Bit Count Operations:
--- CLZ          -> opcode: "110010"(50) -- Extended
--- CTZ          -> opcode: "110011"(51) -- Extended
--- CPOP         -> opcode: "110100"(52) -- Extended
+-- CLZ          -> opcode: "110001"(49) -- Extended
+-- CTZ          -> opcode: "110010"(50) -- Extended
+-- CPOP         -> opcode: "110011"(51) -- Extended
 
 -- Custom Shift and Add Operations:
--- SH1ADD       -> opcode: "110101"(53) -- Extended
--- SH2ADD       -> opcode: "110110"(54) -- Extended
--- SH3ADD       -> opcode: "110111"(55) -- Extended
--- SH4ADD       -> opcode: "111000"(56) -- Extended
--- SH8ADD       -> opcode: "111001"(57) -- Extended
+-- SH1ADD       -> opcode: "110100"(52) -- Extended
+-- SH2ADD       -> opcode: "110101"(53) -- Extended
+-- SH3ADD       -> opcode: "110110"(54) -- Extended
+-- SH4ADD       -> opcode: "110111"(55) -- Extended
+-- SH8ADD       -> opcode: "111000"(56) -- Extended
 
 -- Custom Bit Manipulation Operations:
--- BSET         -> opcode: "111010"(58) -- Extended
--- BCLR         -> opcode: "111011"(59) -- Extended
--- BINV         -> opcode: "111100"(60) -- Extended
--- BEXT         -> opcode: "111101"(61) -- Extended
+-- BSET         -> opcode: "111001"(57) -- Extended
+-- BCLR         -> opcode: "111010"(58) -- Extended
+-- BINV         -> opcode: "111011"(59) -- Extended
+-- BEXT         -> opcode: "111100"(60) -- Extended
 
 -- Other Custom Operations:
--- REV8         -> opcode: "111110"(62) -- Extended
--- ORC.B        -> opcode: "111111"(63) -- Extended
+-- REV8         -> opcode: "111101"(61) -- Extended
+-- ORC.B        -> opcode: "111110"(62) -- Extended
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -243,6 +242,15 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL TempSH3ADD : signed(64 DOWNTO 0);
     SIGNAL TempSH4ADD : signed(64 DOWNTO 0);
     SIGNAL TempSH8ADD : signed(64 DOWNTO 0);
+    -- Other operations temps
+    SIGNAL TempORCB0 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
+    SIGNAL TempORCB1 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
+    SIGNAL TempORCB2 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
+    SIGNAL TempORCB3 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
+    SIGNAL TempORCB4 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
+    SIGNAL TempORCB5 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
+    SIGNAL TempORCB6 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
+    SIGNAL TempORCB7 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
     -- Result temp
     SIGNAL TempResult : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
@@ -554,7 +562,17 @@ BEGIN
     ResultREV8 <= A(7 DOWNTO 0) & A(15 DOWNTO 8) & A(23 DOWNTO 16) & A(31 DOWNTO 24)
         & A(39 DOWNTO 32) & A(47 DOWNTO 40) & A(55 DOWNTO 48) & A(63 DOWNTO 56);
 
-    SIGNAL ResultORCB : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    -- ORCB 
+    TempORCB0 <= (OTHERS => '0') WHEN A(7 DOWNTO 0) = ConstantZero(7 DOWNTO 0);
+    TempORCB1 <= (OTHERS => '0') WHEN A(15 DOWNTO 8) = ConstantZero(7 DOWNTO 0);
+    TempORCB2 <= (OTHERS => '0') WHEN A(23 DOWNTO 16) = ConstantZero(7 DOWNTO 0);
+    TempORCB3 <= (OTHERS => '0') WHEN A(31 DOWNTO 24) = ConstantZero(7 DOWNTO 0);
+    TempORCB4 <= (OTHERS => '0') WHEN A(39 DOWNTO 32) = ConstantZero(7 DOWNTO 0);
+    TempORCB5 <= (OTHERS => '0') WHEN A(47 DOWNTO 40) = ConstantZero(7 DOWNTO 0);
+    TempORCB6 <= (OTHERS => '0') WHEN A(55 DOWNTO 48) = ConstantZero(7 DOWNTO 0);
+    TempORCB7 <= (OTHERS => '0') WHEN A(63 DOWNTO 56) = ConstantZero(7 DOWNTO 0);
+    ResultORCB <= TempORCB7 & TempORCB6 & TempORCB5 & TempORCB4
+        & TempORCB3 & TempORCB2 & TempORCB1 & TempORCB0;
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
@@ -613,16 +631,16 @@ BEGIN
         OR (ResultRORW AND (63 DOWNTO 0 => Enable(41)));
 
     Cout <=
-        (CoutADD AND Enable(36))
-        OR (CoutSUB AND Enable(37))
-        OR (CoutADDW AND Enable(38))
-        OR (CoutSUBW AND Enable(39));
+        (CoutADD AND Enable(0))
+        OR (CoutSUB AND Enable(2))
+        OR (CoutADDW AND Enable(3))
+        OR (CoutSUBW AND Enable(4));
 
     Overflow <=
-        (OverflowADD AND Enable(36))
-        OR (OverflowSUB AND Enable(37))
-        OR (OverflowADDW AND Enable(38))
-        OR (OverflowSUBW AND Enable(39));
+        (OverflowADD AND Enable(0))
+        OR (OverflowSUB AND Enable(1))
+        OR (OverflowADDW AND Enable(2))
+        OR (OverflowSUBW AND Enable(3));
 
     Result <= TempResult;
 
