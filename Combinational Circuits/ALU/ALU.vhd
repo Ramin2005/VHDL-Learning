@@ -257,7 +257,7 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL TempResult : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Enable and Select Signals
-    SIGNAL Enable : STD_LOGIC_VECTOR(43 DOWNTO 0);
+    SIGNAL Enable : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Constants
     CONSTANT ConstantZero : STD_LOGIC_VECTOR(63 DOWNTO 0) := (OTHERS => '0');
@@ -323,7 +323,7 @@ BEGIN
         (63 DOWNTO 32 => TempDIVUW(31)) & STD_LOGIC_VECTOR(TempDIVUW(31 DOWNTO 0));
 
     -- REM
-    TempREM <= TempAbsA MOD TempAbsB WHEN TempSB /= 0 ELSE
+    TempREM <= signed(unsigned(TempAbsA) MOD unsigned(TempAbsB)) WHEN TempSB /= 0 ELSE
         (OTHERS => '0');
     ResultREM <= A WHEN TempSB = 0 ELSE
         STD_LOGIC_VECTOR(TempREM) WHEN TempSA >= 0 ELSE
@@ -334,7 +334,7 @@ BEGIN
         STD_LOGIC_VECTOR(TempUA MOD TempUB);
 
     -- REMW
-    TempREMW <= TempAbsAL MOD TempAbsBL WHEN TempSBL /= 0 ELSE
+    TempREMW <= signed(unsigned(TempAbsAL) MOD unsigned(TempAbsBL)) WHEN TempSBL /= 0 ELSE
         (OTHERS => '0');
     ResultREMW <= ((63 DOWNTO 32 => A(31)) & A(31 DOWNTO 0)) WHEN TempSBL = 0 ELSE
         (63 DOWNTO 32 => TempREMW(31)) & STD_LOGIC_VECTOR(TempREMW) WHEN TempSAL >= 0 ELSE
@@ -504,7 +504,7 @@ BEGIN
         -- CTZ
         FOR i IN 0 TO 63 LOOP
             IF A(i) = '1' THEN
-                TempCTZ <= STD_LOGIC_VECTOR(to_unsigned(i + 1, 64));
+                TempCTZ <= STD_LOGIC_VECTOR(to_unsigned(i, 64));
                 EXIT;
             END IF;
         END LOOP;
@@ -550,7 +550,7 @@ BEGIN
     ResultSH8ADD <= STD_LOGIC_VECTOR(TempSH8ADD(63 DOWNTO 0));
 
     -- ADDUW
-    ResultADDUW <= STD_LOGIC_VECTOR(unsigned(ConstantZero(31 DOWNTO 0) & AL) + TempUB);
+    ResultADDUW <= STD_LOGIC_VECTOR(unsigned(ConstantZero(31 DOWNTO 0) & TempAL) + TempUB);
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
@@ -567,7 +567,7 @@ BEGIN
     ResultBINV <= A XOR TempBS;
 
     -- BEXT
-    ResultBEXT <= A AND TempBS;
+    ResultBEXT <= (0 => A(to_integer(TempBN6)), OTHERS => '0');
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
@@ -681,9 +681,9 @@ BEGIN
 
     Cout <=
         (CoutADD AND Enable(0))
-        OR (CoutSUB AND Enable(2))
-        OR (CoutADDW AND Enable(3))
-        OR (CoutSUBW AND Enable(4));
+        OR (CoutSUB AND Enable(1))
+        OR (CoutADDW AND Enable(2))
+        OR (CoutSUBW AND Enable(3));
 
     Overflow <=
         (OverflowADD AND Enable(0))
