@@ -103,84 +103,49 @@ END ENTITY ALU;
 ARCHITECTURE struct OF ALU IS
 
     -- Arithmetic result signals
-    SIGNAL ResultADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultSUB : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultADDW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultSUBW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultABS : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultABSW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultADD, ResultSUB : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultADDW, ResultSUBW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultABS, ResultABSW : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultMUL : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultMULH : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultMULHSU : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultMULHU : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultMULW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultDIV : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultDIVU : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultDIVW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultDIVUW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultREM : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultREMU : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultREMW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultREMUW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultDIV, ResultDIVU : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultDIVW, ResultDIVUW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultREM, ResultREMU : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultREMW, ResultREMUW : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-    SIGNAL CoutADD : STD_LOGIC;
-    SIGNAL CoutSUB : STD_LOGIC;
-    SIGNAL CoutADDW : STD_LOGIC;
-    SIGNAL CoutSUBW : STD_LOGIC;
-    SIGNAL OverflowADD : STD_LOGIC;
-    SIGNAL OverflowSUB : STD_LOGIC;
-    SIGNAL OverflowADDW : STD_LOGIC;
-    SIGNAL OverflowSUBW : STD_LOGIC;
+    SIGNAL CoutADD, CoutSUB, CoutADDW, CoutSUBW : STD_LOGIC;
+    SIGNAL OverflowADD, OverflowSUB, OverflowADDW, OverflowSUBW : STD_LOGIC;
 
     -- Logic result signals
     SIGNAL ResultNOT : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultAND : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultXOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultANDN : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultORN : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultXORN : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultNAND : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultNOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultXNOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultAND, ResultOR, ResultXOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultANDN, ResultORN, ResultXORN : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultNAND, ResultNOR, ResultXNOR : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Compare result signals
-    SIGNAL ResultEQ : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultNEQ : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultL : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultUnL : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultLE : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultUnLE : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultEQ, ResultNEQ : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultL, ResultUnL : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultLE, ResultUnLE : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Shift and Rotating result signals
-    SIGNAL ResultSLL : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultSRL : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultSRA : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultROL : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultROR : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultSLLW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultSRLW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultSRAW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultROLW : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultRORW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultSLL, ResultSRL, ResultSRA : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultROL, ResultROR : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultSLLW, ResultSRLW, ResultSRAW : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultROLW, ResultRORW : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Custom Compare result signals
-    SIGNAL ResultMIN : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultMINU : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultMAX : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultMAXU : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultMIN, ResultMINU : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultMAX, ResultMAXU : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Custom Bit Count result signals
-    SIGNAL ResultCLZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultCTZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultCPOP : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultCLZ, ResultCTZ, ResultCPOP : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Custom Shift and Add (ZBA) result signals
-    SIGNAL ResultSH1ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultSH2ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultSH3ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultSH4ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL ResultSH8ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultSH1ADD, ResultSH2ADD, ResultSH3ADD,
+    ResultSH4ADD, ResultSH8ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultADDUW : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Custom Bit Manipulation result signals
@@ -199,60 +164,33 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL TempBN6 : unsigned(5 DOWNTO 0);
     SIGNAL TempBS : STD_LOGIC_VECTOR(63 DOWNTO 0);
     -- 32 Low bits temps
-    SIGNAL TempAL : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL TempBL : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    -- Shift and Routing temps
-    SIGNAL TempSLLW : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL TempSRLW : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL TempSRAW : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL TempROLW : STD_LOGIC_VECTOR(31 DOWNTO 0);
-    SIGNAL TempRORW : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL TempAL, TempBL : STD_LOGIC_VECTOR(31 DOWNTO 0) := (OTHERS => '0');
+    -- Signed and Unsigned of A, B, AL, BL temps
+    SIGNAL TempSA, TempSB : signed (63 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL TempUA, TempUB : unsigned (63 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL TempSAL, TempSBL : signed (31 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL TempUAL, TempUBL : unsigned (31 DOWNTO 0) := (OTHERS => '0');
+    -- Abs of Signed of A, B, AL, BL temps
+    SIGNAL TempAbsA, TempAbsB : signed (63 DOWNTO 0) := (OTHERS => '0');
+    SIGNAL TempAbsAL, TempAbsBL : signed (31 DOWNTO 0) := (OTHERS => '0');
     -- Arithmetic temps
-    SIGNAL TempADD : unsigned(64 DOWNTO 0);
-    SIGNAL TempSUB : unsigned(64 DOWNTO 0);
-    SIGNAL TempADDW : unsigned(32 DOWNTO 0);
-    SIGNAL TempSUBW : unsigned(32 DOWNTO 0);
+    SIGNAL TempADD, TempSUB : unsigned(64 DOWNTO 0);
+    SIGNAL TempADDW, TempSUBW : unsigned(32 DOWNTO 0);
     SIGNAL TempMULSS : STD_LOGIC_VECTOR(127 DOWNTO 0);
     SIGNAL TempMULSU : STD_LOGIC_VECTOR(129 DOWNTO 0);
     SIGNAL TempMULUU : STD_LOGIC_VECTOR(127 DOWNTO 0);
-    SIGNAL TempDIVW : signed (31 DOWNTO 0);
-    SIGNAL TempDIVUW : unsigned (31 DOWNTO 0);
+    SIGNAL TempDIVW, TempREMW : signed (31 DOWNTO 0);
+    SIGNAL TempDIVUW, TempREMUW : unsigned (31 DOWNTO 0);
     SIGNAL TempREM : signed (63 DOWNTO 0);
-    SIGNAL TempREMW : signed (31 DOWNTO 0);
-    SIGNAL TempREMUW : unsigned (31 DOWNTO 0);
-    -- Signed and Unsigned of A, B, AL, BL temps
-    SIGNAL TempSA : signed (63 DOWNTO 0);
-    SIGNAL TempSB : signed (63 DOWNTO 0);
-    SIGNAL TempUA : unsigned (63 DOWNTO 0);
-    SIGNAL TempUB : unsigned (63 DOWNTO 0);
-    SIGNAL TempSAL : signed (31 DOWNTO 0);
-    SIGNAL TempSBL : signed (31 DOWNTO 0);
-    SIGNAL TempUAL : unsigned (31 DOWNTO 0);
-    SIGNAL TempUBL : unsigned (31 DOWNTO 0);
-    -- Abs of Signed of A, B, AL, BL temps
-    SIGNAL TempAbsA : signed (63 DOWNTO 0);
-    SIGNAL TempAbsB : signed (63 DOWNTO 0);
-    SIGNAL TempAbsAL : signed (31 DOWNTO 0);
-    SIGNAL TempAbsBL : signed (31 DOWNTO 0);
-    -- Custom Bit Count operations temps
-    SIGNAL TempCLZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    SIGNAL TempCTZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
-    VARIABLE TempCPOP : unsigned(63 DOWNTO 0);
+    -- Shift and Routing temps
+    SIGNAL TempSLLW, TempSRLW, TempSRAW : STD_LOGIC_VECTOR(31 DOWNTO 0);
+    SIGNAL TempROLW, TempRORW : STD_LOGIC_VECTOR(31 DOWNTO 0);
     -- Custom Shift and Add operations temps
-    SIGNAL TempSH1ADD : signed(64 DOWNTO 0);
-    SIGNAL TempSH2ADD : signed(64 DOWNTO 0);
-    SIGNAL TempSH3ADD : signed(64 DOWNTO 0);
-    SIGNAL TempSH4ADD : signed(64 DOWNTO 0);
-    SIGNAL TempSH8ADD : signed(64 DOWNTO 0);
+    SIGNAL TempSH1ADD, TempSH2ADD, TempSH3ADD,
+    TempSH4ADD, TempSH8ADD : signed(64 DOWNTO 0);
     -- Other operations temps
-    SIGNAL TempORCB0 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
-    SIGNAL TempORCB1 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
-    SIGNAL TempORCB2 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
-    SIGNAL TempORCB3 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
-    SIGNAL TempORCB4 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
-    SIGNAL TempORCB5 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
-    SIGNAL TempORCB6 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
-    SIGNAL TempORCB7 : STD_LOGIC_VECTOR(7 DOWNTO 0) := (OTHERS => '1');
+    SIGNAL TempORCB0, TempORCB1, TempORCB2, TempORCB3, TempORCB4,
+    TempORCB5, TempORCB6, TempORCB7 : STD_LOGIC_VECTOR(7 DOWNTO 0);
     -- Result temp
     SIGNAL TempResult : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
@@ -492,42 +430,37 @@ BEGIN
     ------------------------------------------------------------------------------------------
     -- Custom Bit Count Operations
     PROCESS (A)
+        VARIABLE VarCLZ, VarCTZ, VarCPOP : INTEGER;
     BEGIN
         -- CLZ
-        TempCLZ <= (OTHERS => '1');
+        VarCLZ := 64;
         FOR i IN 63 DOWNTO 0 LOOP
             IF A(i) = '1' THEN
-                TempCLZ <= STD_LOGIC_VECTOR(to_unsigned(63 - i, 64));
+                VarCLZ := 63 - i;
                 EXIT;
             END IF;
         END LOOP;
+        ResultCLZ <= STD_LOGIC_VECTOR(to_unsigned(VarCLZ, 64));
 
         -- CTZ
-        TempCTZ <= (OTHERS => '1');
+        VarCTZ := 64;
         FOR i IN 0 TO 63 LOOP
             IF A(i) = '1' THEN
-                TempCTZ <= STD_LOGIC_VECTOR(to_unsigned(i, 64));
+                VarCTZ := i;
                 EXIT;
             END IF;
         END LOOP;
+        ResultCTZ <= STD_LOGIC_VECTOR(to_unsigned(VarCTZ, 64));
 
         -- CPOP
-        CPOP <= (OTHERS => '0');
+        VarCPOP := 0;
         FOR i IN 0 TO 63 LOOP
             IF A(i) = '1' THEN
-                TempCPOP <= TempCPOP + to_unsigned(1, 64);
+                VarCPOP := VarCPOP + 1;
             END IF;
         END LOOP;
+        ResultCPOP <= STD_LOGIC_VECTOR(to_unsigned(VarCPOP, 64));
     END PROCESS;
-
-    -- CLZ
-    ResultCLZ <= TempCLZ;
-
-    -- CTZ
-    ResultCTZ <= TempCTZ;
-
-    -- CPOP
-    ResultCPOP <= STD_LOGIC_VECTOR(TempCPOP);
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
