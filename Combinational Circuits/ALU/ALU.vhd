@@ -38,9 +38,9 @@
 -- A == B       -> opcode: "011101"(29) -- Equal
 -- A != B       -> opcode: "011110"(30) -- Not Equal
 -- A < B        -> opcode: "011111"(31) -- SLT
--- A > B        -> opcode: "100000"(32) -- SGT
+-- Un A < B     -> opcode: "100000"(32) -- SGT
 -- A <= B       -> opcode: "100001"(33) -- LE
--- A >= B       -> opcode: "100010"(34) -- GE
+-- Un A <= B    -> opcode: "100010"(34) -- GE
 
 -- Shift and Rotate Operations:
 -- SLL          -> opcode: "100011"(35)
@@ -65,22 +65,23 @@
 -- CTZ          -> opcode: "110010"(50) -- Extended
 -- CPOP         -> opcode: "110011"(51) -- Extended
 
--- Custom Shift and Add Operations:
+-- Custom Shift and Add (ZBA) Operations:
 -- SH1ADD       -> opcode: "110100"(52) -- Extended
 -- SH2ADD       -> opcode: "110101"(53) -- Extended
 -- SH3ADD       -> opcode: "110110"(54) -- Extended
 -- SH4ADD       -> opcode: "110111"(55) -- Extended
 -- SH8ADD       -> opcode: "111000"(56) -- Extended
+-- ADDUW        -> opcode: "111001"(57) -- Extended
 
 -- Custom Bit Manipulation Operations:
--- BSET         -> opcode: "111001"(57) -- Extended
--- BCLR         -> opcode: "111010"(58) -- Extended
--- BINV         -> opcode: "111011"(59) -- Extended
--- BEXT         -> opcode: "111100"(60) -- Extended
+-- BSET         -> opcode: "111010"(58) -- Extended
+-- BCLR         -> opcode: "111011"(59) -- Extended
+-- BINV         -> opcode: "111100"(60) -- Extended
+-- BEXT         -> opcode: "111101"(61) -- Extended
 
 -- Other Custom Operations:
--- REV8         -> opcode: "111101"(61) -- Extended
--- ORC.B        -> opcode: "111110"(62) -- Extended
+-- REV8         -> opcode: "111110"(62) -- Extended
+-- ORC.B        -> opcode: "111111"(63) -- Extended
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
@@ -174,12 +175,13 @@ ARCHITECTURE struct OF ALU IS
     SIGNAL ResultCTZ : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultCPOP : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
-    -- Custom Shift and Add result signals
+    -- Custom Shift and Add (ZBA) result signals
     SIGNAL ResultSH1ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultSH2ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultSH3ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultSH4ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
     SIGNAL ResultSH8ADD : STD_LOGIC_VECTOR(63 DOWNTO 0);
+    SIGNAL ResultADDUW : STD_LOGIC_VECTOR(63 DOWNTO 0);
 
     -- Custom Bit Manipulation result signals
     SIGNAL ResultBSET : STD_LOGIC_VECTOR(63 DOWNTO 0);
@@ -479,64 +481,76 @@ BEGIN
         B;
 
     -- MAX
-    ResultMAX <= A WHEN TempSA < TempSB ELSE
+    ResultMAX <= A WHEN TempSA > TempSB ELSE
         B;
 
     -- MAXU
-    ResultMAXU <= A WHEN TempUA < TempUB ELSE
+    ResultMAXU <= A WHEN TempUA > TempUB ELSE
         B;
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
     -- Custom Bit Count Operations
+    PROCESS (A)
+    BEGIN
+        -- CLZ
+        FOR i IN 63 DOWNTO 0 LOOP
+            IF A(i) = '1' THEN
+                TempCLZ <= STD_LOGIC_VECTOR(to_unsigned(63 - i, 64));
+                EXIT;
+            END IF;
+        END LOOP;
+
+        -- CTZ
+        FOR i IN 0 TO 63 LOOP
+            IF A(i) = '1' THEN
+                TempCTZ <= STD_LOGIC_VECTOR(to_unsigned(i + 1, 64));
+                EXIT;
+            END IF;
+        END LOOP;
+
+        -- CPOP
+        FOR i IN 0 TO 63 LOOP
+            IF A(i) = '1' THEN
+                TempCPOP <= TempCPOP + to_unsigned(1, 64);
+            END IF;
+        END LOOP;
+    END PROCESS;
+
     -- CLZ
-    FOR i IN 63 DOWNTO 0 LOOP
-        IF A(i) = '1' THEN
-            TempCLZ <= STD_LOGIC_VECTOR(to_unsigned(63 - i, 64));
-            EXIT;
-        END IF;
-    END LOOP;
     ResultCLZ <= TempCLZ;
 
     -- CTZ
-    FOR i IN 0 TO 63 LOOP
-        IF A(i) = '1' THEN
-            TempCTZ <= STD_LOGIC_VECTOR(to_unsigned(i + 1, 64));
-            EXIT;
-        END IF;
-    END LOOP;
     ResultCTZ <= TempCTZ;
 
     -- CPOP
-    FOR i IN 0 TO 63 LOOP
-        IF A(i) = '1' THEN
-            TempCPOP <= TempCPOP + to_unsigned(1, 64);
-        END IF;
-    END LOOP;
     ResultCPOP <= STD_LOGIC_VECTOR(TempCPOP);
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
-    -- Custom Shift and Add Operations
+    -- CCustom Shift and Add (ZBA) Operations
     -- SH1ADD
     TempSH1ADD <= SHIFT_LEFT((TempSA(63) & TempSA), 1) + (TempSB(63) & TempSB);
-    ResultSH1ADD <= STD_LOGIC_VECTOR(TempSH1ADD);
+    ResultSH1ADD <= STD_LOGIC_VECTOR(TempSH1ADD(63 DOWNTO 0));
 
     -- SH2ADD
     TempSH2ADD <= SHIFT_LEFT((TempSA(63) & TempSA), 2) + (TempSB(63) & TempSB);
-    ResultSH2ADD <= STD_LOGIC_VECTOR(TempSH2ADD);
+    ResultSH2ADD <= STD_LOGIC_VECTOR(TempSH2ADD(63 DOWNTO 0));
 
     -- SH3ADD
     TempSH3ADD <= SHIFT_LEFT((TempSA(63) & TempSA), 3) + (TempSB(63) & TempSB);
-    ResultSH3ADD <= STD_LOGIC_VECTOR(TempSH3ADD);
+    ResultSH3ADD <= STD_LOGIC_VECTOR(TempSH3ADD(63 DOWNTO 0));
 
     -- SH4ADD
     TempSH4ADD <= SHIFT_LEFT((TempSA(63) & TempSA), 4) + (TempSB(63) & TempSB);
-    ResultSH4ADD <= STD_LOGIC_VECTOR(TempSH4ADD);
+    ResultSH4ADD <= STD_LOGIC_VECTOR(TempSH4ADD(63 DOWNTO 0));
 
     -- SH8ADD
     TempSH8ADD <= SHIFT_LEFT((TempSA(63) & TempSA), 8) + (TempSB(63) & TempSB);
-    ResultSH8ADD <= STD_LOGIC_VECTOR(TempSH8ADD);
+    ResultSH8ADD <= STD_LOGIC_VECTOR(TempSH8ADD(63 DOWNTO 0));
+
+    -- ADDUW
+    ResultADDUW <= STD_LOGIC_VECTOR(unsigned(ConstantZero(31 DOWNTO 0) & AL) + TempUB);
     ------------------------------------------------------------------------------------------
 
     ------------------------------------------------------------------------------------------
@@ -563,14 +577,22 @@ BEGIN
         & A(39 DOWNTO 32) & A(47 DOWNTO 40) & A(55 DOWNTO 48) & A(63 DOWNTO 56);
 
     -- ORCB 
-    TempORCB0 <= (OTHERS => '0') WHEN A(7 DOWNTO 0) = ConstantZero(7 DOWNTO 0);
-    TempORCB1 <= (OTHERS => '0') WHEN A(15 DOWNTO 8) = ConstantZero(7 DOWNTO 0);
-    TempORCB2 <= (OTHERS => '0') WHEN A(23 DOWNTO 16) = ConstantZero(7 DOWNTO 0);
-    TempORCB3 <= (OTHERS => '0') WHEN A(31 DOWNTO 24) = ConstantZero(7 DOWNTO 0);
-    TempORCB4 <= (OTHERS => '0') WHEN A(39 DOWNTO 32) = ConstantZero(7 DOWNTO 0);
-    TempORCB5 <= (OTHERS => '0') WHEN A(47 DOWNTO 40) = ConstantZero(7 DOWNTO 0);
-    TempORCB6 <= (OTHERS => '0') WHEN A(55 DOWNTO 48) = ConstantZero(7 DOWNTO 0);
-    TempORCB7 <= (OTHERS => '0') WHEN A(63 DOWNTO 56) = ConstantZero(7 DOWNTO 0);
+    TempORCB0 <= (OTHERS => '0') WHEN A(7 DOWNTO 0) = ConstantZero(7 DOWNTO 0) ELSE
+        (OTHERS => '1');
+    TempORCB1 <= (OTHERS => '0') WHEN A(15 DOWNTO 8) = ConstantZero(7 DOWNTO 0) ELSE
+        (OTHERS => '1');
+    TempORCB2 <= (OTHERS => '0') WHEN A(23 DOWNTO 16) = ConstantZero(7 DOWNTO 0) ELSE
+        (OTHERS => '1');
+    TempORCB3 <= (OTHERS => '0') WHEN A(31 DOWNTO 24) = ConstantZero(7 DOWNTO 0) ELSE
+        (OTHERS => '1');
+    TempORCB4 <= (OTHERS => '0') WHEN A(39 DOWNTO 32) = ConstantZero(7 DOWNTO 0) ELSE
+        (OTHERS => '1');
+    TempORCB5 <= (OTHERS => '0') WHEN A(47 DOWNTO 40) = ConstantZero(7 DOWNTO 0) ELSE
+        (OTHERS => '1');
+    TempORCB6 <= (OTHERS => '0') WHEN A(55 DOWNTO 48) = ConstantZero(7 DOWNTO 0) ELSE
+        (OTHERS => '1');
+    TempORCB7 <= (OTHERS => '0') WHEN A(63 DOWNTO 56) = ConstantZero(7 DOWNTO 0) ELSE
+        (OTHERS => '1');
     ResultORCB <= TempORCB7 & TempORCB6 & TempORCB5 & TempORCB4
         & TempORCB3 & TempORCB2 & TempORCB1 & TempORCB0;
     ------------------------------------------------------------------------------------------
