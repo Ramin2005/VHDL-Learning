@@ -1,87 +1,84 @@
--- RV64IM Base + Custom ALU Extensions
--- ALUControl: 6-bit operation codes
-
 -- Arithmetic Operations:
 -- ADD          -> opcode: "000000"(0)
 -- SUB          -> opcode: "000001"(1)
 -- ADDW         -> opcode: "000010"(2)
 -- SUBW         -> opcode: "000011"(3)
--- ABS          -> opcode: "000100"(4)  -- Extended
--- ABSW         -> opcode: "000101"(5)  -- Extended
--- MUL          -> opcode: "000110"(6)  -- Low 64 bits of product
--- MULH         -> opcode: "000111"(7)  -- High 64 bits, signed x signed
--- MULHSU       -> opcode: "001000"(8)  -- High 64 bits, signed x unsigned
--- MULHU        -> opcode: "001001"(9)  -- High 64 bits, unsigned x unsigned
--- MULW         -> opcode: "001010"(10) -- Low 32-bit product, sign-extended
--- DIV          -> opcode: "001011"(11) -- Signed 64-bit quotient
--- DIVU         -> opcode: "001100"(12) -- Unsigned 64-bit quotient
--- DIVW         -> opcode: "001101"(13) -- Signed 32-bit quotient, sign-extended
--- DIVUW        -> opcode: "001110"(14) -- Unsigned 32-bit quotient, sign-extended
--- REM          -> opcode: "001111"(15) -- Signed 64-bit remainder
--- REMU         -> opcode: "010000"(16) -- Unsigned 64-bit remainder
--- REMW         -> opcode: "010001"(17) -- Signed 32-bit remainder, sign-extended
--- REMUW        -> opcode: "010010"(18) -- Unsigned 32-bit remainder, sign-extended
+-- ABS          -> opcode: "000100"(4)
+-- ABSW         -> opcode: "000101"(5)
+-- MUL          -> opcode: "000110"(6)
+-- MULH         -> opcode: "000111"(7)
+-- MULHSU       -> opcode: "001000"(8)
+-- MULHU        -> opcode: "001001"(9)
+-- MULW         -> opcode: "001010"(10)
+-- DIV          -> opcode: "001011"(11)
+-- DIVU         -> opcode: "001100"(12)
+-- DIVW         -> opcode: "001101"(13)
+-- DIVUW        -> opcode: "001110"(14)
+-- REM          -> opcode: "001111"(15)
+-- REMU         -> opcode: "010000"(16)
+-- REMW         -> opcode: "010001"(17)
+-- REMUW        -> opcode: "010010"(18)
 
 -- Logic Operations:
--- NOT          -> opcode: "010011"(19) -- Extended
+-- NOT          -> opcode: "010011"(19)
 -- AND          -> opcode: "010100"(20)
 -- OR           -> opcode: "010101"(21)
 -- XOR          -> opcode: "010110"(22)
--- ANDN         -> opcode: "010111"(23) -- Extended
--- ORN          -> opcode: "011000"(24) -- Extended
--- XORN         -> opcode: "011001"(25) -- Extended
--- NAND         -> opcode: "011010"(26) -- Extended
--- NOR          -> opcode: "011011"(27) -- Extended
--- XNOR         -> opcode: "011100"(28) -- Extended
+-- ANDN         -> opcode: "010111"(23)
+-- ORN          -> opcode: "011000"(24)
+-- XORN         -> opcode: "011001"(25)
+-- NAND         -> opcode: "011010"(26)
+-- NOR          -> opcode: "011011"(27)
+-- XNOR         -> opcode: "011100"(28)
 
 -- Compare Operations:
--- A == B       -> opcode: "011101"(29) -- Equal
--- A != B       -> opcode: "011110"(30) -- Not Equal
+-- A == B       -> opcode: "011101"(29) -- BEQ
+-- A != B       -> opcode: "011110"(30) -- BNE
 -- A < B        -> opcode: "011111"(31) -- SLT
--- Un A < B     -> opcode: "100000"(32) -- SGT
--- A <= B       -> opcode: "100001"(33) -- LE
--- Un A <= B    -> opcode: "100010"(34) -- GE
+-- Un A < B     -> opcode: "100000"(32) -- SLTU
+-- A <= B       -> opcode: "100001"(33) -- BGE
+-- Un A <= B    -> opcode: "100010"(34) -- BGEU
 
 -- Shift and Rotate Operations:
 -- SLL          -> opcode: "100011"(35)
 -- SRL          -> opcode: "100100"(36)
 -- SRA          -> opcode: "100101"(37)
--- ROL          -> opcode: "100110"(38) -- Extended
--- ROR          -> opcode: "100111"(39) -- Extended
+-- ROL          -> opcode: "100110"(38)
+-- ROR          -> opcode: "100111"(39)
 -- SLLW         -> opcode: "101000"(40)
 -- SRLW         -> opcode: "101001"(41)
 -- SRAW         -> opcode: "101010"(42)
--- ROLW         -> opcode: "101011"(43) -- Extended
--- RORW         -> opcode: "101100"(44) -- Extended
+-- ROLW         -> opcode: "101011"(43)
+-- RORW         -> opcode: "101100"(44)
 
 -- Custom Compare Operations:
--- MIN          -> opcode: "101101"(45) -- Extended
--- MINU         -> opcode: "101110"(46) -- Extended
--- MAX          -> opcode: "101111"(47) -- Extended
--- MAXU         -> opcode: "110000"(48) -- Extended
+-- MIN          -> opcode: "101101"(45)
+-- MINU         -> opcode: "101110"(46)
+-- MAX          -> opcode: "101111"(47)
+-- MAXU         -> opcode: "110000"(48)
 
 -- Custom Bit Count Operations:
--- CLZ          -> opcode: "110001"(49) -- Extended
--- CTZ          -> opcode: "110010"(50) -- Extended
--- CPOP         -> opcode: "110011"(51) -- Extended
+-- CLZ          -> opcode: "110001"(49)
+-- CTZ          -> opcode: "110010"(50)
+-- CPOP         -> opcode: "110011"(51)
 
 -- Custom Shift and Add (ZBA) Operations:
--- SH1ADD       -> opcode: "110100"(52) -- Extended
--- SH2ADD       -> opcode: "110101"(53) -- Extended
--- SH3ADD       -> opcode: "110110"(54) -- Extended
--- SH4ADD       -> opcode: "110111"(55) -- Extended
--- SH8ADD       -> opcode: "111000"(56) -- Extended
--- ADDUW        -> opcode: "111001"(57) -- Extended
+-- SH1ADD       -> opcode: "110100"(52)
+-- SH2ADD       -> opcode: "110101"(53)
+-- SH3ADD       -> opcode: "110110"(54)
+-- SH4ADD       -> opcode: "110111"(55)
+-- SH8ADD       -> opcode: "111000"(56)
+-- ADDUW        -> opcode: "111001"(57)
 
 -- Custom Bit Manipulation Operations:
--- BSET         -> opcode: "111010"(58) -- Extended
--- BCLR         -> opcode: "111011"(59) -- Extended
--- BINV         -> opcode: "111100"(60) -- Extended
--- BEXT         -> opcode: "111101"(61) -- Extended
+-- BSET         -> opcode: "111010"(58)
+-- BCLR         -> opcode: "111011"(59)
+-- BINV         -> opcode: "111100"(60)
+-- BEXT         -> opcode: "111101"(61)
 
 -- Other Custom Operations:
--- REV8         -> opcode: "111110"(62) -- Extended
--- ORC.B        -> opcode: "111111"(63) -- Extended
+-- REV8         -> opcode: "111110"(62)
+-- ORC.B        -> opcode: "111111"(63)
 
 LIBRARY IEEE;
 USE IEEE.std_logic_1164.ALL;
